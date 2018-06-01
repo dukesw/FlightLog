@@ -3,3 +3,5 @@
 ################################################################################
 
 /src/FlightLog/.vs/FlightLog/v15
+/src/FlightLog/ApplicationCore/obj
+/.vs
