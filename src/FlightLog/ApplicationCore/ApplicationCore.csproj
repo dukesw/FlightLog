@@ -1,7 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <RuntimeFrameworkVersion>2.1.1</RuntimeFrameworkVersion>
+    <AssemblyName>DukeSoftware.FlightLog.ApplicationCore</AssemblyName>
+    <RootNamespace>DukeSoftware.FlightLog.ApplicationCore</RootNamespace>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Specifications\" />
+  </ItemGroup>
 
 </Project>

@@ -5,3 +5,17 @@
 /src/FlightLog/.vs/FlightLog/v15
 /src/FlightLog/ApplicationCore/obj
 /.vs
+/src/FlightLog/ApplicationCore/bin/Debug
+/src/FlightLog/ApplicationCoreTests/bin/Debug
+/src/FlightLog/ApplicationCoreTests/obj
+/src/FlightLog/.vs/FlightLog/DesignTimeBuild
+/src/FlightLog/ApplicationCoreUnitTests/bin/Debug/netcoreapp2.1
+/src/FlightLog/ApplicationCoreUnitTests/obj
+/src/FlightLog/ConsoleApp1/bin/Debug/netcoreapp2.0
+/src/FlightLog/ConsoleApp1/obj
+/src/FlightLog/GuardClauses/bin/Debug/netcoreapp2.1
+/src/FlightLog/GuardClauses/obj
+/src/FlightLog/Infrastructure/bin/Debug
+/src/FlightLog/Infrastructure/obj
+/src/FlightLog/Web/bin/Debug/netcoreapp2.1
+/src/FlightLog/Web/obj
