@@ -3,7 +3,7 @@ using DukeSoftware.FlightLog.ApplicationCore.Entities;
 
 namespace DukeSoftware.FlightLog.ApplicationCore.Interfaces
 {
-    public interface IBatteryTypeRepository : IRepository<BatteryType>
+    public interface IBatteryTypeRepository : IRepository<BatteryType>, IAsyncRepository<BatteryType>
     {
     }
 }
