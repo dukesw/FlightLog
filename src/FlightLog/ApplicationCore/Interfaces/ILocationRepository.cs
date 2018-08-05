@@ -3,7 +3,7 @@ using DukeSoftware.FlightLog.ApplicationCore.Entities;
 
 namespace DukeSoftware.FlightLog.ApplicationCore.Interfaces
 {
-    public interface ILocationRepository : IRepository<Location>
+    public interface ILocationRepository : IRepository<Location>, IAsyncRepository<Location>
     {
     }
 }

@@ -1,10 +1,15 @@
 ﻿using DukeSoftware.FlightLog.ApplicationCore.Entities;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace DukeSoftware.FlightLog.ApplicationCore.Interfaces
 {
     public interface IBatteryService
     {
-        Battery EnterDischargeData(Battery battery, int mahUsed);
+        Task<List<Battery>> ListAllAsync();
+        Task<Battery> EnterChargeDataAsync(Battery battery, DateTime chargeDate, ChargeType chargeType, int mahUsed);
+        Task<Battery> EnterNewBatteryAsync(Battery battery, BatteryType batteryType);
         
     }
 }

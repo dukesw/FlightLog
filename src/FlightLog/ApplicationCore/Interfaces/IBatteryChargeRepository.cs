@@ -5,7 +5,7 @@ using System.Text;
 
 namespace DukeSoftware.FlightLog.ApplicationCore.Interfaces
 {
-    public interface IPowerPlantRepository : IRepository<PowerPlant>, IAsyncRepository<PowerPlant>
+    public interface IBatteryChargeRepository : IRepository<BatteryCharge>, IAsyncRepository<BatteryCharge>
     {
     }
 }

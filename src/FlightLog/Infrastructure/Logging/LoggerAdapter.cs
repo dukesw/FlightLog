@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace DukeSoftware.FlightLog.Infrastructure
+namespace DukeSoftware.FlightLog.Infrastructure.Logging
 {
     public class LoggerAdapter<T> : IAppLogger<T>
     {

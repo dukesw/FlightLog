@@ -6,10 +6,11 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace DukeSoftware.FlightLog.Infrastructure.Data
 {
-    public class EfRepository<T> : IRepository<T> where T : EntityBase
+    public class EfRepository<T> : IRepository<T>, IAsyncRepository<T> where T : EntityBase
     {
         private readonly FlightLogContext _dbContext;
 
@@ -25,15 +26,34 @@ namespace DukeSoftware.FlightLog.Infrastructure.Data
             return entity;
         }
 
+        public async Task<T> AddAsync(T entity)
+        {
+            _dbContext.Set<T>().Add(entity);
+            await _dbContext.SaveChangesAsync();
+
+            return entity;
+        }
+
         public void Delete(T entity)
         {
             _dbContext.Set<T>().Remove(entity);
             _dbContext.SaveChanges();
         }
 
+        public async Task DeleteAsync(T entity)
+        {
+            _dbContext.Set<T>().Remove(entity);
+            await _dbContext.SaveChangesAsync();
+        }
+
         public T GetById(long id)
         {
             return _dbContext.Set<T>().Find(id);
+        }
+
+        public async Task<T> GetByIdAsync(long id)
+        {
+            return await _dbContext.Set<T>().FindAsync(id);
         }
 
         public T GetSingleBySpec(ISpecification<T> spec)
@@ -59,10 +79,36 @@ namespace DukeSoftware.FlightLog.Infrastructure.Data
             return _dbContext.Set<T>().AsEnumerable();
         }
 
-        public void Update(T entity)
+        public async Task<List<T>> ListAllAsync()
+        {
+            return await _dbContext.Set<T>().ToListAsync();
+        }
+
+        public Task<List<T>> ListAsync(ISpecification<T> spec)
+        {
+            // A Queryable for all of the expression based includes
+            var resultsQueryableForIncludes = spec.Includes.Aggregate(_dbContext.Set<T>().AsQueryable(), (current, include) => current.Include(include));
+
+            // Add the string based includes
+            var resultsQueryableWithAllIncludes = spec.IncludeStrings.Aggregate(resultsQueryableForIncludes, (current, include) => current.Include(include));
+
+            // Finally filter based on the criteria
+            return resultsQueryableWithAllIncludes.Where(spec.Criteria).ToListAsync<T>();
+        }
+
+        public T Update(T entity)
         {
             _dbContext.Entry(entity).State = EntityState.Modified;
             _dbContext.SaveChanges();
+            return entity;
+        }
+
+        public async Task<T> UpdateAsync(T entity)
+        {
+            _dbContext.Entry(entity).State = EntityState.Modified;
+            await _dbContext.SaveChangesAsync();
+
+            return entity;
         }
     }
 }

@@ -14,6 +14,7 @@ namespace DukeSoftware.FlightLog.Infrastructure.Data
 
         public DbSet<BatteryType> BatteryTypes { get; set; }
         public DbSet<Battery> Batteries { get; set; }
+        public DbSet<BatteryCharge> BatteryCharges { get; set; }
         public DbSet<Location> Locations { get; set; }
         public DbSet<PowerPlant> PowerPlants { get; set; }
         public DbSet<Model> Models { get; set; }
@@ -23,6 +24,7 @@ namespace DukeSoftware.FlightLog.Infrastructure.Data
         {
             builder.Entity<BatteryType>(ConfigureBatteryType);
             builder.Entity<Battery>(ConfigureBattery);
+            builder.Entity<BatteryCharge>(ConfigureBatteryCharges);
             builder.Entity<Location>(ConfigureLocation);
             builder.Entity<PowerPlant>(ConfigurePowerPlant);
             builder.Entity<Model>(ConfigureModel);
@@ -33,6 +35,11 @@ namespace DukeSoftware.FlightLog.Infrastructure.Data
         private void ConfigureBattery(EntityTypeBuilder<Battery> builder)
         {
             builder.ToTable("Battery");
+        }
+
+        private void ConfigureBatteryCharges(EntityTypeBuilder<BatteryCharge> builder)
+        {
+            builder.ToTable("BatteryCharge");
         }
 
         private void ConfigureBatteryType(EntityTypeBuilder<BatteryType> builder)

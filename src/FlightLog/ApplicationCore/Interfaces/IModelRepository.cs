@@ -3,7 +3,7 @@ using DukeSoftware.FlightLog.ApplicationCore.Entities;
 
 namespace DukeSoftware.FlightLog.ApplicationCore.Interfaces
 {
-    public interface IModelRepository : IRepository<Model>
+    public interface IModelRepository : IRepository<Model>, IAsyncRepository<Model>
     {
     }
 }
