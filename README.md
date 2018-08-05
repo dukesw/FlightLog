@@ -5,6 +5,8 @@ It uses a clean architecture style.
 
 Test, added to the develop branch
 
+Another change, on develop. 
+
 # Getting Started
 TODO: Guide users through getting your code up and running on their own system. In this section you can talk about:
 1.	Installation process
