@@ -1,4 +1,4 @@
-﻿// Copyright DukeSoftware 2018 $(file)
+﻿// Copyright DukeSoftware 2018
 using System;
 
 namespace DukeSoftware.FlightLog.ApplicationCore.Interfaces

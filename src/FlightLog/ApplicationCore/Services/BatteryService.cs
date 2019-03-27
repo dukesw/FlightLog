@@ -34,9 +34,14 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
             _logger = logger ;
         }
 
-        public async Task<List<Battery>> ListAllAsync()
+        public async Task<List<Battery>> ListBatteriesAsync()
         {
             return await _batteryRepository.ListAllAsync();
+        }
+
+        public async Task<List<BatteryType>> ListBatteryTypesAsync()
+        {
+            return await _batteryTypeRepository.ListAllAsync();
         }
 
         public async Task<Battery> EnterChargeDataAsync(Battery battery, DateTime chargeDate, ChargeType chargeType, int mahUsed)
@@ -84,8 +89,6 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
 
             return await _batteryRepository.AddAsync(battery);
         }
-
-
 
     }
 }

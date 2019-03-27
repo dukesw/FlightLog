@@ -5,7 +5,8 @@ using DukeSoftware.FlightLog.ApplicationCore.Services;
 using Moq;
 using System;
 using Xunit;
-
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace ApplicationCoreUnitTests
 {
@@ -23,7 +24,7 @@ namespace ApplicationCoreUnitTests
                 null, 
                 _batteryTypeRepositoryMock.Object, 
                 _batteryChargeRepositoryMock.Object, 
-                _loggerMock.Object));
+                _loggerMock.Object)); 
         }
 
         [Fact]
@@ -89,6 +90,29 @@ namespace ApplicationCoreUnitTests
             var result = service.EnterChargeDataAsync(battery, charge.ChargedOn, charge.Type, charge.Mah);
 
             Assert.NotNull(result); 
+        }
+
+        [Fact]
+        public void EnterNewBatteryDataWithNullBatteryType_ThrowsBatteryTypeNotFoundException()
+        {
+            var newBattery = new Battery { IsActive = true, Notes = "New Battery", PurchaseDate = DateTime.Now.AddDays(-7) };
+            var service = new BatteryService(_batteryRepositoryMock.Object, _batteryTypeRepositoryMock.Object, _batteryChargeRepositoryMock.Object, _loggerMock.Object);
+
+            Assert.ThrowsAsync<BatteryTypeNotFoundException>(() => service.EnterNewBatteryAsync(newBattery, null));
+        }
+
+        [Fact] 
+        public async Task GetBatteriesAsync_CallsListAllAsyncInRepository()
+        {
+            var batteryList = new List<Battery> { new Battery { Id = 1, IsActive = true, Notes = "Test battery", PurchaseDate = DateTime.Now.AddMonths(-1) } };
+            _batteryRepositoryMock.Setup(x => x.ListAllAsync()).Returns(Task.FromResult(batteryList));
+            var service = new BatteryService(_batteryRepositoryMock.Object, _batteryTypeRepositoryMock.Object, _batteryChargeRepositoryMock.Object, _loggerMock.Object);
+
+            var result = await service.ListBatteriesAsync();
+
+            Assert.NotEmpty(result);
+            _batteryRepositoryMock.Verify(x => x.ListAllAsync());
+           
         }
     }
 }
