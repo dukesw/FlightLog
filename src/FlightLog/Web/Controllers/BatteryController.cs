@@ -75,7 +75,7 @@ namespace Web.Controllers {
 
         //}
 
-        [HttpPost("/api/batteries/newaddition")]
+        [HttpPost("/new")]
         public ActionResult<Battery> EnterNewBattery(Battery battery, BatteryType batteryType)
         {
             try

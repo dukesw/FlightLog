@@ -114,5 +114,35 @@ namespace ApplicationCoreUnitTests
             _batteryRepositoryMock.Verify(x => x.ListAllAsync());
            
         }
+
+        [Fact]
+        public async Task EnterNewBatteryTypeWithNullBatteryType_ThrowsNullParameterException()
+        {
+            BatteryType batteryType = null;
+            var service = new BatteryService(_batteryRepositoryMock.Object, _batteryTypeRepositoryMock.Object, _batteryChargeRepositoryMock.Object, _loggerMock.Object);
+
+            await Assert.ThrowsAsync<ArgumentNullException>(() => service.EnterNewBatteryTypeAsync(batteryType));
+        }
+
+        [Fact]
+        public async Task EnterNewBatteryType_CallsBatteryTypeRepositoryAdd()
+        {
+            var batteryType = new BatteryType { Type = "Graphene", Cells = 4, CapacityMah = 2200, WeightInGrams = 500 };
+            var service = new BatteryService(_batteryRepositoryMock.Object, _batteryTypeRepositoryMock.Object, _batteryChargeRepositoryMock.Object, _loggerMock.Object);
+
+            await service.EnterNewBatteryTypeAsync(batteryType);
+            _batteryTypeRepositoryMock.Verify(x => x.AddAsync(batteryType));
+        }
+
+        // TODO Do the Battery version of the GetById. 
+        // And update method names to be async
+        [Fact]
+        public async Task GetBatteryTypeByIdAsync_CallsBatteryTypeRepositoryGetByIdAsync()
+        {
+            var service = new BatteryService(_batteryRepositoryMock.Object, _batteryTypeRepositoryMock.Object, _batteryChargeRepositoryMock.Object, _loggerMock.Object);
+            await Assert.ThrowsAsync<ArgumentNullException>(() => service.GetBatteryTypeByIdAsync(1));
+
+            _batteryTypeRepositoryMock.Verify(x => x.GetByIdAsync(It.IsAny<long>()));
+        }
     }
 }

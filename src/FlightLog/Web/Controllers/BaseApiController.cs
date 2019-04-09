@@ -6,4 +6,4 @@ namespace Web.Controllers
     public class BaseApiController : ControllerBase
     {
     }
-}
+}       

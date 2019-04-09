@@ -44,6 +44,22 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
             return await _batteryTypeRepository.ListAllAsync();
         }
 
+        public async Task<Battery> GetBatteryByIdAsync(long id)
+        {
+            Guard.AgainstNull(id, "id");
+            var result = await _batteryRepository.GetByIdAsync(id);
+            Guard.AgainstNull(result, "result");
+            return result;
+        }
+
+        public async Task<BatteryType> GetBatteryTypeByIdAsync(long id)
+        {
+            Guard.AgainstNull(id, "id");
+            var result = await _batteryTypeRepository.GetByIdAsync(id);
+            Guard.AgainstNull(result, "result");
+            return result;
+        }
+
         public async Task<Battery> EnterChargeDataAsync(Battery battery, DateTime chargeDate, ChargeType chargeType, int mahUsed)
         {
             // Seems like we need a "discharge" object or event...
@@ -88,6 +104,14 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
             battery.BatteryType = batteryType;
 
             return await _batteryRepository.AddAsync(battery);
+        }
+
+        public async Task<BatteryType> EnterNewBatteryTypeAsync(BatteryType batteryType)
+        {
+            Guard.AgainstNull(batteryType, "batteryType");
+            await _batteryTypeRepository.AddAsync(batteryType);
+            _logger.LogInformation($"Added battery type, new Id = {batteryType.Id}");
+            return batteryType;
         }
 
     }
