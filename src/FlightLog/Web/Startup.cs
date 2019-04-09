@@ -59,6 +59,7 @@ namespace Web
             }
 
             app.UseHttpsRedirection();
+            
             app.UseMvc();
         }
     }

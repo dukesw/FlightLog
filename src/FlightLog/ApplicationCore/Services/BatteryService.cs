@@ -34,9 +34,30 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
             _logger = logger ;
         }
 
-        public async Task<List<Battery>> ListAllAsync()
+        public async Task<List<Battery>> ListBatteriesAsync()
         {
             return await _batteryRepository.ListAllAsync();
+        }
+
+        public async Task<List<BatteryType>> ListBatteryTypesAsync()
+        {
+            return await _batteryTypeRepository.ListAllAsync();
+        }
+
+        public async Task<Battery> GetBatteryByIdAsync(long id)
+        {
+            Guard.AgainstNull(id, "id");
+            var result = await _batteryRepository.GetByIdAsync(id);
+            Guard.AgainstNull(result, "result");
+            return result;
+        }
+
+        public async Task<BatteryType> GetBatteryTypeByIdAsync(long id)
+        {
+            Guard.AgainstNull(id, "id");
+            var result = await _batteryTypeRepository.GetByIdAsync(id);
+            Guard.AgainstNull(result, "result");
+            return result;
         }
 
         public async Task<Battery> EnterChargeDataAsync(Battery battery, DateTime chargeDate, ChargeType chargeType, int mahUsed)
@@ -85,7 +106,13 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
             return await _batteryRepository.AddAsync(battery);
         }
 
-
+        public async Task<BatteryType> EnterNewBatteryTypeAsync(BatteryType batteryType)
+        {
+            Guard.AgainstNull(batteryType, "batteryType");
+            await _batteryTypeRepository.AddAsync(batteryType);
+            _logger.LogInformation($"Added battery type, new Id = {batteryType.Id}");
+            return batteryType;
+        }
 
     }
 }

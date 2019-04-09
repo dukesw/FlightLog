@@ -16,6 +16,7 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Interfaces
         IEnumerable<T> List(ISpecification<T> spec);
 
         IEnumerable<T> ListAll();
+
         T Update(T entity);
     }
 }
