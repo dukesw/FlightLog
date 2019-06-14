@@ -29,7 +29,8 @@ namespace Web.Controllers
         [HttpGet]
         public async Task<ActionResult> GetById(long id)
         {
-            var batteryType = await _batteryService.
+            var batteryType = await _batteryService.GetBatteryTypeByIdAsync(id);
+            return Ok(batteryType);
         }
     }
 }
