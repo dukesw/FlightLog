@@ -149,7 +149,7 @@ namespace ApplicationCoreUnitTests
             var service = new BatteryService(_batteryRepositoryMock.Object, _batteryTypeRepositoryMock.Object, _batteryChargeRepositoryMock.Object, _loggerMock.Object);
             var result = await service.GetBatteryByIdAsync(1);
 
-            _batteryRepositoryMock.Verify(x => x.GetById(It.IsAny<long>()));
+            _batteryRepositoryMock.Verify(x => x.GetByIdAsync(It.IsAny<long>()));
         }
     }
 }
