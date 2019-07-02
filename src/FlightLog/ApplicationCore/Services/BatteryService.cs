@@ -48,7 +48,6 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
         {
             Guard.AgainstNull(id, "id");
             var result = await _batteryRepository.GetByIdAsync(id);
-            Guard.AgainstNull(result, "result");
             return result;
         }
 
@@ -56,7 +55,6 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
         {
             Guard.AgainstNull(id, "id");
             var result = await _batteryTypeRepository.GetByIdAsync(id);
-            Guard.AgainstNull(result, "result");
             return result;
         }
 

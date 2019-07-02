@@ -134,15 +134,22 @@ namespace ApplicationCoreUnitTests
             _batteryTypeRepositoryMock.Verify(x => x.AddAsync(batteryType));
         }
 
-        // TODO Do the Battery version of the GetById. 
-        // And update method names to be async
         [Fact]
         public async Task GetBatteryTypeByIdAsync_CallsBatteryTypeRepositoryGetByIdAsync()
         {
             var service = new BatteryService(_batteryRepositoryMock.Object, _batteryTypeRepositoryMock.Object, _batteryChargeRepositoryMock.Object, _loggerMock.Object);
-            await Assert.ThrowsAsync<ArgumentNullException>(() => service.GetBatteryTypeByIdAsync(1));
+            var result = await service.GetBatteryTypeByIdAsync(1);
 
             _batteryTypeRepositoryMock.Verify(x => x.GetByIdAsync(It.IsAny<long>()));
+        }
+
+        [Fact]
+        public async Task GetBatteryByIdAsync_CallsBatteryRepositoryGetByIdAsync()
+        {
+            var service = new BatteryService(_batteryRepositoryMock.Object, _batteryTypeRepositoryMock.Object, _batteryChargeRepositoryMock.Object, _loggerMock.Object);
+            var result = await service.GetBatteryByIdAsync(1);
+
+            _batteryRepositoryMock.Verify(x => x.GetById(It.IsAny<long>()));
         }
     }
 }
