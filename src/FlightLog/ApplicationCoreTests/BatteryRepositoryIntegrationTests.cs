@@ -40,7 +40,7 @@ namespace DukeSoftware.FlightLog.ApplicationCoreIntegrationTests
         }
 
         [Fact]
-        public void Repository_GetExsitingById()
+        public void Repository_GetExistingById()
         {
             var id = _repository.ListAll().First().Id;
 

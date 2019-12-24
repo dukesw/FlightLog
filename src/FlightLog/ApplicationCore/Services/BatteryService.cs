@@ -18,9 +18,9 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
         private readonly IAppLogger<BatteryService> _logger;
 
         public BatteryService(
-            IBatteryRepository batteryRepository, 
-            IBatteryTypeRepository batteryTypeRepository, 
-            IBatteryChargeRepository batteryChargeRepository, 
+            IBatteryRepository batteryRepository,
+            IBatteryTypeRepository batteryTypeRepository,
+            IBatteryChargeRepository batteryChargeRepository,
             IAppLogger<BatteryService> logger)
         {
             Guard.AgainstNull(batteryRepository, "batteryRepository");
@@ -31,7 +31,7 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
             _batteryRepository = batteryRepository;
             _batteryTypeRepository = batteryTypeRepository;
             _batteryChargeRepository = batteryChargeRepository;
-            _logger = logger ;
+            _logger = logger;
         }
 
         public async Task<List<Battery>> ListBatteriesAsync()
@@ -48,7 +48,6 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
         {
             Guard.AgainstNull(id, "id");
             var result = await _batteryRepository.GetByIdAsync(id);
-            Guard.AgainstNull(result, "result");
             return result;
         }
 
@@ -56,36 +55,7 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
         {
             Guard.AgainstNull(id, "id");
             var result = await _batteryTypeRepository.GetByIdAsync(id);
-            Guard.AgainstNull(result, "result");
             return result;
-        }
-
-        public async Task<Battery> EnterChargeDataAsync(Battery battery, DateTime chargeDate, ChargeType chargeType, int mahUsed)
-        {
-            // Seems like we need a "discharge" object or event...
-            // Perhaps this could be charge data... ??? not discharge. Then idea is that when you charge it, you know how much was added. Although if you put into storage mode that will not work... 
-            // Think about this based on the process used... 
-            // Charge, discharge, storage, repeat... 
-
-            Guard.AgainstNull(battery, "battery");
-            Guard.AgainstNull(chargeDate, "chargeDate");
-
-            // Make sure the battery exists
-            var repoBattery = await _batteryRepository.GetByIdAsync(battery.Id);
-            Guard.AgainstNullBattery(repoBattery, battery.Id, "repoBattery");
-
-            var batteryCharge = new BatteryCharge
-            {
-                ChargedOn = chargeDate, 
-                Type = chargeType, 
-                Mah = mahUsed,
-                Battery = battery
-            };
-
-            await _batteryChargeRepository.AddAsync(batteryCharge);
-            _logger.LogInformation($"Battery charge data saved, new Id = {batteryCharge.Id}");
-
-            return await _batteryRepository.GetByIdAsync(battery.Id);
         }
 
         public async Task<Battery> EnterNewBatteryAsync(Battery battery, BatteryType batteryType)
@@ -109,10 +79,89 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
         public async Task<BatteryType> EnterNewBatteryTypeAsync(BatteryType batteryType)
         {
             Guard.AgainstNull(batteryType, "batteryType");
-            await _batteryTypeRepository.AddAsync(batteryType);
-            _logger.LogInformation($"Added battery type, new Id = {batteryType.Id}");
-            return batteryType;
+            try
+            {
+                await _batteryTypeRepository.AddAsync(batteryType);
+                _logger.LogInformation($"Added battery type, new Id = {batteryType.Id}");
+                return batteryType;
+            } 
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error adding battery type: {batteryType}.");
+                return null;
+            }
         }
 
+        public async Task<Battery> UpdateBatteryAsync(Battery battery)
+        {
+            Guard.AgainstNull(battery, "battery");
+            var result = await _batteryRepository.UpdateAsync(battery); // Use batteryex
+            if (result != null)
+            {
+                _logger.LogInformation($"Updated battery, Id = {battery.Id}");
+            } 
+            else
+            {
+                _logger.LogWarning($"Could not update battery, Id = {battery.Id}");
+            }
+            return result;
+        }
+
+        public async Task<BatteryType> UpdateBatteryTypeAsync(BatteryType batteryType)
+        {
+            Guard.AgainstNull(batteryType, "batteryType");
+            var result = await _batteryTypeRepository.UpdateAsync(batteryType);
+            if (result != null)
+            {
+                _logger.LogInformation($"Updated battery type, Id = {batteryType.Id}");
+            }
+            else
+            {
+                _logger.LogWarning($"Could not update battery type, Id = {batteryType.Id}");
+            }
+            return result;
+        }
+
+        public async Task DeleteBatteryAsync(long id)
+        {
+            var batteryToDelete = _batteryRepository.GetById(id);
+            Guard.AgainstBatteryNotFound(batteryToDelete, id, "batteryToDelete");
+            await _batteryRepository.DeleteAsync(batteryToDelete);
+        }
+
+        public async Task DeleteBatteryTypeAsync(long id)
+        {
+            var batteryTypeToDelete = _batteryTypeRepository.GetById(id);
+            Guard.AgainstBatteryTypeNotFound(batteryTypeToDelete, id, "batteryTypeToDelete");
+            await _batteryTypeRepository.DeleteAsync(batteryTypeToDelete);
+        }
+
+        public async Task<Battery> EnterChargeDataAsync(Battery battery, DateTime chargeDate, ChargeType chargeType, int mahUsed)
+        {
+            // Seems like we need a "discharge" object or event...
+            // Perhaps this could be charge data... ??? not discharge. Then idea is that when you charge it, you know how much was added. Although if you put into storage mode that will not work... 
+            // Think about this based on the process used... 
+            // Charge, discharge, storage, repeat... 
+
+            Guard.AgainstNull(battery, "battery");
+            Guard.AgainstNull(chargeDate, "chargeDate");
+
+            // Make sure the battery exists
+            var repoBattery = await _batteryRepository.GetByIdAsync(battery.Id);
+            Guard.AgainstNull(repoBattery, "repoBattery");
+
+            var batteryCharge = new BatteryCharge
+            {
+                ChargedOn = chargeDate,
+                Type = chargeType,
+                Mah = mahUsed,
+                Battery = battery
+            };
+
+            await _batteryChargeRepository.AddAsync(batteryCharge);
+            _logger.LogInformation($"Battery charge data saved, new Id = {batteryCharge.Id}");
+
+            return await _batteryRepository.GetByIdAsync(battery.Id);
+        }
     }
 }

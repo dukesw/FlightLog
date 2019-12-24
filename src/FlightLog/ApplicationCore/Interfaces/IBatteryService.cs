@@ -7,12 +7,17 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Interfaces
 {
     public interface IBatteryService
     {
-        Task<List<BatteryType>> ListBatteryTypesAsync();
         Task<List<Battery>> ListBatteriesAsync();
+        Task<List<BatteryType>> ListBatteryTypesAsync();
         Task<Battery> GetBatteryByIdAsync(long id);
         Task<BatteryType> GetBatteryTypeByIdAsync(long id);
-        Task<Battery> EnterChargeDataAsync(Battery battery, DateTime chargeDate, ChargeType chargeType, int mahUsed);
         Task<Battery> EnterNewBatteryAsync(Battery battery, BatteryType batteryType);
         Task<BatteryType> EnterNewBatteryTypeAsync(BatteryType batteryType);
+        Task<Battery> UpdateBatteryAsync(Battery battery);
+        Task<BatteryType> UpdateBatteryTypeAsync(BatteryType batteryType);
+        Task DeleteBatteryAsync(long id);
+        Task DeleteBatteryTypeAsync(long id);
+        Task<Battery> EnterChargeDataAsync(Battery battery, DateTime chargeDate, ChargeType chargeType, int mahUsed);
+
     }
 }

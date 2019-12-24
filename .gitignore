@@ -19,3 +19,5 @@
 /src/FlightLog/Infrastructure/obj
 /src/FlightLog/Web/bin/Debug/netcoreapp2.1
 /src/FlightLog/Web/obj
+/src/FlightLog/.vs/FlightLog/v16/Server/sqlite3
+/src/FlightLog/.vs/FlightLog/v16/.suo
