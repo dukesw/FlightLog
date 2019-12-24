@@ -25,7 +25,7 @@ namespace DukeSoftware.GuardClauses
             }
         }
 
-        public static void AgainstNullBattery(Battery battery, long batteryId, string variableName)
+        public static void AgainstBatteryNotFound(Battery battery, long batteryId, string variableName)
         {
             if (battery == null)
             {
@@ -33,7 +33,7 @@ namespace DukeSoftware.GuardClauses
             }
         }
 
-        public static void AgainstNullBatteryType(BatteryType batteryType, long batteryTypeId, string variableName)
+        public static void AgainstBatteryTypeNotFound(BatteryType batteryType, long batteryTypeId, string variableName)
         {
             if (batteryType == null)
             {

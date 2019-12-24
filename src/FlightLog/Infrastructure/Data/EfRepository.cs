@@ -1,4 +1,4 @@
-﻿// Copyright DukeSoftware 2018 $(file)
+﻿// Copyright DukeSoftware 2018
 using DukeSoftware.FlightLog.ApplicationCore.Entities;
 using DukeSoftware.FlightLog.ApplicationCore.Interfaces;
 using DukeSoftware.GuardClauses;
@@ -105,10 +105,17 @@ namespace DukeSoftware.FlightLog.Infrastructure.Data
 
         public async Task<T> UpdateAsync(T entity)
         {
-            _dbContext.Entry(entity).State = EntityState.Modified;
-            await _dbContext.SaveChangesAsync();
+            try
+            {
+                _dbContext.Entry(entity).State = EntityState.Modified;
+                await _dbContext.SaveChangesAsync();
 
-            return entity;
+                return entity;
+            }
+            catch (DbUpdateException dbex)
+            {
+                return null;
+            }
         }
     }
 }

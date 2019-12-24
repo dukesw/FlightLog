@@ -13,6 +13,7 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Entities
 
     public class BatteryCharge : EntityBase
     {
+        // This may end up being a method on the Battery entity???
         public DateTime ChargedOn { get; set; }
         public ChargeType Type { get; set; }
         public int Mah { get; set; }

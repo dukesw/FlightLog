@@ -93,12 +93,12 @@ namespace ApplicationCoreUnitTests
         }
 
         [Fact]
-        public void EnterNewBatteryDataWithNullBatteryType_ThrowsBatteryTypeNotFoundException()
+        public void EnterNewBatteryDataWithNullBatteryType_ThrowsArgumentNullException()
         {
             var newBattery = new Battery { IsActive = true, Notes = "New Battery", PurchaseDate = DateTime.Now.AddDays(-7) };
             var service = new BatteryService(_batteryRepositoryMock.Object, _batteryTypeRepositoryMock.Object, _batteryChargeRepositoryMock.Object, _loggerMock.Object);
 
-            Assert.ThrowsAsync<BatteryTypeNotFoundException>(() => service.EnterNewBatteryAsync(newBattery, null));
+            Assert.ThrowsAsync<ArgumentNullException>(() => service.EnterNewBatteryAsync(newBattery, null));
         }
 
         [Fact] 
@@ -116,7 +116,18 @@ namespace ApplicationCoreUnitTests
         }
 
         [Fact]
-        public async Task EnterNewBatteryTypeWithNullBatteryType_ThrowsNullParameterException()
+        public async Task EnterNullBattery_ThrowsArgumentNullException()
+        {
+            Battery battery = null;
+            BatteryType batteryType = new BatteryType { Type = "Test Type", Cells = 2, CapacityMah = 1000, WeightInGrams = 200 };
+            
+            var service = new BatteryService(_batteryRepositoryMock.Object, _batteryTypeRepositoryMock.Object, _batteryChargeRepositoryMock.Object, _loggerMock.Object);
+
+            await Assert.ThrowsAsync<ArgumentNullException>(() => service.EnterNewBatteryAsync(battery, batteryType));
+        }
+
+        [Fact]
+        public async Task EnterNullBatteryType_ThrowsArgumentNullException()
         {
             BatteryType batteryType = null;
             var service = new BatteryService(_batteryRepositoryMock.Object, _batteryTypeRepositoryMock.Object, _batteryChargeRepositoryMock.Object, _loggerMock.Object);
@@ -151,5 +162,81 @@ namespace ApplicationCoreUnitTests
 
             _batteryRepositoryMock.Verify(x => x.GetByIdAsync(It.IsAny<long>()));
         }
+
+        [Fact]
+        public async Task UpdateBatteryAsync_CallsBatteryRepositoryUpdateAsync()
+        {
+            var battery = new Battery { Id = 7, BatteryType = new BatteryType { Id = 2, Type = "NanoTech", Cells = 3 }, IsActive = true, PurchaseDate = DateTime.Now, Notes = "Notes for the test" };
+            _batteryRepositoryMock.Setup(x => x.UpdateAsync(It.IsAny<Battery>())).Returns(Task.FromResult(battery));
+            var service = new BatteryService(_batteryRepositoryMock.Object, _batteryTypeRepositoryMock.Object, _batteryChargeRepositoryMock.Object, _loggerMock.Object);
+            
+            var result = await service.UpdateBatteryAsync(battery); 
+
+            _batteryRepositoryMock.Verify(x => x.UpdateAsync(It.IsAny<Battery>()));
+            Assert.IsType<Battery>(result);
+        }
+
+        [Fact]
+        public async Task UpdateBatteryTypeAsync_CallsBatteryTypeRepositoryUpdateAsync()
+        {
+            var batteryType = new BatteryType { Type = "Graphene", Cells = 4, CapacityMah = 2200, WeightInGrams = 500 };
+            _batteryTypeRepositoryMock.Setup(x => x.UpdateAsync(It.IsAny<BatteryType>())).Returns(Task.FromResult(batteryType));
+            var service = new BatteryService(_batteryRepositoryMock.Object, _batteryTypeRepositoryMock.Object, _batteryChargeRepositoryMock.Object, _loggerMock.Object);
+
+            var result = await service.UpdateBatteryTypeAsync(batteryType);
+
+            _batteryTypeRepositoryMock.Verify(x => x.UpdateAsync(batteryType));
+
+        }
+
+        [Fact]
+        public async Task DeleteBatteryAsync_CallsRepositoryDeleteAsync()
+        {
+            var batteryId = 3;
+            var battery = new Battery { Id = batteryId, BatteryType = new BatteryType { Id = 1, Type = "NanoTech", Cells = 3 }, IsActive = true, PurchaseDate = DateTime.Now, Notes = "Notes for the test" };
+            _batteryRepositoryMock.Setup(x => x.GetById(It.IsAny<long>())).Returns(battery);
+            var service = new BatteryService(_batteryRepositoryMock.Object, _batteryTypeRepositoryMock.Object, _batteryChargeRepositoryMock.Object, _loggerMock.Object);
+
+            await service.DeleteBatteryAsync(batteryId);
+
+            _batteryRepositoryMock.Verify(x => x.DeleteAsync(battery));
+        }
+
+        [Fact]
+        public async Task DeleteBatteryTypeAsync_CallsRepositoryDeleteAsync()
+        {
+            var batteryTypeId = 1;
+            var batteryType = new BatteryType { Id = batteryTypeId, Type = "Graphene", Cells = 4, CapacityMah = 2200, WeightInGrams = 500 };
+            _batteryTypeRepositoryMock.Setup(x => x.GetById(It.IsAny<long>())).Returns(batteryType);
+            var service = new BatteryService(_batteryRepositoryMock.Object, _batteryTypeRepositoryMock.Object, _batteryChargeRepositoryMock.Object, _loggerMock.Object);
+
+            await service.DeleteBatteryTypeAsync(batteryTypeId);
+
+            _batteryTypeRepositoryMock.Verify(x => x.DeleteAsync(batteryType));
+        }
+
+        [Fact]
+        public async Task DeleteBatteryAsyncWithBadId_ThrowsBatteryNotFound()
+        {
+            var batteryId = 7;
+            _batteryRepositoryMock.Setup(x => x.GetById(It.IsAny<long>())).Returns<Battery>(null);
+            var service = new BatteryService(_batteryRepositoryMock.Object, _batteryTypeRepositoryMock.Object, _batteryChargeRepositoryMock.Object, _loggerMock.Object);
+
+            await Assert.ThrowsAsync<BatteryNotFoundException>(() => service.DeleteBatteryAsync(batteryId));
+
+        }
+
+        [Fact]
+        public async Task DeleteBatteryTypeAsyncWithBadId_ThrowsBatteryTypeNotFound()
+        {
+            var batteryTypeId = 8;
+            _batteryTypeRepositoryMock.Setup(x => x.GetById(It.IsAny<long>())).Returns<BatteryType>(null);
+            var service = new BatteryService(_batteryRepositoryMock.Object, _batteryTypeRepositoryMock.Object, _batteryChargeRepositoryMock.Object, _loggerMock.Object);
+
+            await Assert.ThrowsAsync<BatteryNotFoundException>(() => service.DeleteBatteryAsync(batteryTypeId));
+
+        }
+
+
     }
 }

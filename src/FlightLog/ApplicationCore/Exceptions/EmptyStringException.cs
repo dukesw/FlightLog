@@ -6,7 +6,7 @@ namespace DukeSoftware.Exceptions
 {
     public class EmptyStringException : Exception
     {
-        public EmptyStringException(string stringName) : base($"String named {stringName} is empty")
+        public EmptyStringException(string variableName) : base($"String variable {variableName} is empty")
         {
         }
     }
