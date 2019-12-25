@@ -21,3 +21,6 @@
 /src/FlightLog/Web/obj
 /src/FlightLog/.vs/FlightLog/v16/Server/sqlite3
 /src/FlightLog/.vs/FlightLog/v16/.suo
+/src/FlightLog/WebApi/obj
+/src/FlightLog/WebApi/bin/Debug/netcoreapp2.1
+/src/FlightLog/WebApi/WebApi.csproj.user
