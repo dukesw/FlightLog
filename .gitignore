@@ -24,3 +24,6 @@
 /src/FlightLog/WebApi/obj
 /src/FlightLog/WebApi/bin/Debug/netcoreapp2.1
 /src/FlightLog/WebApi/WebApi.csproj.user
+/src/FlightLog/.vs/FlightLog/v16/TestStore/0
+/src/FlightLog/ApplicationCoreUnitTests/bin/Debug/netcoreapp3.1
+/src/FlightLog/WebApi/bin/Debug/netcoreapp3.1

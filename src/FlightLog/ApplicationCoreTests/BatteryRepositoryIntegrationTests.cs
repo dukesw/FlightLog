@@ -16,7 +16,7 @@ namespace DukeSoftware.FlightLog.ApplicationCoreIntegrationTests
     {
         private readonly FlightLogContext _dbContext;
         private readonly IBatteryRepository _repository;
-        private readonly string _connectionString = "Server=.\\SQL2016Dev;Database=FlightLogv2IntegrationTest;User=sa;Password=Password1!;MultipleActiveResultSets=true";
+        private readonly string _connectionString = "Server=RHYS-LAPTOP\\SQL2019;Database=FlightLogIntegrationTest;User=sa;Password=password321#;MultipleActiveResultSets=true";
 
         public BatteryRepositoryIntegrationTests()
         {
