@@ -11,7 +11,7 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Interfaces
         Task<List<BatteryType>> ListBatteryTypesAsync();
         Task<Battery> GetBatteryByIdAsync(long id);
         Task<BatteryType> GetBatteryTypeByIdAsync(long id);
-        Task<Battery> EnterNewBatteryAsync(Battery battery, BatteryType batteryType);
+        Task<Battery> EnterNewBatteryAsync(Battery battery);
         Task<BatteryType> EnterNewBatteryTypeAsync(BatteryType batteryType);
         Task<Battery> UpdateBatteryAsync(Battery battery);
         Task<BatteryType> UpdateBatteryTypeAsync(BatteryType batteryType);

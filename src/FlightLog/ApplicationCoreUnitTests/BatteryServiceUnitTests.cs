@@ -92,14 +92,15 @@ namespace ApplicationCoreUnitTests
             Assert.NotNull(result); 
         }
 
-        [Fact]
-        public void EnterNewBatteryDataWithNullBatteryType_ThrowsArgumentNullException()
-        {
-            var newBattery = new Battery { IsActive = true, Notes = "New Battery", PurchaseDate = DateTime.Now.AddDays(-7) };
-            var service = new BatteryService(_batteryRepositoryMock.Object, _batteryTypeRepositoryMock.Object, _batteryChargeRepositoryMock.Object, _loggerMock.Object);
+        // Have  removed this functionality. YAGNI
+        //[Fact]
+        //public void EnterNewBatteryDataWithNullBatteryType_ThrowsArgumentNullException()
+        //{
+        //    var newBattery = new Battery { IsActive = true, Notes = "New Battery", PurchaseDate = DateTime.Now.AddDays(-7) };
+        //    var service = new BatteryService(_batteryRepositoryMock.Object, _batteryTypeRepositoryMock.Object, _batteryChargeRepositoryMock.Object, _loggerMock.Object);
 
-            Assert.ThrowsAsync<ArgumentNullException>(() => service.EnterNewBatteryAsync(newBattery, null));
-        }
+        //    Assert.ThrowsAsync<ArgumentNullException>(() => service.EnterNewBatteryAsync(newBattery, null));
+        //}
 
         [Fact] 
         public async Task GetBatteriesAsync_CallsListAllAsyncInRepository()
@@ -119,11 +120,10 @@ namespace ApplicationCoreUnitTests
         public async Task EnterNullBattery_ThrowsArgumentNullException()
         {
             Battery battery = null;
-            BatteryType batteryType = new BatteryType { Type = "Test Type", Cells = 2, CapacityMah = 1000, WeightInGrams = 200 };
             
             var service = new BatteryService(_batteryRepositoryMock.Object, _batteryTypeRepositoryMock.Object, _batteryChargeRepositoryMock.Object, _loggerMock.Object);
 
-            await Assert.ThrowsAsync<ArgumentNullException>(() => service.EnterNewBatteryAsync(battery, batteryType));
+            await Assert.ThrowsAsync<ArgumentNullException>(() => service.EnterNewBatteryAsync(battery));
         }
 
         [Fact]

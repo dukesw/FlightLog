@@ -34,7 +34,10 @@ namespace DukeSoftware.FlightLog.Infrastructure.Data
 
         private void ConfigureBattery(EntityTypeBuilder<Battery> builder)
         {
-            builder.ToTable("Battery");
+            builder.ToTable("Battery")
+                .HasOne<BatteryType>(t => t.BatteryType)
+                .WithMany(); 
+                
         }
 
         private void ConfigureBatteryCharges(EntityTypeBuilder<BatteryCharge> builder)
@@ -44,7 +47,9 @@ namespace DukeSoftware.FlightLog.Infrastructure.Data
 
         private void ConfigureBatteryType(EntityTypeBuilder<BatteryType> builder)
         {
-            builder.ToTable("BatteryType");
+            builder.ToTable("BatteryType"); 
+                //HasMany<Battery>(t => t.Batteries);
+                //.WithOne(b => b.BatteryType);
         }
 
         private void ConfigureLocation(EntityTypeBuilder<Location> builder)

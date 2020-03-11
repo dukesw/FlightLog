@@ -6,13 +6,14 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace DukeSoftware.FlightLog.Infrastructure.Data
 {
     public class EfRepository<T> : IRepository<T>, IAsyncRepository<T> where T : EntityBase
     {
-        private readonly FlightLogContext _dbContext;
+        internal readonly FlightLogContext _dbContext;
 
         public EfRepository(FlightLogContext context)
         {
@@ -79,7 +80,13 @@ namespace DukeSoftware.FlightLog.Infrastructure.Data
             return _dbContext.Set<T>().AsEnumerable();
         }
 
-        public async Task<List<T>> ListAllAsync()
+        public async Task<List<T>> ListAllAsync(List<Expression<Func<T, object>>> includes)
+        {
+            var resultsQueryable = includes.Aggregate(_dbContext.Set<T>().AsQueryable(), (current, include) => current.Include(include));
+            return await resultsQueryable.ToListAsync();
+        }
+
+        public virtual async Task<List<T>> ListAllAsync()
         {
             return await _dbContext.Set<T>().ToListAsync();
         }

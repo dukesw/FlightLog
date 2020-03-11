@@ -4,14 +4,16 @@ using DukeSoftware.FlightLog.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DukeSoftware.FlightLog.Infrastructure.Migrations
 {
     [DbContext(typeof(FlightLogContext))]
-    partial class FlightLogContextModelSnapshot : ModelSnapshot
+    [Migration("20200311093652_v6")]
+    partial class v6
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -32,9 +34,6 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
                     b.Property<long?>("BatteryTypeId")
                         .HasColumnType("bigint");
 
-                    b.Property<long?>("BatteryTypeId1")
-                        .HasColumnType("bigint");
-
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
@@ -47,8 +46,6 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("BatteryTypeId");
-
-                    b.HasIndex("BatteryTypeId1");
 
                     b.ToTable("Battery");
                 });
@@ -233,12 +230,8 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
             modelBuilder.Entity("DukeSoftware.FlightLog.ApplicationCore.Entities.Battery", b =>
                 {
                     b.HasOne("DukeSoftware.FlightLog.ApplicationCore.Entities.BatteryType", "BatteryType")
-                        .WithMany()
-                        .HasForeignKey("BatteryTypeId");
-
-                    b.HasOne("DukeSoftware.FlightLog.ApplicationCore.Entities.BatteryType", null)
                         .WithMany("Batteries")
-                        .HasForeignKey("BatteryTypeId1");
+                        .HasForeignKey("BatteryTypeId");
                 });
 
             modelBuilder.Entity("DukeSoftware.FlightLog.ApplicationCore.Entities.BatteryCharge", b =>

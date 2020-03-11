@@ -29,64 +29,77 @@ namespace Web.Controllers {
             return Ok(batteries.ToArray());
         }
 
-        // Removed as batteries should be added through the newaddition method 
-        //[HttpPost]
-        //public ActionResult<Battery> Post(Battery newBattery)
-        //{
-        //    try
-        //    {
-        //        var result = _batteryRepository.Add(newBattery);
-        //        return Ok(result);
-        //    } 
-        //    catch (Exception ex)
-        //    {
-        //        return BadRequest(ex);
-        //    }
-        //}
-        
-        // TODO Fix this or create a better implemetnation with some rules for updating batteries
-        //[HttpPut]
-        //public ActionResult<Battery> Put(Battery battery)
-        //{
-        //    try
-        //    {
-        //        var result = _batteryRepository.Update(battery);
-        //        return Ok(result);
-        //    } 
-        //    catch (Exception ex)
-        //    {
-        //        return BadRequest(ex);
-        //    }
-        //}
-
-        // TODO Fix this method
-        //[HttpDelete]
-        //public ActionResult Delete(Battery battery)
-        //{
-        //    try
-        //    {
-        //        _batteryRepository.Delete(battery);
-        //        return Ok();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return BadRequest(ex);
-        //    }
-
-        //}
-
-        [HttpPost("/new")]
-        public ActionResult<Battery> EnterNewBattery(Battery battery, BatteryType batteryType)
+        [HttpGet("{id}")]
+        public async Task<ActionResult> GetById(long id)
         {
             try
             {
-                var result = _batteryService.EnterNewBatteryAsync(battery, batteryType);
+                var battery = await _batteryService.GetBatteryByIdAsync(id);
+                return Ok(battery);
+            }
+            catch (ArgumentNullException ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<Battery>> Post(Battery newBattery)
+        {
+            try
+            {
+                var result = await _batteryService.EnterNewBatteryAsync(newBattery);
                 return Ok(result);
             }
             catch (Exception ex)
             {
-                return BadRequest(ex); 
+                return BadRequest(ex);
             }
         }
+
+        // TODO Fix this or create a better implemetnation with some rules for updating batteries
+        [HttpPut]
+        public async Task<ActionResult<Battery>> Put(Battery battery)
+        {
+            try
+            {
+                var result = await _batteryService.UpdateBatteryAsync(battery);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+        }
+
+        // TODO Fix this method
+        [HttpDelete]
+        public async Task<ActionResult> Delete(Battery battery)
+        {
+            try
+            {
+                await _batteryService.DeleteBatteryAsync(battery.Id);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+
+        }
+
+        //[HttpPost("/new")]
+        //public ActionResult<Battery> EnterNewBattery(Battery battery, BatteryType batteryType)
+        //{
+        //    try
+        //    {
+        //        var result = _batteryService.EnterNewBatteryAsync(battery, batteryType);
+        //        return Ok(result);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest(ex); 
+        //    }
+        //}
     }
 }

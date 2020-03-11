@@ -5,6 +5,7 @@ using System.Text;
 using DukeSoftware.GuardClauses;
 using DukeSoftware.FlightLog.ApplicationCore.Entities;
 using System.Threading.Tasks;
+using System.Linq.Expressions;
 
 namespace DukeSoftware.FlightLog.ApplicationCore.Services
 {
@@ -36,7 +37,9 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
 
         public async Task<List<Battery>> ListBatteriesAsync()
         {
-            return await _batteryRepository.ListAllAsync();
+            var includes = new List<Expression<Func<Battery, object>>>();
+            includes.Add(b => b.BatteryType);
+            return await _batteryRepository.ListAllAsync(includes);
         }
 
         public async Task<List<BatteryType>> ListBatteryTypesAsync()
@@ -58,22 +61,31 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
             return result;
         }
 
-        public async Task<Battery> EnterNewBatteryAsync(Battery battery, BatteryType batteryType)
+        public async Task<Battery> EnterNewBatteryAsync(Battery battery)
         {
             Guard.AgainstNull(battery, "battery");
-            Guard.AgainstNull(batteryType, "batteryType");
+            //Guard.AgainstNull(batteryType, "batteryType");
 
             // If the type does not exist, add it
-            var repoBatteryType = await _batteryTypeRepository.GetByIdAsync(batteryType.Id);
-            if (repoBatteryType == null)
+            //var repoBatteryType = await _batteryTypeRepository.GetByIdAsync(batteryType.Id);
+            //if (repoBatteryType == null)
+            //{
+            //    repoBatteryType = _batteryTypeRepository.Add(batteryType);
+            //    _logger.LogInformation($"Added battery type, new Id = {repoBatteryType.Id}");
+            //}
+
+            //battery.BatteryType = batteryType;
+            try
             {
-                repoBatteryType = _batteryTypeRepository.Add(batteryType);
-                _logger.LogInformation($"Added battery type, new Id = {repoBatteryType.Id}");
+                await _batteryRepository.AddAsync(battery);
+                _logger.LogInformation($"Added battery, new Id = {battery.Id}");
+                return battery;
             }
-
-            battery.BatteryType = batteryType;
-
-            return await _batteryRepository.AddAsync(battery);
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error adding battery: {battery}.");
+                return null;
+            }
         }
 
         public async Task<BatteryType> EnterNewBatteryTypeAsync(BatteryType batteryType)

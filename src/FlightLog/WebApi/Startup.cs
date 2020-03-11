@@ -43,7 +43,11 @@ namespace Web
             services.AddScoped<IBatteryService, BatteryService>();
             services.AddScoped(typeof(IAppLogger<>), typeof(LoggerAdapter<>));
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+            services.AddControllers()
+                //.AddJsonOptions(opts => opts.JsonSerializerOptions.PropertyNamingPolicy = null)
+                .AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+                // TODO How to add .AddNewtonsoftJson(options => options.SerializerSettings.TypeNameHandling.)
+                
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -53,14 +57,17 @@ namespace Web
             {
                 app.UseDeveloperExceptionPage();
             }
-            else
-            {
-                app.UseHsts();
-            }
 
+            app.UseStaticFiles();
+            app.UseRouting();
+            app.UseCors();
             app.UseHttpsRedirection();
-            
-            app.UseMvc();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
+
         }
     }
 }

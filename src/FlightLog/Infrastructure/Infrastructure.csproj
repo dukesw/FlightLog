@@ -11,6 +11,18 @@
     <Compile Remove="Migrations\20180705061709_Initial.cs" />
     <Compile Remove="Migrations\20180708052829_v2.cs" />
     <Compile Remove="Migrations\20180708055456_v2.cs" />
+    <Compile Remove="Migrations\20200310043703_v5.cs" />
+    <Compile Remove="Migrations\20200310043703_v5.Designer.cs" />
+    <Compile Remove="Migrations\20200310043950_v5.cs" />
+    <Compile Remove="Migrations\20200310043950_v5.Designer.cs" />
+    <Compile Remove="Migrations\20200310045058_v5.cs" />
+    <Compile Remove="Migrations\20200310045058_v5.Designer.cs" />
+    <Compile Remove="Migrations\20200310045159_v5.cs" />
+    <Compile Remove="Migrations\20200310045159_v5.Designer.cs" />
+    <Compile Remove="Migrations\20200310050228_v5.cs" />
+    <Compile Remove="Migrations\20200310050228_v5.Designer.cs" />
+    <Compile Remove="Migrations\20200311000843_v6.cs" />
+    <Compile Remove="Migrations\20200311000843_v6.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
