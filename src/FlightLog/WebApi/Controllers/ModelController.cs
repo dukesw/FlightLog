@@ -6,27 +6,26 @@ using DukeSoftware.FlightLog.ApplicationCore.Entities;
 using DukeSoftware.FlightLog.ApplicationCore.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Web.Controllers { 
+namespace Web.Controllers
+{
     /// <summary>
     /// The BatteryController has some standard CRUD type methods in a REST style alongside some more "ProcessName" methods
     /// </summary>
-    [Route("/api/batteries")]
-    public class BatteryController : BaseApiController
+    [Route("/api/models")]
+    public class ModelController : BaseApiController
     {
-        private readonly IBatteryService _batteryService;
-        //private readonly IBatteryRepository _batteryRepository;
+        private readonly IModelService _modelService;
 
-        public BatteryController(IBatteryService batteryService)
+        public ModelController(IModelService modelService)
         {
-            _batteryService = batteryService;
-         //   _batteryRepository = batteryRepository;
+            _modelService = modelService;
         }
 
         [HttpGet]
         public async Task<ActionResult> List()
         {
-            var batteries = await _batteryService.ListBatteriesAsync();
-            return Ok(batteries.ToArray());
+            var models = await _modelService.ListModelsAsync();
+            return Ok(models.ToArray());
         }
 
         [HttpGet("{id}")]
@@ -34,8 +33,8 @@ namespace Web.Controllers {
         {
             try
             {
-                var battery = await _batteryService.GetBatteryByIdAsync(id);
-                return Ok(battery);
+                var model = await _modelService.GetModelByIdAsync(id);
+                return Ok(model);
             }
             catch (ArgumentNullException ex)
             {
@@ -44,11 +43,11 @@ namespace Web.Controllers {
         }
 
         [HttpPost]
-        public async Task<ActionResult<Battery>> Post([FromBody] Battery newBattery)
+        public async Task<ActionResult<Model>> Post([FromBody] Model newModel)
         {
             try
             {
-                var result = await _batteryService.EnterNewBatteryAsync(newBattery);
+                var result = await _modelService.AddModelAsync(newModel);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -59,11 +58,11 @@ namespace Web.Controllers {
 
         // TODO Fix this or create a better implemetnation with some rules for updating batteries
         [HttpPut]
-        public async Task<ActionResult<Battery>> Put([FromBody] Battery battery)
+        public async Task<ActionResult<Model>> Put([FromBody] Model model)
         {
             try
             {
-                var result = await _batteryService.UpdateBatteryAsync(battery);
+                var result = await _modelService.UpdateModelAsync(model);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -73,12 +72,12 @@ namespace Web.Controllers {
         }
 
         // TODO Fix this method
-        [HttpDelete]
-        public async Task<ActionResult> Delete(Battery battery)
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete(long id)
         {
             try
             {
-                await _batteryService.DeleteBatteryAsync(battery.Id);
+                await _modelService.DeleteModelAsync(id);
                 return Ok();
             }
             catch (Exception ex)
@@ -88,18 +87,5 @@ namespace Web.Controllers {
 
         }
 
-        //[HttpPost("/new")]
-        //public ActionResult<Battery> EnterNewBattery(Battery battery, BatteryType batteryType)
-        //{
-        //    try
-        //    {
-        //        var result = _batteryService.EnterNewBatteryAsync(battery, batteryType);
-        //        return Ok(result);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return BadRequest(ex); 
-        //    }
-        //}
     }
 }

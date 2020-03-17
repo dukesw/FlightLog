@@ -8,6 +8,6 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Entities
         public int Cells { get; set; }
         public string Type { get; set; }
         public int WeightInGrams { get; set; }
-        public IList<Battery> Batteries { get; set; }
+        public virtual IList<Battery> Batteries { get; set; }
     }
 }

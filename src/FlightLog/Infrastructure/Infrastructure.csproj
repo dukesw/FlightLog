@@ -39,6 +39,22 @@
     <Compile Remove="Migrations\20200311094556_v7.Designer.cs" />
     <Compile Remove="Migrations\20200312212908_v2.cs" />
     <Compile Remove="Migrations\20200312212908_v2.Designer.cs" />
+    <Compile Remove="Migrations\20200312213947_v1.cs" />
+    <Compile Remove="Migrations\20200312213947_v1.Designer.cs" />
+    <Compile Remove="Migrations\20200312214151_v1.cs" />
+    <Compile Remove="Migrations\20200312214151_v1.Designer.cs" />
+    <Compile Remove="Migrations\20200312214812_v1.cs" />
+    <Compile Remove="Migrations\20200312214812_v1.Designer.cs" />
+    <Compile Remove="Migrations\20200312215009_v1.cs" />
+    <Compile Remove="Migrations\20200312215009_v1.Designer.cs" />
+    <Compile Remove="Migrations\20200312215156_v1.cs" />
+    <Compile Remove="Migrations\20200312215156_v1.Designer.cs" />
+    <Compile Remove="Migrations\20200312215326_v1.cs" />
+    <Compile Remove="Migrations\20200312215326_v1.Designer.cs" />
+    <Compile Remove="Migrations\20200312215410_v1.cs" />
+    <Compile Remove="Migrations\20200312215410_v1.Designer.cs" />
+    <Compile Remove="Migrations\20200316233623_v2.cs" />
+    <Compile Remove="Migrations\20200316233623_v2.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -58,10 +74,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ApplicationCore\ApplicationCore.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Migrations\" />
   </ItemGroup>
 
 </Project>

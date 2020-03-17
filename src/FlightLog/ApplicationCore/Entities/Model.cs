@@ -9,11 +9,12 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Entities
         public string Name { get; set; }
         public string Manufacturer { get; set; }    // Could be Enum/Entity also.
         // TODO Create an enum for engine type; Electric, 2 Stroke Gas, 4 Stroke Gas, 2 Stroke Nitro, 4 Stroke Nitro, 4 Stroke Gas Radial
-        public PowerPlant PowerPlant { get; set; }
-        
+        // Simplified to a string... public PowerPlant PowerPlant { get; set; }
+        public string PowerPlant { get; set; }
         public DateTime PurchasedOn { get; set; }
         public DateTime MaidenedOn { get; set; }
         public string Notes { get; set; }
+        public virtual IList<Flight> Flights { get; set; }
 
     }
 }

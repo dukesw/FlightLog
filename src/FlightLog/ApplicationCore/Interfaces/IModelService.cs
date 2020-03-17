@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace DukeSoftware.FlightLog.ApplicationCore.Interfaces
 {
-    interface IModelService
+    public interface IModelService
     {
         // TODO Work on the ModelService (and interface) next... 
         Task<List<Model>> ListModelsAsync();
-        Task<Model> GetModelByIdAsync();
+        Task<Model> GetModelByIdAsync(long id);
         Task<Model> AddModelAsync(Model model);
         Task<Model> UpdateModelAsync(Model model);
-        Task DeleteModelAsync(Model model);
+        Task DeleteModelAsync(long id);
     }
 }

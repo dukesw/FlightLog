@@ -19,6 +19,7 @@ namespace DukeSoftware.FlightLog.Infrastructure.Data
         public DbSet<PowerPlant> PowerPlants { get; set; }
         public DbSet<Model> Models { get; set; }
         public DbSet<Flight> Flights { get; set; }
+        public DbSet<MediaLink> MediaLinks { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -29,14 +30,20 @@ namespace DukeSoftware.FlightLog.Infrastructure.Data
             builder.Entity<PowerPlant>(ConfigurePowerPlant);
             builder.Entity<Model>(ConfigureModel);
             builder.Entity<Flight>(ConfigureFlight);
+            builder.Entity<MediaLink>(ConfigureMediaLinks);
 
+        }
+
+        private void ConfigureMediaLinks(EntityTypeBuilder<MediaLink> builder)
+        {
+            builder.ToTable("MediaLink");
         }
 
         private void ConfigureBattery(EntityTypeBuilder<Battery> builder)
         {
             builder.ToTable("Battery")
                 .HasOne<BatteryType>(t => t.BatteryType)
-                .WithMany(); 
+                .WithMany(t => t.Batteries);
                 
         }
 
@@ -47,9 +54,9 @@ namespace DukeSoftware.FlightLog.Infrastructure.Data
 
         private void ConfigureBatteryType(EntityTypeBuilder<BatteryType> builder)
         {
-            builder.ToTable("BatteryType"); 
-                //HasMany<Battery>(t => t.Batteries);
-                //.WithOne(b => b.BatteryType);
+            builder.ToTable("BatteryType")
+                .HasMany<Battery>(t => t.Batteries)
+                .WithOne(b => b.BatteryType);
         }
 
         private void ConfigureLocation(EntityTypeBuilder<Location> builder)

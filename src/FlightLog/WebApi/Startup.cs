@@ -16,6 +16,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json.Serialization;
 
 namespace Web
 {
@@ -41,11 +42,16 @@ namespace Web
             services.AddScoped<IBatteryTypeRepository, BatteryTypeRepository>();
             services.AddScoped<IBatteryChargeRepository, BatteryChargeRepository>();
             services.AddScoped<IBatteryService, BatteryService>();
+            services.AddScoped<IModelRepository, ModelRepository>();
+            services.AddScoped<IModelService, ModelService>();
             services.AddScoped(typeof(IAppLogger<>), typeof(LoggerAdapter<>));
 
             services.AddControllers()
                 //.AddJsonOptions(opts => opts.JsonSerializerOptions.PropertyNamingPolicy = null)
-                .AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+                .AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore)
+                .AddNewtonsoftJson(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver { NamingStrategy = new DefaultNamingStrategy() });
+                
+
                 // TODO How to add .AddNewtonsoftJson(options => options.SerializerSettings.TypeNameHandling.)
                 
         }
