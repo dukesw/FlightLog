@@ -44,6 +44,8 @@ namespace Web
             services.AddScoped<IBatteryService, BatteryService>();
             services.AddScoped<IModelRepository, ModelRepository>();
             services.AddScoped<IModelService, ModelService>();
+            services.AddScoped<IFlightRepository, FlightRepository>();
+            services.AddScoped<IFlightService, FlightService>();
             services.AddScoped(typeof(IAppLogger<>), typeof(LoggerAdapter<>));
 
             services.AddControllers()
