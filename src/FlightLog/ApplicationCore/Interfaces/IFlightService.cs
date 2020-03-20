@@ -9,8 +9,8 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Interfaces
     public interface IFlightService
     {
 
-        Task<List<Flight>> ListFlightsAsync();
-        Task<List<Flight>> ListFlightsAsync(Model model);
+        Task<List<Flight>> GetFlightsAsync();
+        Task<List<Flight>> GetFlightsAsync(Model model);
         Task<Flight> GetFlightByIdAsync(long id);
         Task<Flight> AddFlightAsync(Flight flight);
         Task<Model> UpdateFlightAsync(Flight flight);

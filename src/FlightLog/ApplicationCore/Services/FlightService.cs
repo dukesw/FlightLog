@@ -1,8 +1,10 @@
 ﻿using DukeSoftware.FlightLog.ApplicationCore.Entities;
 using DukeSoftware.FlightLog.ApplicationCore.Interfaces;
+using DukeSoftware.FlightLog.ApplicationCore.Specifications;
 using DukeSoftware.GuardClauses;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
@@ -37,15 +39,28 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
 
         public async Task DeleteFlightAsync(long id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var flightToDelete = _flightRepository.GetById(id);
+                Guard.AgainstNull(flightToDelete, "flightToDelete");
+                await _flightRepository.DeleteAsync(flightToDelete);
+                _logger.LogInformation($"Deleted flight with Id: {id}");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error deleting flight with Id: {id}");
+            }
         }
 
         public async Task<Flight> GetFlightByIdAsync(long id)
         {
-            throw new NotImplementedException();
+            // todo include a SpecificationBase class then create an instance from there
+            var spec = new GetFlightByIdWithModel(id);
+            var result = await _flightRepository.ListAsync(spec);
+            return result.FirstOrDefault();
         }
 
-        public async Task<List<Flight>> ListFlightsAsync()
+        public async Task<List<Flight>> GetFlightsAsync()
         {
             // Could also create a specification... 
             var includes = new List<Expression<Func<Flight, object>>>();
@@ -53,7 +68,7 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
             return await _flightRepository.ListAllAsync(includes);
         }
 
-        public async Task<List<Flight>> ListFlightsAsync(Model model)
+        public async Task<List<Flight>> GetFlightsAsync(Model model)
         {
             throw new NotImplementedException();
         }
