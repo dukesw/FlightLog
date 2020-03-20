@@ -6,6 +6,8 @@ using DukeSoftware.GuardClauses;
 using DukeSoftware.FlightLog.ApplicationCore.Entities;
 using System.Threading.Tasks;
 using System.Linq.Expressions;
+using DukeSoftware.FlightLog.ApplicationCore.Specifications;
+using System.Linq;
 
 namespace DukeSoftware.FlightLog.ApplicationCore.Services
 {
@@ -50,8 +52,9 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
         public async Task<Battery> GetBatteryByIdAsync(long id)
         {
             Guard.AgainstNull(id, "id");
-            var result = await _batteryRepository.GetByIdAsync(id);
-            return result;
+            // TODO add an async version of get by spec??
+            var result = await _batteryRepository.ListAsync(new GetBatteryWithBatteryTypeById(id));
+            return result.FirstOrDefault();
         }
 
         public async Task<BatteryType> GetBatteryTypeByIdAsync(long id)
@@ -66,18 +69,10 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
             Guard.AgainstNull(battery, "battery");
             //Guard.AgainstNull(batteryType, "batteryType");
 
-            // If the type does not exist, add it
-            //var repoBatteryType = await _batteryTypeRepository.GetByIdAsync(batteryType.Id);
-            //if (repoBatteryType == null)
-            //{
-            //    repoBatteryType = _batteryTypeRepository.Add(batteryType);
-            //    _logger.LogInformation($"Added battery type, new Id = {repoBatteryType.Id}");
-            //}
-
-            //battery.BatteryType = batteryType;
             try
             {
-                await _batteryRepository.AddAsync(battery);
+                battery.BatteryType = await _batteryTypeRepository.GetByIdAsync(battery.BatteryTypeId);    // Ensures the battery type is attached
+                battery = await _batteryRepository.AddAsync(battery);
                 _logger.LogInformation($"Added battery, new Id = {battery.Id}");
                 return battery;
             }

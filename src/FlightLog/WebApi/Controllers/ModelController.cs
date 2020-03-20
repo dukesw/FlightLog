@@ -24,7 +24,7 @@ namespace Web.Controllers
         [HttpGet]
         public async Task<ActionResult> List()
         {
-            var models = await _modelService.ListModelsAsync();
+            var models = await _modelService.GetModelsAsync();
             return Ok(models.ToArray());
         }
 

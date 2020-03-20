@@ -23,7 +23,7 @@ namespace WebApi.Controllers
         [HttpGet]
         public async Task<ActionResult> Get()
         {
-            var flights = await _flightService.ListFlightsAsync();
+            var flights = await _flightService.GetFlightsAsync();
             return Ok(flights.ToArray());
         }
 

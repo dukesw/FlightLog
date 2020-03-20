@@ -76,7 +76,10 @@ namespace DukeSoftware.FlightLog.Infrastructure.Data
 
         private void ConfigureFlight(EntityTypeBuilder<Flight> builder)
         {
-            builder.ToTable("Flight");
+            builder.ToTable("Flight")
+                .HasOne<Model>(x => x.Model)
+                .WithMany(x => x.Flights);
+
         }
     }
 }

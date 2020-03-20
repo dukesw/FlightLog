@@ -31,7 +31,6 @@ namespace DukeSoftware.FlightLog.Infrastructure.Data
         {
             _dbContext.Set<T>().Add(entity);
             await _dbContext.SaveChangesAsync();
-
             return entity;
         }
 
@@ -112,17 +111,9 @@ namespace DukeSoftware.FlightLog.Infrastructure.Data
 
         public async Task<T> UpdateAsync(T entity)
         {
-            try
-            {
-                _dbContext.Entry(entity).State = EntityState.Modified;
-                await _dbContext.SaveChangesAsync();
-
-                return entity;
-            }
-            catch (DbUpdateException dbex)
-            {
-                return null;
-            }
+            _dbContext.Entry(entity).State = EntityState.Modified;
+            await _dbContext.SaveChangesAsync();
+            return entity;
         }
     }
 }

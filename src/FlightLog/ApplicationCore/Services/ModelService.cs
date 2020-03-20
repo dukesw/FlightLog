@@ -40,19 +40,26 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
 
         public async Task DeleteModelAsync(long id)
         {
-            var modelToDelete = _modelRepository.GetById(id);
-            Guard.AgainstNull(modelToDelete, "modelToDelete");
-            await _modelRepository.DeleteAsync(modelToDelete);
+            try
+            {
+                var modelToDelete = _modelRepository.GetById(id);
+                Guard.AgainstNull(modelToDelete, "modelToDelete");
+                await _modelRepository.DeleteAsync(modelToDelete);
+                _logger.LogInformation($"Deleted model with Id: {id}");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error deleting model with Id: {id}");
+            }
         }
 
         public async Task<Model> GetModelByIdAsync(long id)
         {
-            Guard.AgainstNull(id, "id");
             var result = await _modelRepository.GetByIdAsync(id);
             return result;
         }
 
-        public async Task<List<Model>> ListModelsAsync()
+        public async Task<List<Model>> GetModelsAsync()
         {
             var includes = new List<Expression<Func<Model, object>>>();
             includes.Add(m=> m.Flights);
