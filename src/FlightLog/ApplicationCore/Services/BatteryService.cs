@@ -67,14 +67,11 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
             //Guard.AgainstNull(batteryType, "batteryType");
 
             // If the type does not exist, add it
-            //var repoBatteryType = await _batteryTypeRepository.GetByIdAsync(batteryType.Id);
-            //if (repoBatteryType == null)
-            //{
-            //    repoBatteryType = _batteryTypeRepository.Add(batteryType);
-            //    _logger.LogInformation($"Added battery type, new Id = {repoBatteryType.Id}");
-            //}
-
-            //battery.BatteryType = batteryType;
+            if (battery.BatteryType != null)
+            {
+                var repoBatteryType = await _batteryTypeRepository.GetByIdAsync(battery.BatteryType.Id);
+                battery.BatteryType = repoBatteryType;
+            }
             try
             {
                 await _batteryRepository.AddAsync(battery);
