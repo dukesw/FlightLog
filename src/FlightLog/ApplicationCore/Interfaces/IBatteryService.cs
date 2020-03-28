@@ -9,14 +9,14 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Interfaces
     {
         Task<List<Battery>> ListBatteriesAsync();
         Task<List<BatteryType>> ListBatteryTypesAsync();
-        Task<Battery> GetBatteryByIdAsync(long id);
-        Task<BatteryType> GetBatteryTypeByIdAsync(long id);
+        Task<Battery> GetBatteryByIdAsync(int id);
+        Task<BatteryType> GetBatteryTypeByIdAsync(int id);
         Task<Battery> EnterNewBatteryAsync(Battery battery);
         Task<BatteryType> EnterNewBatteryTypeAsync(BatteryType batteryType);
         Task<Battery> UpdateBatteryAsync(Battery battery);
         Task<BatteryType> UpdateBatteryTypeAsync(BatteryType batteryType);
-        Task DeleteBatteryAsync(long id);
-        Task DeleteBatteryTypeAsync(long id);
+        Task DeleteBatteryAsync(int id);
+        Task DeleteBatteryTypeAsync(int id);
         Task<Battery> EnterChargeDataAsync(Battery battery, DateTime chargeDate, ChargeType chargeType, int mahUsed);
 
     }

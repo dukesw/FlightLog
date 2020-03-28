@@ -46,22 +46,22 @@ namespace DukeSoftware.FlightLog.Infrastructure.Data
             await _dbContext.SaveChangesAsync();
         }
 
-        public T GetById(long id)
+        public T GetById(int id)
         {
             return _dbContext.Set<T>().Find(id);
         }
 
-        public async Task<T> GetByIdAsync(long id)
+        public async Task<T> GetByIdAsync(int id)
         {
             return await _dbContext.Set<T>().FindAsync(id);
         }
 
         public T GetSingleBySpec(ISpecification<T> spec)
         {
-            return List(spec).FirstOrDefault();
+            return GetBySpec(spec).FirstOrDefault();
         }
 
-        public IEnumerable<T> List(ISpecification<T> spec)
+        public IEnumerable<T> GetBySpec(ISpecification<T> spec)
         {
             // A Queryable for all of the expression based includes
             var resultsQueryableForIncludes = spec.Includes.Aggregate(_dbContext.Set<T>().AsQueryable(), (current, include) => current.Include(include));
@@ -74,23 +74,23 @@ namespace DukeSoftware.FlightLog.Infrastructure.Data
 
         }
 
-        public IEnumerable<T> ListAll()
+        public IEnumerable<T> GetAll()
         {
             return _dbContext.Set<T>().AsEnumerable();
         }
 
-        public async Task<List<T>> ListAllAsync(List<Expression<Func<T, object>>> includes)
-        {
-            var resultsQueryable = includes.Aggregate(_dbContext.Set<T>().AsQueryable(), (current, include) => current.Include(include));
-            return await resultsQueryable.ToListAsync();
-        }
+        //public async Task<List<T>> ListAllAsync(List<Expression<Func<T, object>>> includes)
+        //{
+        //    var resultsQueryable = includes.Aggregate(_dbContext.Set<T>().AsQueryable(), (current, include) => current.Include(include));
+        //    return await resultsQueryable.ToListAsync();
+        //}
 
-        public virtual async Task<List<T>> ListAllAsync()
+        public virtual async Task<List<T>> GetAllAsync()
         {
             return await _dbContext.Set<T>().ToListAsync();
         }
 
-        public Task<List<T>> ListAsync(ISpecification<T> spec)
+        public Task<List<T>> GetBySpecAsync(ISpecification<T> spec)
         {
             // A Queryable for all of the expression based includes
             var resultsQueryableForIncludes = spec.Includes.Aggregate(_dbContext.Set<T>().AsQueryable(), (current, include) => current.Include(include));

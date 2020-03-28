@@ -28,7 +28,7 @@ namespace Web.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult> GetById(long id)
+        public async Task<ActionResult> GetById(int id)
         {
             try
             {
@@ -37,7 +37,7 @@ namespace Web.Controllers
             } 
             catch(ArgumentNullException ex)
             {
-                return NotFound(ex.Message);
+                return NotFound($"Error finding battery type {id}");
             }
         }
 
@@ -48,15 +48,11 @@ namespace Web.Controllers
             try
             {
                 var result = await _batteryService.EnterNewBatteryTypeAsync(batteryType);
-                if (result == null)
-                {
-                    return NotFound(batteryType);
-                }
                 return Ok(result);
             } 
-            catch (BatteryTypeNotFoundException ex)
+            catch (Exception)
             {
-                return NotFound(ex.Message);
+                return BadRequest("Error adding battery type");
             }
         }
 
@@ -66,29 +62,33 @@ namespace Web.Controllers
             try
             {
                 var result = await _batteryService.UpdateBatteryTypeAsync(batteryType);
-                if (result == null)
-                {
-                    return NotFound(batteryType);
-                }
                 return Ok(result);
             } 
-            catch (BatteryTypeNotFoundException ex)
+            catch (ArgumentNullException)
             {
-                return NotFound(ex.Message);
+                return BadRequest("Error with input battery type");
+            }
+            catch(Exception)
+            {
+                return BadRequest("Error updating battery type");
             }
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete(long id)
+        public async Task<ActionResult> Delete(int id)
         {
             try
             {
                 await _batteryService.DeleteBatteryTypeAsync(id);
                 return Ok();
             }
-            catch (ArgumentNullException)
+            catch (BatteryTypeNotFoundException)
             {
-                return NotFound(id);
+                return NotFound($"Error finding battery type {id} to delete");
+            }
+            catch (Exception)
+            {
+                return Conflict($"Error deleting battery type {id}");
             }
         }
     }   

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DukeSoftware.FlightLog.ApplicationCore.Entities;
+using DukeSoftware.FlightLog.ApplicationCore.Exceptions;
 using DukeSoftware.FlightLog.ApplicationCore.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,12 +15,10 @@ namespace Web.Controllers {
     public class BatteryController : BaseApiController
     {
         private readonly IBatteryService _batteryService;
-        //private readonly IBatteryRepository _batteryRepository;
 
         public BatteryController(IBatteryService batteryService)
         {
             _batteryService = batteryService;
-         //   _batteryRepository = batteryRepository;
         }
 
         [HttpGet]
@@ -30,16 +29,16 @@ namespace Web.Controllers {
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult> GetById(long id)
+        public async Task<ActionResult> GetById(int id)
         {
             try
             {
                 var battery = await _batteryService.GetBatteryByIdAsync(id);
                 return Ok(battery);
             }
-            catch (ArgumentNullException ex)
+            catch (ArgumentNullException)
             {
-                return NotFound(ex.Message);
+                return NotFound($"Error finding battery {id}");
             }
         }
 
@@ -51,9 +50,9 @@ namespace Web.Controllers {
                 var result = await _batteryService.EnterNewBatteryAsync(newBattery);
                 return Ok(result);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return BadRequest(ex);
+                return BadRequest("Error adding battery");
             }
         }
 
@@ -66,40 +65,34 @@ namespace Web.Controllers {
                 var result = await _batteryService.UpdateBatteryAsync(battery);
                 return Ok(result);
             }
-            catch (Exception ex)
+            catch (ArgumentNullException)
             {
-                return BadRequest(ex);
+                return BadRequest("Error with input battery");
+            }
+            catch (Exception)
+            {
+                return BadRequest($"Error updating battery");
             }
         }
 
         // TODO Fix this method
-        [HttpDelete]
-        public async Task<ActionResult> Delete(Battery battery)
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete(int id)
         {
             try
             {
-                await _batteryService.DeleteBatteryAsync(battery.Id);
+                await _batteryService.DeleteBatteryAsync(id);
                 return Ok();
             }
-            catch (Exception ex)
+            catch (BatteryNotFoundException)
             {
-                return BadRequest(ex);
+                return NotFound($"Error finding battery {id} to delete");
+            }
+            catch (Exception)
+            {
+                return Conflict($"Error deleting battery {id}");
             }
 
         }
-
-        //[HttpPost("/new")]
-        //public ActionResult<Battery> EnterNewBattery(Battery battery, BatteryType batteryType)
-        //{
-        //    try
-        //    {
-        //        var result = _batteryService.EnterNewBatteryAsync(battery, batteryType);
-        //        return Ok(result);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return BadRequest(ex); 
-        //    }
-        //}
     }
 }

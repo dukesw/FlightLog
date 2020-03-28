@@ -7,12 +7,15 @@ using System.Text;
 
 namespace DukeSoftware.FlightLog.ApplicationCore.Specifications
 {
-    public class GetFlightByIdWithModel : BaseSpecification<Flight>
+    public class GetFlightByIdWithIncludes : BaseSpecification<Flight>
     {
  
-        public GetFlightByIdWithModel(long id) : base(f => f.Id == id) 
+        public GetFlightByIdWithIncludes(long id) : base(f => f.Id == id) 
         {
-            AddInclude(f => f.Model);
+            Includes.Add(f => f.Field);
+            Includes.Add(f => f.Model);
+            Includes.Add(f => f.Battery);
+            Includes.Add(f => f.MediaLinks);
         }
     }
 }

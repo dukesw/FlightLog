@@ -42,7 +42,7 @@ namespace DukeSoftware.FlightLog.ApplicationCoreIntegrationTests
         [Fact]
         public void Repository_GetExistingById()
         {
-            var id = _repository.ListAll().First().Id;
+            var id = _repository.GetAll().First().Id;
 
             var result = _repository.GetById(id);
 
@@ -53,7 +53,7 @@ namespace DukeSoftware.FlightLog.ApplicationCoreIntegrationTests
         [Fact]
         public void Repository_GetExistingList()
         {
-            var allBatteries = _repository.ListAll().ToList();
+            var allBatteries = _repository.GetAll().ToList();
 
             Assert.NotNull(allBatteries);
             Assert.True(allBatteries.Count > 0);
@@ -64,7 +64,7 @@ namespace DukeSoftware.FlightLog.ApplicationCoreIntegrationTests
         public void Repository_UpdateExisting()
         {
 
-            var battery = _repository.ListAll().First();
+            var battery = _repository.GetAll().First();
             var batteryId = battery.Id;
             var notesText = "Updated notes - integration testing";
             battery.Notes = notesText;
@@ -80,12 +80,12 @@ namespace DukeSoftware.FlightLog.ApplicationCoreIntegrationTests
         [Fact]
         public void Repository_DeleteExistingLinq()
         {
-            var startCount = _repository.ListAll().Count();
-            Battery battery = _repository.ListAll().FirstOrDefault();
+            var startCount = _repository.GetAll().Count();
+            Battery battery = _repository.GetAll().FirstOrDefault();
 
             _repository.Delete(battery);
 
-            var endCount = _repository.ListAll().Count();
+            var endCount = _repository.GetAll().Count();
             Assert.Equal(startCount - 1, endCount);
         }
 

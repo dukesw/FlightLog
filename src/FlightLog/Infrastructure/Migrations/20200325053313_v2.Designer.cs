@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DukeSoftware.FlightLog.Infrastructure.Migrations
 {
     [DbContext(typeof(FlightLogContext))]
-    [Migration("20200319182911_v3")]
-    partial class v3
+    [Migration("20200325053313_v2")]
+    partial class v2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,16 +23,16 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
 
             modelBuilder.Entity("DukeSoftware.FlightLog.ApplicationCore.Entities.Battery", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("BatteryNumber")
                         .HasColumnType("int");
 
-                    b.Property<long>("BatteryTypeId")
-                        .HasColumnType("bigint");
+                    b.Property<int>("BatteryTypeId")
+                        .HasColumnType("int");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
@@ -52,13 +52,13 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
 
             modelBuilder.Entity("DukeSoftware.FlightLog.ApplicationCore.Entities.BatteryCharge", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<long?>("BatteryId")
-                        .HasColumnType("bigint");
+                    b.Property<int?>("BatteryId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("ChargedOn")
                         .HasColumnType("datetime2");
@@ -78,9 +78,9 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
 
             modelBuilder.Entity("DukeSoftware.FlightLog.ApplicationCore.Entities.BatteryType", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("CapacityMah")
@@ -102,13 +102,13 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
 
             modelBuilder.Entity("DukeSoftware.FlightLog.ApplicationCore.Entities.Flight", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<long?>("BatteryId")
-                        .HasColumnType("bigint");
+                    b.Property<int?>("BatteryId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
@@ -116,8 +116,8 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
                     b.Property<string>("Details")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<long?>("FieldId")
-                        .HasColumnType("bigint");
+                    b.Property<int>("FieldId")
+                        .HasColumnType("int");
 
                     b.Property<TimeSpan>("FlightTime")
                         .HasColumnType("time");
@@ -125,8 +125,8 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
                     b.Property<int>("ModelFlightNumber")
                         .HasColumnType("int");
 
-                    b.Property<long?>("ModelId")
-                        .HasColumnType("bigint");
+                    b.Property<int>("ModelId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -141,9 +141,9 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
 
             modelBuilder.Entity("DukeSoftware.FlightLog.ApplicationCore.Entities.Location", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<float>("Lattitude")
@@ -158,7 +158,7 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
                     b.Property<string>("Notes")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("WeatherStation")
+                    b.Property<string>("WeatherStationLink")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -168,13 +168,13 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
 
             modelBuilder.Entity("DukeSoftware.FlightLog.ApplicationCore.Entities.MediaLink", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<long?>("FlightId")
-                        .HasColumnType("bigint");
+                    b.Property<int?>("FlightId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Uri")
                         .HasColumnType("nvarchar(max)");
@@ -188,9 +188,9 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
 
             modelBuilder.Entity("DukeSoftware.FlightLog.ApplicationCore.Entities.Model", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("MaidenedOn")
@@ -218,9 +218,9 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
 
             modelBuilder.Entity("DukeSoftware.FlightLog.ApplicationCore.Entities.PowerPlant", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Manufacturer")
@@ -266,12 +266,16 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
                         .HasForeignKey("BatteryId");
 
                     b.HasOne("DukeSoftware.FlightLog.ApplicationCore.Entities.Location", "Field")
-                        .WithMany()
-                        .HasForeignKey("FieldId");
+                        .WithMany("Flights")
+                        .HasForeignKey("FieldId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("DukeSoftware.FlightLog.ApplicationCore.Entities.Model", "Model")
                         .WithMany("Flights")
-                        .HasForeignKey("ModelId");
+                        .HasForeignKey("ModelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("DukeSoftware.FlightLog.ApplicationCore.Entities.MediaLink", b =>

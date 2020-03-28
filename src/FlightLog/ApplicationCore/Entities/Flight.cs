@@ -8,10 +8,12 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Entities
     {
         public DateTime Date { get; set; }
         public int ModelFlightNumber { get; set; } 
+        public int FieldId { get; set; }
         public Location Field { get; set; }
+        public int ModelId { get; set; }
         public Model Model { get; set; }
+        public int? BatteryId { get; set; }
         public Battery Battery { get; set; }
-
         public string Details { get; set; }
         // public PowerPlant FlyingOn { get; set; } // add later. Will allow tracking of the hours per engine. v2
         public TimeSpan FlightTime { get; set; }

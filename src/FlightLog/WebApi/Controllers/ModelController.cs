@@ -29,16 +29,16 @@ namespace Web.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult> GetById(long id)
+        public async Task<ActionResult> GetById(int id)
         {
             try
             {
                 var model = await _modelService.GetModelByIdAsync(id);
                 return Ok(model);
             }
-            catch (ArgumentNullException ex)
+            catch (ArgumentNullException)
             {
-                return NotFound(ex.Message);
+                return NotFound($"Error finding model {id}");
             }
         }
 
@@ -50,9 +50,9 @@ namespace Web.Controllers
                 var result = await _modelService.AddModelAsync(newModel);
                 return Ok(result);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return BadRequest(ex);
+                return BadRequest("Error adding model");
             }
         }
 
@@ -65,24 +65,32 @@ namespace Web.Controllers
                 var result = await _modelService.UpdateModelAsync(model);
                 return Ok(result);
             }
-            catch (Exception ex)
+            catch (ArgumentNullException)
             {
-                return BadRequest(ex);
+                return BadRequest("Error with input model");
+            }
+            catch (Exception)
+            {
+                return BadRequest("Error updating model");
             }
         }
 
         // TODO Fix this method
         [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete(long id)
+        public async Task<ActionResult> Delete(int id)
         {
             try
             {
                 await _modelService.DeleteModelAsync(id);
                 return Ok();
             }
-            catch (Exception ex)
+            catch (ArgumentNullException)
             {
-                return BadRequest(ex);
+                return NotFound($"Error finding model {id} to delete");
+            }
+            catch (Exception)
+            {
+                return Conflict($"Error deleting model {id}");
             }
 
         }

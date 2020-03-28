@@ -24,20 +24,20 @@ namespace WebApi.Controllers
         public async Task<ActionResult> Get()
         {
             var flights = await _flightService.GetFlightsAsync();
-            return Ok(flights.ToArray());
+            return Ok(flights);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Flight>> GetById(long id)
+        public async Task<ActionResult<Flight>> GetById(int id)
         {
             try
             {
                 var flight = await _flightService.GetFlightByIdAsync(id);
                 return Ok(flight);
             }
-            catch (ArgumentNullException ex)
+            catch (ArgumentNullException)
             {
-                return NotFound(ex.Message);
+                return NotFound($"Error finding flight {id}");
             }
         }
 
@@ -49,13 +49,16 @@ namespace WebApi.Controllers
                 var result = await _flightService.AddFlightAsync(newFlight);
                 return Ok(result);
             }
-            catch (Exception ex)
+            catch (ArgumentNullException)
             {
-                return BadRequest(ex);
+                return BadRequest("Error with input flight");
+            }
+            catch (Exception)
+            {
+                return BadRequest("Error adding flight");
             }
         }
 
-        // TODO Fix this or create a better implemetnation with some rules for updating batteries
         [HttpPut]
         public async Task<ActionResult<Flight>> Put([FromBody] Flight flight)
         {
@@ -64,24 +67,32 @@ namespace WebApi.Controllers
                 var result = await _flightService.UpdateFlightAsync(flight);
                 return Ok(result);
             }
-            catch (Exception ex)
+            catch (ArgumentNullException)
             {
-                return BadRequest(ex);
+                return BadRequest("Error with input flight");
+            }
+            catch (Exception)
+            {
+                return BadRequest("Error updating flight");
             }
         }
 
-        // TODO Fix this method
         [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete(long id)
+        public async Task<ActionResult> Delete(int id)
         {
             try
             {
                 await _flightService.DeleteFlightAsync(id);
                 return Ok();
             }
-            catch (Exception ex)
+            catch (ArgumentNullException)
             {
-                return BadRequest(ex);
+                return NotFound($"Error finding flight {id} to delete");
+            }
+            catch (Exception)
+            {
+                // Not expecting this to trigger as any flight can be deleted even if it has a model, location etc... 
+                return Conflict("Error deleting flight {id}");  
             }
 
         }

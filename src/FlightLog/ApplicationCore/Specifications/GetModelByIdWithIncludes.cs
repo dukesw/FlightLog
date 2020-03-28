@@ -6,12 +6,11 @@ using System.Text;
 
 namespace DukeSoftware.FlightLog.ApplicationCore.Specifications
 {
-    public class GetBatteryWithBatteryTypeById : BaseSpecification<Battery>, ISpecification<Battery>
+    public class GetModelByIdWithIncludes : BaseSpecification<Model>, ISpecification<Model>
     {
-        public GetBatteryWithBatteryTypeById(long id) : base(x => x.Id == id)
+        public GetModelByIdWithIncludes(int id) : base(m => m.Id == id)
         {
-            AddInclude(x => x.BatteryType);
+            AddInclude(m => m.Flights);
         }
-
     }
 }

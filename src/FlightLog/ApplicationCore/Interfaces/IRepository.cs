@@ -9,13 +9,13 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Interfaces
 
         void Delete(T entity);
 
-        T GetById(long id);
+        T GetById(int id);
 
         T GetSingleBySpec(ISpecification<T> spec);
 
-        IEnumerable<T> List(ISpecification<T> spec);
+        IEnumerable<T> GetBySpec(ISpecification<T> spec);
 
-        IEnumerable<T> ListAll();
+        IEnumerable<T> GetAll();
 
         T Update(T entity);
     }

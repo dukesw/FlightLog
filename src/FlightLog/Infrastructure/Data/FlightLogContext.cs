@@ -41,9 +41,12 @@ namespace DukeSoftware.FlightLog.Infrastructure.Data
 
         private void ConfigureBattery(EntityTypeBuilder<Battery> builder)
         {
+
             builder.ToTable("Battery")
                 .HasOne<BatteryType>(t => t.BatteryType)
-                .WithMany(t => t.Batteries);
+                .WithMany(b => b.Batteries)
+                .HasForeignKey(b => b.BatteryTypeId)
+                .OnDelete(DeleteBehavior.Restrict);
                 
         }
 
@@ -56,7 +59,8 @@ namespace DukeSoftware.FlightLog.Infrastructure.Data
         {
             builder.ToTable("BatteryType")
                 .HasMany<Battery>(t => t.Batteries)
-                .WithOne(b => b.BatteryType);
+                .WithOne(b => b.BatteryType)
+                .OnDelete(DeleteBehavior.Restrict);
         }
 
         private void ConfigureLocation(EntityTypeBuilder<Location> builder)
@@ -71,14 +75,22 @@ namespace DukeSoftware.FlightLog.Infrastructure.Data
 
         private void ConfigureModel(EntityTypeBuilder<Model> builder)
         {
-            builder.ToTable("Model");
+            builder.ToTable("Model")
+                .HasMany<Flight>(x => x.Flights)
+                .WithOne(x => x.Model)
+                .OnDelete(DeleteBehavior.Restrict);
         }
 
         private void ConfigureFlight(EntityTypeBuilder<Flight> builder)
         {
             builder.ToTable("Flight")
                 .HasOne<Model>(x => x.Model)
+                .WithMany(x => x.Flights)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasOne<Location>(x => x.Field)
                 .WithMany(x => x.Flights);
+                
 
         }
     }

@@ -33,11 +33,11 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Error adding flight: {flight}.");
-                return null;
+                throw; 
             }
         }
 
-        public async Task DeleteFlightAsync(long id)
+        public async Task DeleteFlightAsync(int id)
         {
             try
             {
@@ -49,33 +49,46 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Error deleting flight with Id: {id}");
+                throw;
             }
         }
 
-        public async Task<Flight> GetFlightByIdAsync(long id)
+        public async Task<Flight> GetFlightByIdAsync(int id)
         {
             // todo include a SpecificationBase class then create an instance from there
-            var spec = new GetFlightByIdWithModel(id);
-            var result = await _flightRepository.ListAsync(spec);
+            var spec = new GetFlightByIdWithIncludes(id);
+            var result = await _flightRepository.GetBySpecAsync(spec);
+            Guard.AgainstNull(result.FirstOrDefault(), "result");
             return result.FirstOrDefault();
         }
 
         public async Task<List<Flight>> GetFlightsAsync()
         {
+            // FIXME next sort this out with a spec. Or have a default one as we are getting to have a lot of specs
             // Could also create a specification... 
-            var includes = new List<Expression<Func<Flight, object>>>();
-            includes.Add(f => f.Model);
-            return await _flightRepository.ListAllAsync(includes);
+            //var spec = new GetAllFlightsWithAllProperties();
+            return  await _flightRepository.GetAllAsync();
         }
 
-        public async Task<List<Flight>> GetFlightsAsync(Model model)
+        public async Task<List<Flight>> GetFlightsAsync(int modelId)
         {
-            throw new NotImplementedException();
+            var spec = new GetFlightsByModel(modelId);
+            return await _flightRepository.GetBySpecAsync(spec);
         }
 
-        public async Task<Model> UpdateFlightAsync(Flight flight)
+        public async Task<Flight> UpdateFlightAsync(Flight flight)
         {
-            throw new NotImplementedException();
+            Guard.AgainstNull(flight, "flight");
+            var result = await _flightRepository.UpdateAsync(flight);
+            if (result != null)
+            {
+                _logger.LogInformation($"Updated model, Id = {flight.Id}");
+            }
+            else
+            {
+                _logger.LogWarning($"Could not update model, Id = {flight.Id}");
+            }
+            return result;
         }
     }
 }

@@ -62,7 +62,7 @@ namespace ApplicationCoreUnitTests
         {
             var battery = new Battery { Id = 0 };
             var charge = new BatteryCharge { Battery = battery, ChargedOn = DateTime.Now, Type = ChargeType.Standard, Mah = 1000 };
-            _batteryRepositoryMock.Setup(x => x.GetById(It.IsAny<long>())).Returns(() => null);
+            _batteryRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).Returns(() => null);
             var service = new BatteryService(
                 _batteryRepositoryMock.Object, 
                 _batteryTypeRepositoryMock.Object, 
@@ -78,7 +78,7 @@ namespace ApplicationCoreUnitTests
         {
             var battery = new Battery { Id = 1, IsActive = true, Notes = "Test battery", PurchaseDate = DateTime.Now.AddMonths(-1) };
             var charge = new BatteryCharge { Battery = battery, ChargedOn = DateTime.Now, Type = ChargeType.Standard, Mah = 1000 };
-            _batteryRepositoryMock.Setup(x => x.GetById(It.IsAny<long>())).Returns(() => battery);
+            _batteryRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).Returns(() => battery);
             _batteryChargeRepositoryMock.Setup(x => x.Add(It.IsAny<BatteryCharge>())).Returns(charge);
             var service = new BatteryService(
                 _batteryRepositoryMock.Object,
@@ -106,13 +106,13 @@ namespace ApplicationCoreUnitTests
         public async Task GetBatteriesAsync_CallsListAllAsyncInRepository()
         {
             var batteryList = new List<Battery> { new Battery { Id = 1, IsActive = true, Notes = "Test battery", PurchaseDate = DateTime.Now.AddMonths(-1) } };
-            _batteryRepositoryMock.Setup(x => x.ListAllAsync()).Returns(Task.FromResult(batteryList));
+            _batteryRepositoryMock.Setup(x => x.GetAllAsync()).Returns(Task.FromResult(batteryList));
             var service = new BatteryService(_batteryRepositoryMock.Object, _batteryTypeRepositoryMock.Object, _batteryChargeRepositoryMock.Object, _loggerMock.Object);
 
             var result = await service.ListBatteriesAsync();
 
             Assert.NotEmpty(result);
-            _batteryRepositoryMock.Verify(x => x.ListAllAsync());
+            _batteryRepositoryMock.Verify(x => x.GetAllAsync());
            
         }
 
@@ -151,7 +151,7 @@ namespace ApplicationCoreUnitTests
             var service = new BatteryService(_batteryRepositoryMock.Object, _batteryTypeRepositoryMock.Object, _batteryChargeRepositoryMock.Object, _loggerMock.Object);
             var result = await service.GetBatteryTypeByIdAsync(1);
 
-            _batteryTypeRepositoryMock.Verify(x => x.GetByIdAsync(It.IsAny<long>()));
+            _batteryTypeRepositoryMock.Verify(x => x.GetByIdAsync(It.IsAny<int>()));
         }
 
         [Fact]
@@ -160,7 +160,7 @@ namespace ApplicationCoreUnitTests
             var service = new BatteryService(_batteryRepositoryMock.Object, _batteryTypeRepositoryMock.Object, _batteryChargeRepositoryMock.Object, _loggerMock.Object);
             var result = await service.GetBatteryByIdAsync(1);
 
-            _batteryRepositoryMock.Verify(x => x.GetByIdAsync(It.IsAny<long>()));
+            _batteryRepositoryMock.Verify(x => x.GetByIdAsync(It.IsAny<int>()));
         }
 
         [Fact]
@@ -194,7 +194,7 @@ namespace ApplicationCoreUnitTests
         {
             var batteryId = 3;
             var battery = new Battery { Id = batteryId, BatteryType = new BatteryType { Id = 1, Type = "NanoTech", Cells = 3 }, IsActive = true, PurchaseDate = DateTime.Now, Notes = "Notes for the test" };
-            _batteryRepositoryMock.Setup(x => x.GetById(It.IsAny<long>())).Returns(battery);
+            _batteryRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).Returns(battery);
             var service = new BatteryService(_batteryRepositoryMock.Object, _batteryTypeRepositoryMock.Object, _batteryChargeRepositoryMock.Object, _loggerMock.Object);
 
             await service.DeleteBatteryAsync(batteryId);
@@ -207,7 +207,7 @@ namespace ApplicationCoreUnitTests
         {
             var batteryTypeId = 1;
             var batteryType = new BatteryType { Id = batteryTypeId, Type = "Graphene", Cells = 4, CapacityMah = 2200, WeightInGrams = 500 };
-            _batteryTypeRepositoryMock.Setup(x => x.GetById(It.IsAny<long>())).Returns(batteryType);
+            _batteryTypeRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).Returns(batteryType);
             var service = new BatteryService(_batteryRepositoryMock.Object, _batteryTypeRepositoryMock.Object, _batteryChargeRepositoryMock.Object, _loggerMock.Object);
 
             await service.DeleteBatteryTypeAsync(batteryTypeId);
@@ -219,7 +219,7 @@ namespace ApplicationCoreUnitTests
         public async Task DeleteBatteryAsyncWithBadId_ThrowsBatteryNotFound()
         {
             var batteryId = 7;
-            _batteryRepositoryMock.Setup(x => x.GetById(It.IsAny<long>())).Returns<Battery>(null);
+            _batteryRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).Returns<Battery>(null);
             var service = new BatteryService(_batteryRepositoryMock.Object, _batteryTypeRepositoryMock.Object, _batteryChargeRepositoryMock.Object, _loggerMock.Object);
 
             await Assert.ThrowsAsync<BatteryNotFoundException>(() => service.DeleteBatteryAsync(batteryId));
@@ -230,7 +230,7 @@ namespace ApplicationCoreUnitTests
         public async Task DeleteBatteryTypeAsyncWithBadId_ThrowsBatteryTypeNotFound()
         {
             var batteryTypeId = 8;
-            _batteryTypeRepositoryMock.Setup(x => x.GetById(It.IsAny<long>())).Returns<BatteryType>(null);
+            _batteryTypeRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).Returns<BatteryType>(null);
             var service = new BatteryService(_batteryRepositoryMock.Object, _batteryTypeRepositoryMock.Object, _batteryChargeRepositoryMock.Object, _loggerMock.Object);
 
             await Assert.ThrowsAsync<BatteryNotFoundException>(() => service.DeleteBatteryAsync(batteryTypeId));

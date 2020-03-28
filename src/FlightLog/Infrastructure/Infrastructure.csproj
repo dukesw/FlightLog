@@ -53,10 +53,26 @@
     <Compile Remove="Migrations\20200312215326_v1.Designer.cs" />
     <Compile Remove="Migrations\20200312215410_v1.cs" />
     <Compile Remove="Migrations\20200312215410_v1.Designer.cs" />
+    <Compile Remove="Migrations\20200315223718_v1.cs" />
+    <Compile Remove="Migrations\20200315223718_v1.Designer.cs" />
     <Compile Remove="Migrations\20200316233623_v2.cs" />
     <Compile Remove="Migrations\20200316233623_v2.Designer.cs" />
+    <Compile Remove="Migrations\20200316234148_v2.cs" />
+    <Compile Remove="Migrations\20200316234148_v2.Designer.cs" />
     <Compile Remove="Migrations\20200319043413_v3.cs" />
     <Compile Remove="Migrations\20200319043413_v3.Designer.cs" />
+    <Compile Remove="Migrations\20200319182911_v3.cs" />
+    <Compile Remove="Migrations\20200319182911_v3.Designer.cs" />
+    <Compile Remove="Migrations\20200322185958_v4.cs" />
+    <Compile Remove="Migrations\20200322185958_v4.Designer.cs" />
+    <Compile Remove="Migrations\20200322220407_v4.cs" />
+    <Compile Remove="Migrations\20200322220407_v4.Designer.cs" />
+    <Compile Remove="Migrations\20200323083937_v5.cs" />
+    <Compile Remove="Migrations\20200323083937_v5.Designer.cs" />
+    <Compile Remove="Migrations\20200324225927_v5.cs" />
+    <Compile Remove="Migrations\20200324225927_v5.Designer.cs" />
+    <Compile Remove="Migrations\20200324233510_v6.cs" />
+    <Compile Remove="Migrations\20200324233510_v6.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

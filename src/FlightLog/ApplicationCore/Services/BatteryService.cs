@@ -39,29 +39,28 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
 
         public async Task<List<Battery>> ListBatteriesAsync()
         {
-            var includes = new List<Expression<Func<Battery, object>>>();
-            includes.Add(b => b.BatteryType);
-            return await _batteryRepository.ListAllAsync(includes);
+            return await _batteryRepository.GetAllAsync();
         }
 
         public async Task<List<BatteryType>> ListBatteryTypesAsync()
         {
-            return await _batteryTypeRepository.ListAllAsync();
+            return await _batteryTypeRepository.GetAllAsync();
         }
 
-        public async Task<Battery> GetBatteryByIdAsync(long id)
+        public async Task<Battery> GetBatteryByIdAsync(int id)
         {
-            Guard.AgainstNull(id, "id");
             // TODO add an async version of get by spec??
-            var result = await _batteryRepository.ListAsync(new GetBatteryWithBatteryTypeById(id));
+            var result = await _batteryRepository.GetBySpecAsync(new GetBatteryByIdWithIncludes(id));
+            Guard.AgainstNull(result.FirstOrDefault(), "result");
             return result.FirstOrDefault();
         }
 
-        public async Task<BatteryType> GetBatteryTypeByIdAsync(long id)
+        public async Task<BatteryType> GetBatteryTypeByIdAsync(int id)
         {
-            Guard.AgainstNull(id, "id");
-            var result = await _batteryTypeRepository.GetByIdAsync(id);
-            return result;
+            var spec = new GetBatteryTypeWithAllDetails(id); 
+            var result = await _batteryTypeRepository.GetBySpecAsync(spec);
+            Guard.AgainstNull(result.FirstOrDefault(), "result");
+            return result.FirstOrDefault();
         }
 
         public async Task<Battery> EnterNewBatteryAsync(Battery battery)
@@ -77,7 +76,7 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
             }
             try
             {
-                battery.BatteryType = await _batteryTypeRepository.GetByIdAsync(battery.BatteryTypeId);    // Ensures the battery type is attached
+                //battery.BatteryType = await _batteryTypeRepository.GetByIdAsync(battery.BatteryTypeId);    // Ensures the battery type is attached
                 battery = await _batteryRepository.AddAsync(battery);
                 _logger.LogInformation($"Added battery, new Id = {battery.Id}");
                 return battery;
@@ -135,14 +134,14 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
             return result;
         }
 
-        public async Task DeleteBatteryAsync(long id)
+        public async Task DeleteBatteryAsync(int id)
         {
             var batteryToDelete = _batteryRepository.GetById(id);
             Guard.AgainstBatteryNotFound(batteryToDelete, id, "batteryToDelete");
             await _batteryRepository.DeleteAsync(batteryToDelete);
         }
 
-        public async Task DeleteBatteryTypeAsync(long id)
+        public async Task DeleteBatteryTypeAsync(int id)
         {
             var batteryTypeToDelete = _batteryTypeRepository.GetById(id);
             Guard.AgainstBatteryTypeNotFound(batteryTypeToDelete, id, "batteryTypeToDelete");

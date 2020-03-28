@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using DukeSoftware.FlightLog.ApplicationCore.Entities;
 using DukeSoftware.FlightLog.ApplicationCore.Interfaces;
+using DukeSoftware.FlightLog.ApplicationCore.Specifications;
 using DukeSoftware.GuardClauses;
 
 namespace DukeSoftware.FlightLog.ApplicationCore.Services
@@ -38,7 +40,7 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
             }
         }
 
-        public async Task DeleteModelAsync(long id)
+        public async Task DeleteModelAsync(int id)
         {
             try
             {
@@ -50,20 +52,21 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Error deleting model with Id: {id}");
+                throw;
             }
         }
 
-        public async Task<Model> GetModelByIdAsync(long id)
+        public async Task<Model> GetModelByIdAsync(int id)
         {
-            var result = await _modelRepository.GetByIdAsync(id);
-            return result;
+            var spec = new GetModelByIdWithIncludes(id);
+            var result = await _modelRepository.GetBySpecAsync(spec);
+            Guard.AgainstNull(result.FirstOrDefault(), "result");
+            return result.FirstOrDefault();
         }
 
         public async Task<List<Model>> GetModelsAsync()
         {
-            var includes = new List<Expression<Func<Model, object>>>();
-            includes.Add(m=> m.Flights);
-            return await _modelRepository.ListAllAsync(includes);
+            return await _modelRepository.GetAllAsync();
         }
 
         public async Task<Model> UpdateModelAsync(Model model)

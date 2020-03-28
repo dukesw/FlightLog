@@ -9,10 +9,10 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Interfaces
 {
     public interface IAsyncRepository<T> where T : EntityBase
     {
-        Task<T> GetByIdAsync(long id);
-        Task<List<T>> ListAllAsync();
-        Task<List<T>> ListAllAsync(List<Expression<Func<T, object>>> includes);
-        Task<List<T>> ListAsync(ISpecification<T> spec);
+        Task<T> GetByIdAsync(int id);
+        Task<List<T>> GetAllAsync();
+      //  Task<List<T>> ListAllAsync(List<Expression<Func<T, object>>> includes);
+        Task<List<T>> GetBySpecAsync(ISpecification<T> spec);
         Task<T> AddAsync(T entity);
         Task<T> UpdateAsync(T entity);
         Task DeleteAsync(T entity);

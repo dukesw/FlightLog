@@ -17,6 +17,7 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Entities
         public DateTime ChargedOn { get; set; }
         public ChargeType Type { get; set; }
         public int Mah { get; set; }
+        public int BatteryId { get; set; }
         public Battery Battery { get; set; }
     }
 }
