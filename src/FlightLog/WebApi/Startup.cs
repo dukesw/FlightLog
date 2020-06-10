@@ -23,6 +23,8 @@ namespace Web
 {
     public class Startup
     {
+
+        private readonly string MyAllowSpecificOrigins = "localdev";
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -53,10 +55,19 @@ namespace Web
                 //.AddJsonOptions(opts => opts.JsonSerializerOptions.PropertyNamingPolicy = null)
                 .AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore)
                 .AddNewtonsoftJson(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver { NamingStrategy = new DefaultNamingStrategy() });
-                
 
-                // TODO How to add .AddNewtonsoftJson(options => options.SerializerSettings.TypeNameHandling.)
-                
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: MyAllowSpecificOrigins,
+                                  builder =>
+                                  {
+                                      builder.WithOrigins("http://localhost:4200")
+                                            .AllowAnyHeader()
+                                            .AllowAnyMethod();
+                                  });
+            });
+            // TODO How to add .AddNewtonsoftJson(options => options.SerializerSettings.TypeNameHandling.)
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -69,7 +80,7 @@ namespace Web
 
             app.UseStaticFiles();
             app.UseRouting();
-            app.UseCors();
+            app.UseCors(MyAllowSpecificOrigins);
             app.UseHttpsRedirection();
 
             app.UseEndpoints(endpoints =>

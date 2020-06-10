@@ -1,0 +1,29 @@
+    <form class="flight-form" [formGroup]="flightForm" (ngSubmit)="onSubmit()">
+        <mat-form-field>
+            <mat-label>Date</mat-label>
+            <input matInput [matDatepicker]="picker" formControlName="date">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+        <br />
+        <mat-form-field>
+            <mat-label>Model</mat-label>
+            <mat-select [(ngModel)]="selectedValue" formControlName="model">
+                <mat-option *ngFor="let model of models" [value]="model.Id">{{model.Name}}</mat-option>
+            </mat-select>
+        </mat-form-field>
+        <br />
+        <mat-form-field>
+            <mat-label>Flight Minutes</mat-label>
+            <input matInput type="number" formControlName="flightTime">
+        </mat-form-field>
+        <br />
+        <mat-form-field class="input-full-width">
+            <mat-label>Details</mat-label>
+            <textarea matInput formControlName="details"></textarea>
+        </mat-form-field>
+        <br />
+        <button mat-stroked-button type="submit" [disabled]="!flightForm.valid">Save</button>
+    </form>
+    <p>Value: {{ flightForm.value | json }}</p>
+    <p>Status: {{ flightForm.status }}</p>
