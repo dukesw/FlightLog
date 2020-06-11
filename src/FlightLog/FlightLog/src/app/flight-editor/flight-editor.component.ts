@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormBuilder, Form } from '@angular/forms';
 import { ModelService } from '../model.service'; 
-import { Model } from '../interfaces/model';
+import { IModel } from '../interfaces/imodel';
 import { FlightService } from '../flight.service';
-import { Flight } from '../interfaces/flight'
+import { IFlight } from '../interfaces/iflight';
+import { Flight } from '../models/flight';
 
 
 @Component({
@@ -15,7 +16,7 @@ export class FlightEditorComponent implements OnInit {
 
   constructor(private formBuilder: FormBuilder, private modelService: ModelService, private flightService: FlightService) { 
     // Get the list of models
-    modelService.getModels().subscribe((data: Model[]) => {
+    modelService.getModels().subscribe((data: IModel[]) => {
       this.models = data;
     });
     console.log(this.models);
@@ -24,7 +25,9 @@ export class FlightEditorComponent implements OnInit {
   ngOnInit(): void {
   }
   
-  flight: Flight;
+  // TODO set up a class that implements flight (type=model)
+  flight: IFlight = new Flight();
+  savedFlight: IFlight;
 
   flightForm = this.formBuilder.group({
     date: [new Date()],
@@ -40,12 +43,16 @@ export class FlightEditorComponent implements OnInit {
     this.flight.ModelId = this.flightForm.value.model;
     this.flight.FlightTime = this.flightForm.value.flightTime;
     this.flight.Details = this.flightForm.value.details;
+    this.flight.FieldId = 1;  // TODO look it up
 
-    var result = this.flightService.addFlight(this.flight);
+    this.flightService.addFlight(this.flight).subscribe((data: IFlight) => { 
+      this.savedFlight = data; 
+      console.log(this.savedFlight);
+    });
   }
 
-  models: Model[];
+  models: IModel[];
 
-  selectedValue: Model;
+  selectedValue: IModel;
 
 }

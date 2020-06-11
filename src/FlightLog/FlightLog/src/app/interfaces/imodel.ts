@@ -1,4 +1,4 @@
-export interface Model {
+export interface IModel {
     Id: number; 
     Name: string; 
     Manufacturer: string; 
