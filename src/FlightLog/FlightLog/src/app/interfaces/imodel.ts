@@ -1,7 +1,7 @@
-export interface Model {
+export interface IModel {
     Id: number; 
     Name: string; 
     Manufacturer: string; 
-    PurchasedOn: Date; 
+    PurchasedOn: Date;
     MaidenedOn: Date; 
 }

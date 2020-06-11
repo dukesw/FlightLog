@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Model } from './interfaces/model'
+import { IModel } from './interfaces/imodel'
 import { HttpClient } from '@angular/common/http'
 import { Observable, throwError, of } from 'rxjs'
 import { catchError, retry } from 'rxjs/operators'
@@ -16,10 +16,10 @@ export class ModelService {
 
   modelUrl = 'https://localhost:5002/api/models';
   
-  getModels(): Observable<Model[]> {
-    return this.http.get<Model[]>(this.modelUrl)
+  getModels(): Observable<IModel[]> {
+    return this.http.get<IModel[]>(this.modelUrl)
       .pipe(
-        catchError(this.handleError<Model[]>('getModels', []))
+        catchError(this.handleError<IModel[]>('getModels', []))
       )
   }
   

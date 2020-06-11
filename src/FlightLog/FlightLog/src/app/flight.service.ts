@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Flight } from './interfaces/flight';
-import { HttpClient } from '@angular/common/http'
+import { IFlight } from './interfaces/iflight';
+import { Flight } from './models/flight';
+import { HttpClient, HttpHeaders } from '@angular/common/http'
 import { Observable, throwError, of } from 'rxjs'
 import { catchError, retry } from 'rxjs/operators'
 
@@ -11,10 +12,14 @@ export class FlightService {
 
   flightUrl = 'https://localhost:5002/api/flights';
 
+  httpOptions = {
+    headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+  };
+  
   constructor(private http: HttpClient) { }
 
   addFlight(flight: Flight): Observable<Flight> {
-    return this.http.post<Flight>(this.flightUrl, flight)
+    return this.http.post<Flight>(this.flightUrl, flight, this.httpOptions)
       .pipe(
         catchError(this.handleError<Flight>('addFlight'))
       )
