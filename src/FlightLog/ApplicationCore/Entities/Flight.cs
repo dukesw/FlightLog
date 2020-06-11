@@ -16,7 +16,7 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Entities
         public Battery Battery { get; set; }
         public string Details { get; set; }
         // public PowerPlant FlyingOn { get; set; } // add later. Will allow tracking of the hours per engine. v2
-        public float FlightTime { get; set; }
+        public float FlightMinutes { get; set; }
         //public Pilot Pilot { get; set; }  // TODO add a pilot class
         public virtual IList<MediaLink> MediaLinks { get; set; }
     }

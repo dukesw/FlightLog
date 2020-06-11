@@ -31,7 +31,7 @@ export class FlightEditorComponent implements OnInit {
 
   flightForm = this.formBuilder.group({
     date: [new Date()],
-    flightTime: [''], 
+    flightMinutes: [''], 
     model: [''],
     details: ['']
   });
@@ -41,7 +41,7 @@ export class FlightEditorComponent implements OnInit {
     
     this.flight.Date = this.flightForm.value.date;
     this.flight.ModelId = this.flightForm.value.model;
-    this.flight.FlightTime = this.flightForm.value.flightTime;
+    this.flight.FlightMinutes = this.flightForm.value.flightMinutes;
     this.flight.Details = this.flightForm.value.details;
     this.flight.FieldId = 1;  // TODO look it up
 
