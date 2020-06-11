@@ -30,8 +30,8 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(nullable: true),
-                    Lattitude = table.Column<float>(nullable: false),
-                    Longitude = table.Column<float>(nullable: false),
+                    Lattitude = table.Column<float>(nullable: true),
+                    Longitude = table.Column<float>(nullable: true),
                     Notes = table.Column<string>(nullable: true),
                     WeatherStationLink = table.Column<string>(nullable: true)
                 },
@@ -95,7 +95,7 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
                         column: x => x.BatteryTypeId,
                         principalTable: "BatteryType",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -107,7 +107,7 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
                     ChargedOn = table.Column<DateTime>(nullable: false),
                     Type = table.Column<int>(nullable: false),
                     Mah = table.Column<int>(nullable: false),
-                    BatteryId = table.Column<int>(nullable: true)
+                    BatteryId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -117,7 +117,7 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
                         column: x => x.BatteryId,
                         principalTable: "Battery",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -130,9 +130,9 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
                     ModelFlightNumber = table.Column<int>(nullable: false),
                     FieldId = table.Column<int>(nullable: false),
                     ModelId = table.Column<int>(nullable: false),
-                    BatteryId = table.Column<int>(nullable: false),
+                    BatteryId = table.Column<int>(nullable: true),
                     Details = table.Column<string>(nullable: true),
-                    FlightTime = table.Column<TimeSpan>(nullable: false)
+                    FlightTime = table.Column<float>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -142,7 +142,7 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
                         column: x => x.BatteryId,
                         principalTable: "Battery",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Flight_Location_FieldId",
                         column: x => x.FieldId,
@@ -154,7 +154,7 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
                         column: x => x.ModelId,
                         principalTable: "Model",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(

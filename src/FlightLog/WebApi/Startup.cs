@@ -68,6 +68,19 @@ namespace Web
             });
             // TODO How to add .AddNewtonsoftJson(options => options.SerializerSettings.TypeNameHandling.)
 
+
+            // TODO How to add .AddNewtonsoftJson(options => options.SerializerSettings.TypeNameHandling.)
+
+            services.AddAuthorization();
+            services.AddAuthentication("Bearer")
+                .AddIdentityServerAuthentication(options =>
+                {
+                    options.Authority = "https://localhost:5001";
+                    options.RequireHttpsMetadata = false;
+                    options.ApiName = "flightlog-api";
+                }
+                );
+                
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -82,6 +95,8 @@ namespace Web
             app.UseRouting();
             app.UseCors(MyAllowSpecificOrigins);
             app.UseHttpsRedirection();
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
