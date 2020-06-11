@@ -7,5 +7,4 @@ export class Flight implements IFlight{
     FieldId: number;
     FlightTime: number;
     Details: string;
-
 }

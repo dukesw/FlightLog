@@ -25,7 +25,7 @@ export class FlightEditorComponent implements OnInit {
   ngOnInit(): void {
   }
   
-  // TODO set up a class that implements flight (type=model)
+  // TODO set up a class that implements flight (type=model) 
   flight: IFlight = new Flight();
   savedFlight: IFlight;
 
