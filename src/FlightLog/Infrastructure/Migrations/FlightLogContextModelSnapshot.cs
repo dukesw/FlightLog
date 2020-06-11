@@ -117,8 +117,8 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
                     b.Property<int>("FieldId")
                         .HasColumnType("int");
 
-                    b.Property<TimeSpan>("FlightTime")
-                        .HasColumnType("time");
+                    b.Property<float>("FlightTime")
+                        .HasColumnType("real");
 
                     b.Property<int>("ModelFlightNumber")
                         .HasColumnType("int");

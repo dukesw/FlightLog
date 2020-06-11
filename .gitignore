@@ -27,3 +27,5 @@
 /src/FlightLog/.vs/FlightLog/v16/TestStore/0
 /src/FlightLog/ApplicationCoreUnitTests/bin/Debug/netcoreapp3.1
 /src/FlightLog/WebApi/bin/Debug/netcoreapp3.1
+/src/FlightLog/IdentityServer/bin/Debug/netcoreapp3.1
+/src/FlightLog/IdentityServer/obj

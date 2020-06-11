@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using DukeSoftware.FlightLog.ApplicationCore.Entities;
 using DukeSoftware.FlightLog.ApplicationCore.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,6 +22,7 @@ namespace WebApi.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult> Get()
         {
             var flights = await _flightService.GetFlightsAsync();
@@ -94,7 +96,6 @@ namespace WebApi.Controllers
                 // Not expecting this to trigger as any flight can be deleted even if it has a model, location etc... 
                 return Conflict("Error deleting flight {id}");  
             }
-
         }
     }
 }

@@ -53,9 +53,18 @@ namespace Web
                 //.AddJsonOptions(opts => opts.JsonSerializerOptions.PropertyNamingPolicy = null)
                 .AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore)
                 .AddNewtonsoftJson(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver { NamingStrategy = new DefaultNamingStrategy() });
-                
 
-                // TODO How to add .AddNewtonsoftJson(options => options.SerializerSettings.TypeNameHandling.)
+            // TODO How to add .AddNewtonsoftJson(options => options.SerializerSettings.TypeNameHandling.)
+
+            services.AddAuthorization();
+            services.AddAuthentication("Bearer")
+                .AddIdentityServerAuthentication(options =>
+                {
+                    options.Authority = "https://localhost:5001";
+                    options.RequireHttpsMetadata = false;
+                    options.ApiName = "flightlog-api";
+                }
+                );
                 
         }
 
@@ -71,6 +80,8 @@ namespace Web
             app.UseRouting();
             app.UseCors();
             app.UseHttpsRedirection();
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
