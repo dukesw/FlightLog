@@ -14,7 +14,7 @@ export class ModelService {
 
   constructor(private http: HttpClient) {  }
 
-  modelUrl = 'https://localhost:5001/api/models';
+  modelUrl = 'https://localhost:5002/api/models';
   
   getModels(): Observable<Model[]> {
     return this.http.get<Model[]>(this.modelUrl)

@@ -9,7 +9,7 @@ import { catchError, retry } from 'rxjs/operators'
 })
 export class FlightService {
 
-  flightUrl = 'https://localhost:5001/api/flights';
+  flightUrl = 'https://localhost:5002/api/flights';
 
   constructor(private http: HttpClient) { }
 
