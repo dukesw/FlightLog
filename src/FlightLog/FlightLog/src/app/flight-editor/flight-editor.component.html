@@ -8,7 +8,7 @@
         <br />
         <mat-form-field>
             <mat-label>Model</mat-label>
-            <mat-select [(ngModel)]="selectedValue" formControlName="model">
+            <mat-select [(ngModel)]="selectedValue" formControlName="modelId">
                 <mat-option *ngFor="let model of models" [value]="model.Id">{{model.Name}}</mat-option>
             </mat-select> 
         </mat-form-field>
@@ -25,5 +25,4 @@
         <br />
         <button mat-stroked-button type="submit" [disabled]="!flightForm.valid">Save</button>
     </form>
-    <p>Value: {{ flightForm.value | json }}</p>
-    <p>Status: {{ flightForm.status }}</p>
+    <p>{{message}}</p>
