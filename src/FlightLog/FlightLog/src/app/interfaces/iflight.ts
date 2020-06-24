@@ -1,4 +1,5 @@
 import { IModel } from './imodel';
+import { ILocation } from './ilocation'
 
 export interface IFlight { 
     Id: number; 

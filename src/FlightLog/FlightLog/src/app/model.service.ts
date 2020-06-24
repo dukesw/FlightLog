@@ -3,8 +3,7 @@ import { IModel } from './interfaces/imodel'
 import { HttpClient } from '@angular/common/http'
 import { Observable, throwError, of } from 'rxjs'
 import { catchError, retry } from 'rxjs/operators'
-
-
+import { environment } from '../environments/environment'
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +13,7 @@ export class ModelService {
 
   constructor(private http: HttpClient) {  }
 
-  modelUrl = 'https://localhost:5002/api/models';
+  modelUrl = environment.apiUrl + 'api/models';
   
   getModels(): Observable<IModel[]> {
     return this.http.get<IModel[]>(this.modelUrl)

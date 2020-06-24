@@ -4,13 +4,14 @@ import { Flight } from './models/flight';
 import { HttpClient, HttpHeaders } from '@angular/common/http'
 import { Observable, throwError, of } from 'rxjs'
 import { catchError, retry } from 'rxjs/operators'
+import { environment } from '../environments/environment'
 
 @Injectable({
   providedIn: 'root'
 })
 export class FlightService {
 
-  flightUrl = 'https://localhost:5002/api/flights';
+  flightUrl = environment.apiUrl + 'api/flights';
 
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
