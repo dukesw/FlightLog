@@ -54,6 +54,9 @@ export class FlightEditorComponent implements OnInit {
     });
   }
 
+  // TODO Next. Better error handling - use the HeroApp components as an example with messages passed about...
+
+  
   clearForm() {
     this.flightForm.reset();
     this.flightForm.patchValue({ date: new Date() });
