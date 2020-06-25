@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormBuilder, Form } from '@angular/forms';
 import { ModelService } from '../model.service';
+import { LocationService } from '../location.service';
 import { IModel } from '../interfaces/imodel';
 import { FlightService } from '../flight.service';
 import { IFlight } from '../interfaces/iflight';
 import { Flight } from '../models/flight';
+import { ILocation } from '../interfaces/ilocation';
 
 
 @Component({
@@ -14,12 +16,16 @@ import { Flight } from '../models/flight';
 })
 export class FlightEditorComponent implements OnInit {
 
-  constructor(private formBuilder: FormBuilder, private modelService: ModelService, private flightService: FlightService) {
+  constructor(private formBuilder: FormBuilder, private modelService: ModelService, private flightService: FlightService, private locationService: LocationService) {
     // Get the list of models
     modelService.getModels().subscribe((data: IModel[]) => {
       this.models = data;
     });
-    console.log(this.models);
+
+    // Location
+    locationService.getLocations().subscribe((data: ILocation[]) => {
+      this.locations = data;
+    })
   }
 
   ngOnInit(): void {
@@ -30,10 +36,17 @@ export class FlightEditorComponent implements OnInit {
   savedFlight: IFlight;
   message: string;
 
+  models: IModel[];
+  selectedModel: IModel;
+
+  locations: ILocation[]; 
+  selectedLocation: ILocation;
+
   flightForm = this.formBuilder.group({
     date: [new Date()],
     flightMinutes: [''],
     modelId: [''],
+    locationId: [''],
     details: ['']
   });
 
@@ -44,7 +57,7 @@ export class FlightEditorComponent implements OnInit {
     this.flight.ModelId = this.flightForm.value.modelId;
     this.flight.FlightMinutes = this.flightForm.value.flightMinutes;
     this.flight.Details = this.flightForm.value.details;
-    this.flight.FieldId = 1;  // TODO look it up
+    this.flight.FieldId = this.flightForm.value.locationId;
 
     this.flightService.addFlight(this.flight).subscribe((data: IFlight) => {
       this.savedFlight = data;
@@ -62,8 +75,6 @@ export class FlightEditorComponent implements OnInit {
     this.flightForm.patchValue({ date: new Date() });
   }
 
-  models: IModel[];
 
-  selectedValue: IModel;
 
 }
