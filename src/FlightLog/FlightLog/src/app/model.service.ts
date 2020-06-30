@@ -39,7 +39,4 @@ export class ModelService {
   private log(message: string) {
     console.info(`ModelService: ${message}`);
   }
-  
-
-
 }

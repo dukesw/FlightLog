@@ -38,7 +38,7 @@ namespace IdentityServer
             services.AddIdentityServer()
                 .AddDeveloperSigningCredential()
                 .AddInMemoryPersistedGrants()
-                //.AddInMemoryIdentityResources(Config.GetIdentityResources())
+                .AddInMemoryIdentityResources(Config.GetIdentityResources())
                 .AddInMemoryApiResources(Config.GetApiResources())
                 .AddInMemoryClients(Config.GetClients())
                 .AddAspNetIdentity<IdentityUser>();

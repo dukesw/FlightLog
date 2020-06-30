@@ -1,0 +1,9 @@
+<h1>{{title}} - {{name}}</h1>
+<p>{{name}}</p>
+<nav>
+    <a routerLink="/">Home</a>
+    <a *ngIf="!isAuthenticated" (click)="login()" href="javascript:void(0)">Login</a>
+    <a *ngIf="isAuthenticated" routerLink="/flights">Flights</a>
+    <a *ngIf="isAuthenticated" routerLink="/add-flight">Add Flight</a>
+    <a *ngIf="isAuthenticated" (click)="logout()" href="javascript:void(0)">Logout</a>
+</nav>
