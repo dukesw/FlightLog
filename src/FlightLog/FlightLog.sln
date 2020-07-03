@@ -18,8 +18,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityServer", "IdentityServer\IdentityServer.csproj", "{53143BCE-E102-4A8B-8BA5-9F7FB4C89BC7}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlightLog", "FlightLog\FlightLog.csproj", "{288F0C35-9401-4BA8-BCFA-82B796269696}"
 EndProject
 Global
@@ -48,10 +46,6 @@ Global
 		{897F2F5D-CF82-4023-8120-1F6CF6DB464F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{897F2F5D-CF82-4023-8120-1F6CF6DB464F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{897F2F5D-CF82-4023-8120-1F6CF6DB464F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{53143BCE-E102-4A8B-8BA5-9F7FB4C89BC7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{53143BCE-E102-4A8B-8BA5-9F7FB4C89BC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{53143BCE-E102-4A8B-8BA5-9F7FB4C89BC7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{53143BCE-E102-4A8B-8BA5-9F7FB4C89BC7}.Release|Any CPU.Build.0 = Release|Any CPU
 		{288F0C35-9401-4BA8-BCFA-82B796269696}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{288F0C35-9401-4BA8-BCFA-82B796269696}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{288F0C35-9401-4BA8-BCFA-82B796269696}.Release|Any CPU.ActiveCfg = Release|Any CPU
