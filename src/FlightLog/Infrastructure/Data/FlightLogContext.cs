@@ -31,7 +31,7 @@ namespace DukeSoftware.FlightLog.Infrastructure.Data
             builder.Entity<Model>(ConfigureModel);
             builder.Entity<Flight>(ConfigureFlight);
             builder.Entity<MediaLink>(ConfigureMediaLinks);
-
+            builder.Entity<Pilot>(ConfigurePilot);
         }
 
         private void ConfigureMediaLinks(EntityTypeBuilder<MediaLink> builder)
@@ -90,8 +90,19 @@ namespace DukeSoftware.FlightLog.Infrastructure.Data
 
             builder.HasOne<Location>(x => x.Field)
                 .WithMany(x => x.Flights);
+
+            builder.HasOne<Pilot>(x => x.Pilot)
+                .WithMany(x => x.Flights);
                 
 
+        }
+
+        private void ConfigurePilot(EntityTypeBuilder<Pilot> builder)
+        {
+            builder.ToTable("Pilot")
+                .HasMany<Flight>(x => x.Flights)
+                .WithOne(x => x.Pilot)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

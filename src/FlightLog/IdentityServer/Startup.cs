@@ -92,7 +92,7 @@ namespace DukeSoftware.FlightLog.ApplicationCore.IdentityServer
 
                 var identityUser = new IdentityUser("rhys");
                 identityUser.Id = Guid.NewGuid().ToString();
-                userManager.CreateAsync(identityUser, "Password123!").Wait();
+                userManager.CreateAsync(identityUser, "Password1!").Wait();
                 userManager.AddClaimsAsync(identityUser, tempClaims.ToList()).Wait();
             }
         }
