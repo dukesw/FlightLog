@@ -14,14 +14,15 @@ export class AuthCallbackComponent implements OnInit {
   constructor(private authService: AuthService, private router: Router, private route: ActivatedRoute) { }
 
   async ngOnInit() {
+    try {
     if (this.route.snapshot.fragment.indexOf('error') >= 0) {
       this.error = true; 
       return;
     }
-
+  }
+finally {
     await this.authService.completeAuthentication(); 
     this.router.navigate(['/']);
+}
   }
-
-
 }

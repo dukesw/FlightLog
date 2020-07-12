@@ -6,6 +6,7 @@ export interface IFlight {
     Date: Date;
     ModelId: number;
     FieldId: number;
+    PilotId: number;
     FlightMinutes: number;
     Details: string;
 }

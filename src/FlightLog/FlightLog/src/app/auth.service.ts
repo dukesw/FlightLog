@@ -26,15 +26,26 @@ export class AuthService {
     return this.user != null && !this.user.expired;
   }
  
-  login() {
+  startAuthentication(): Promise<void> {
     return this.manager.signinRedirect();
   }
 
-  async completeAuthentication() {
+  async completeAuthentication(): Promise<void> {
+    // return this.manager.signinRedirectCallback().then(user => {
+    //   this.user = user;
+    // });
     this.user = await this.manager.signinRedirectCallback();
     this._authNavStatusSource.next(this.isAuthenticated());      
   }
   
+  getClaims(): any {
+    return this.user.profile;
+  }
+
+  getAuthourizationHeaderValue(): string {
+    return `${this.user.token_type} ${this.user.access_token}`;
+  }
+
   get authorizationHeaderValue(): string {
     return `${this.user.token_type} ${this.user.access_token}`;
   }
@@ -52,16 +63,30 @@ export class AuthService {
 export function getClientSettings(): UserManagerSettings {
   return {
     authority: 'https://localhost:5001', 
-    client_id: 'flightlog-app-client', 
-    //client_secret: 'appsecret',
+    client_id: 'flightlog-app-v2', 
+    client_secret: 'passwordtochange',
     redirect_uri: 'http://localhost:4200/auth-callback', 
     post_logout_redirect_uri: 'http://localhost:4200/',
-    response_type: "id_token token", 
+    response_type: "code", 
     loadUserInfo: true,
+    
     //response_type: "code",
-    scope: "openid profile email flightlog-api",
+    scope: "openid profile email api1.read",
     filterProtocolClaims: true
   }
+  // This is the previous attempt
+  // return {
+  //   authority: 'https://localhost:5001', 
+  //   client_id: 'flightlog-app-client', 
+  //   //client_secret: 'appsecret',
+  //   redirect_uri: 'http://localhost:4200/auth-callback', 
+  //   post_logout_redirect_uri: 'http://localhost:4200/',
+  //   response_type: "id_token token", 
+  //   loadUserInfo: true,
+  //   //response_type: "code",
+  //   scope: "openid profile email flightlog-api",
+  //   filterProtocolClaims: true
+  // }
 
   // This works using the example auth server
 //   return {

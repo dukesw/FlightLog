@@ -59,6 +59,22 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Pilot",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(nullable: true),
+                    UserId = table.Column<string>(nullable: true),
+                    Registration = table.Column<string>(nullable: true),
+                    Club = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Pilot", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "PowerPlant",
                 columns: table => new
                 {
@@ -131,8 +147,9 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
                     FieldId = table.Column<int>(nullable: false),
                     ModelId = table.Column<int>(nullable: false),
                     BatteryId = table.Column<int>(nullable: true),
+                    PilotId = table.Column<int>(nullable: false),
                     Details = table.Column<string>(nullable: true),
-                    FlightTime = table.Column<float>(nullable: false)
+                    FlightMinutes = table.Column<float>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -153,6 +170,12 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
                         name: "FK_Flight_Model_ModelId",
                         column: x => x.ModelId,
                         principalTable: "Model",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Flight_Pilot_PilotId",
+                        column: x => x.PilotId,
+                        principalTable: "Pilot",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -203,6 +226,11 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
                 column: "ModelId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Flight_PilotId",
+                table: "Flight",
+                column: "PilotId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_MediaLink_FlightId",
                 table: "MediaLink",
                 column: "FlightId");
@@ -230,6 +258,9 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Model");
+
+            migrationBuilder.DropTable(
+                name: "Pilot");
 
             migrationBuilder.DropTable(
                 name: "BatteryType");

@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DukeSoftware.FlightLog.Infrastructure.Migrations
 {
     [DbContext(typeof(FlightLogContext))]
-    [Migration("20200611062540_v1")]
+    [Migration("20200706232343_v1")]
     partial class v1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -119,13 +119,16 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
                     b.Property<int>("FieldId")
                         .HasColumnType("int");
 
-                    b.Property<float>("FlightTime")
+                    b.Property<float>("FlightMinutes")
                         .HasColumnType("real");
 
                     b.Property<int>("ModelFlightNumber")
                         .HasColumnType("int");
 
                     b.Property<int>("ModelId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PilotId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -135,6 +138,8 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
                     b.HasIndex("FieldId");
 
                     b.HasIndex("ModelId");
+
+                    b.HasIndex("PilotId");
 
                     b.ToTable("Flight");
                 });
@@ -216,6 +221,30 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
                     b.ToTable("Model");
                 });
 
+            modelBuilder.Entity("DukeSoftware.FlightLog.ApplicationCore.Entities.Pilot", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Club")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Registration")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Pilot");
+                });
+
             modelBuilder.Entity("DukeSoftware.FlightLog.ApplicationCore.Entities.PowerPlant", b =>
                 {
                     b.Property<int>("Id")
@@ -276,6 +305,12 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
                     b.HasOne("DukeSoftware.FlightLog.ApplicationCore.Entities.Model", "Model")
                         .WithMany("Flights")
                         .HasForeignKey("ModelId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("DukeSoftware.FlightLog.ApplicationCore.Entities.Pilot", "Pilot")
+                        .WithMany("Flights")
+                        .HasForeignKey("PilotId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });

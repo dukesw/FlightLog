@@ -7,8 +7,10 @@ import { AuthCallbackComponent } from './auth-callback/auth-callback.component';
 import { AuthGuard } from './auth-guard';
 
 const routes: Routes = [
-  { path: 'flights', component: FlightsComponent, canActivate: [AuthGuard] },
-  { path: 'add-flight', component: AddFlightComponent, canActivate: [AuthGuard] },
+  // { path: 'flights', component: FlightsComponent, canActivate: [!AuthGuard] },
+  // { path: 'add-flight', component: AddFlightComponent, canActivate: [!AuthGuard] },
+  { path: 'flights', component: FlightsComponent },
+  { path: 'add-flight', component: AddFlightComponent},
   { path: 'login', component: LoginComponent },
   { path: 'auth-callback', component: AuthCallbackComponent },
   // Fallback when no prior route is matched

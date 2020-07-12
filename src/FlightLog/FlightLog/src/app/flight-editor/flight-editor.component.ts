@@ -31,7 +31,6 @@ export class FlightEditorComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  // TODO set up a class that implements flight (type=model) 
   flight: IFlight = new Flight();
   savedFlight: IFlight;
   message: string;
@@ -47,6 +46,7 @@ export class FlightEditorComponent implements OnInit {
     flightMinutes: [''],
     modelId: [''],
     locationId: [''],
+    pilotId: [''],
     details: ['']
   });
 
@@ -58,6 +58,7 @@ export class FlightEditorComponent implements OnInit {
     this.flight.FlightMinutes = this.flightForm.value.flightMinutes;
     this.flight.Details = this.flightForm.value.details;
     this.flight.FieldId = this.flightForm.value.locationId;
+    this.flight.PilotId = 1;//this.flightForm.value.pilotId;
 
     this.flightService.addFlight(this.flight).subscribe((data: IFlight) => {
       this.savedFlight = data;

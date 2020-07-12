@@ -5,6 +5,8 @@ using System.Reflection;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using IdentityModel;
+using IdentityServer4.EntityFramework.DbContexts;
+using IdentityServer4.EntityFramework.Mappers;
 using IdentityServer4.Models;
 using IdentityServer4.Test;
 using Microsoft.AspNetCore.Builder;
@@ -30,7 +32,7 @@ namespace DukeSoftware.FlightLog.ApplicationCore.IdentityServer
                 builder.UseSqlServer(connectionString, sqlOptions => sqlOptions.MigrationsAssembly(migrationsAssembly)));
 
             services.AddIdentity<IdentityUser, IdentityRole>()
-                .AddEntityFrameworkStores<FlightLogIdentityDbContext>();
+               .AddEntityFrameworkStores<FlightLogIdentityDbContext>();
 
             services.AddIdentityServer()
                 //.AddInMemoryClients(Clients.Get())
@@ -39,15 +41,15 @@ namespace DukeSoftware.FlightLog.ApplicationCore.IdentityServer
                 //.AddInMemoryApiScopes(Resources.GetApiScopes())
                 //.AddTestUsers(Users.Get())
                 .AddDeveloperSigningCredential()
-                .AddConfigurationStore(options => options.ConfigureDbContext =
-                    builder => builder.UseSqlServer(
-                        connectionString,
-                        sqlOptions => sqlOptions.MigrationsAssembly(migrationsAssembly)))
-                .AddOperationalStore(options => options.ConfigureDbContext =
-                    builder => builder.UseSqlServer(
-                        connectionString,
-                        sqlOptions => sqlOptions.MigrationsAssembly(migrationsAssembly)))
-                .AddAspNetIdentity<IdentityUser>();
+            .AddConfigurationStore(options => options.ConfigureDbContext =
+                builder => builder.UseSqlServer(
+                    connectionString,
+                    sqlOptions => sqlOptions.MigrationsAssembly(migrationsAssembly)))
+            .AddOperationalStore(options => options.ConfigureDbContext =
+                builder => builder.UseSqlServer(
+                    connectionString,
+                    sqlOptions => sqlOptions.MigrationsAssembly(migrationsAssembly)))
+            .AddAspNetIdentity<IdentityUser>();
 
             services.AddControllersWithViews();
         }
@@ -60,7 +62,7 @@ namespace DukeSoftware.FlightLog.ApplicationCore.IdentityServer
                 app.UseDeveloperExceptionPage();
             }
 
-            //SetUpTestUsers(app);
+            SetUpTestUsers(app);
 
             app.UseStaticFiles();
             app.UseRouting();
@@ -82,19 +84,70 @@ namespace DukeSoftware.FlightLog.ApplicationCore.IdentityServer
         {
             using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
             {
-                var userManager = serviceScope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+                ///---
+                var context = serviceScope.ServiceProvider.GetRequiredService<ConfigurationDbContext>();
 
-                var tempClaims = new List<Claim>
+
+
+                if (!context.Clients.Any())
+                {
+                    foreach (var client in Clients.Get())
                     {
-                        new Claim(JwtClaimTypes.Email, "rhys.jones@yahoo.co.nz"),
-                        new Claim(JwtClaimTypes.Role, "admin")
-                    };
+                        context.Clients.Add(client.ToEntity());
+                    }
+                    context.SaveChanges();
+                }
 
-                var identityUser = new IdentityUser("rhys");
-                identityUser.Id = Guid.NewGuid().ToString();
-                userManager.CreateAsync(identityUser, "Password1!").Wait();
-                userManager.AddClaimsAsync(identityUser, tempClaims.ToList()).Wait();
+                if (!context.IdentityResources.Any())
+                {
+                    foreach (var resource in Resources.GetIdentityResources())
+                    {
+                        context.IdentityResources.Add(resource.ToEntity());
+                    }
+                    context.SaveChanges();
+                }
+
+                if (!context.ApiScopes.Any())
+                {
+                    foreach (var scope in Resources.GetApiScopes())
+                    {
+                        context.ApiScopes.Add(scope.ToEntity());
+                    }
+                    context.SaveChanges();
+                }
+
+                if (!context.ApiResources.Any())
+                {
+                    foreach (var resource in Resources.GetApiResources())
+                    {
+                        context.ApiResources.Add(resource.ToEntity());
+                    }
+                    context.SaveChanges();
+                }
+
+                ///---
+
+
+
+                //var userManager = serviceScope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+
+                //var tempClaims = new List<Claim>
+                //    {
+                //        new Claim(JwtClaimTypes.Email, "rhys.jones@yahoo.co.nz"),
+                //        new Claim(JwtClaimTypes.Role, "admin")
+                //    };
+
+                //var identityUser = new IdentityUser("rhys");
+                //identityUser.Id = Guid.NewGuid().ToString();
+                //userManager.CreateAsync(identityUser, "Password1!").Wait();
+                //userManager.AddClaimsAsync(identityUser, tempClaims.ToList()).Wait();
             }
         }
+
+        private void SetUpClient(IApplicationBuilder app)
+        {
+
+        }
+
     }
 }
