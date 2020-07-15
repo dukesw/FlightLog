@@ -128,7 +128,7 @@ namespace DukeSoftware.FlightLog.ApplicationCore.IdentityServer
                 ///---
 
 
-
+                // Adding a user manually to the EF store
                 //var userManager = serviceScope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
 
                 //var tempClaims = new List<Claim>

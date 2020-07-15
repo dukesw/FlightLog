@@ -76,6 +76,12 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
             return await _flightRepository.GetBySpecAsync(spec);
         }
 
+        public async Task<List<Flight>> GetFlightsAsync(DateTime startDate, DateTime endDate)
+        {
+            var spec = new GetFlightsByDateRange(startDate, endDate);
+            return await _flightRepository.GetBySpecAsync(spec);
+        }
+
         public async Task<Flight> UpdateFlightAsync(Flight flight)
         {
             Guard.AgainstNull(flight, "flight");

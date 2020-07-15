@@ -1,13 +1,16 @@
-import { Injectable } from '@angular/core';
+import { Injectable, EventEmitter } from '@angular/core';
 import { UserManager, UserManagerSettings, User } from 'oidc-client';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
+import { environment } from 'src/environments/environment';
+//import { EventEmitter } from 'protractor';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private user: User | null;
+  private user: User;
+  userLoadedEvent: EventEmitter<User> = new EventEmitter<User>();
   private manager = new UserManager(getClientSettings());
 
   // Observable navItem source
@@ -16,10 +19,28 @@ export class AuthService {
   authNavStatus$ = this._authNavStatusSource.asObservable();
   
   constructor(private http: HttpClient) {
-    this.manager.getUser().then(user => {
-      this.user = user;
-      this._authNavStatusSource.next(this.isAuthenticated());
-    });
+    this.manager.getUser()
+      .then(user => {
+        this.user = user;
+        this.userLoadedEvent.emit(user);
+        this._authNavStatusSource.next(this.isAuthenticated());
+      })
+      .catch((err) => {
+        this.user = null;
+      });
+
+      this.manager.events.addUserLoaded((user) => {
+        this.user = user;
+        if (!environment.production) {
+          console.log('authService addUserLoaded:', user);
+        }
+      });
+
+      this.manager.events.addUserUnloaded(() => {
+        if (!environment.production) {
+          console.log('authService user unloaded');
+        }
+      });
    }
 
    isAuthenticated(): boolean {
@@ -30,12 +51,27 @@ export class AuthService {
     return this.manager.signinRedirect();
   }
 
+  getUser(): any {
+     this.manager.getUser()
+      .then(user => {
+        this.user = user;
+        this.userLoadedEvent.emit(user);
+        this._authNavStatusSource.next(this.isAuthenticated());
+      })
+      .catch((err) => {
+        this.user = null;
+      });
+
+  }
   async completeAuthentication(): Promise<void> {
-    // return this.manager.signinRedirectCallback().then(user => {
-    //   this.user = user;
-    // });
-    this.user = await this.manager.signinRedirectCallback();
-    this._authNavStatusSource.next(this.isAuthenticated());      
+    return this.manager.signinRedirectCallback().then(user => {
+      console.log('Running: completeAuthentication');
+      this.user = user;
+      console.log(this.user);
+      this._authNavStatusSource.next(this.isAuthenticated()); 
+    });
+    // this.user = await this.manager.signinRedirectCallback();
+    // this._authNavStatusSource.next(this.isAuthenticated());      
   }
   
   getClaims(): any {
@@ -50,8 +86,8 @@ export class AuthService {
     return `${this.user.token_type} ${this.user.access_token}`;
   }
 
-  get name(): string {
-    return this.user != null ? this.user.profile.givenName : '';
+  getName(): string {
+    return this.user != null ? this.user.profile.name : '';
   }
 
   async signout() {

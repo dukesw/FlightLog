@@ -16,6 +16,7 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Specifications
             Includes.Add(f => f.Model);
             Includes.Add(f => f.Battery);
             Includes.Add(f => f.MediaLinks);
+            Includes.Add(f => f.Pilot);
         }
     }
 }

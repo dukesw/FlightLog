@@ -43,6 +43,21 @@ namespace WebApi.Controllers
             }
         }
 
+        [HttpGet("model/{modelId}")]
+        public async Task<ActionResult<List<Flight>>> GetByModelId(int modelId)
+        {
+            try
+            {
+                var flights = await _flightService.GetFlightsAsync(modelId);
+                return Ok(flights);
+            }
+            catch (ArgumentNullException)
+            {
+                return NotFound($"Error finding flights for model {modelId}");
+            }
+        }
+
+
         [HttpPost]
         public async Task<ActionResult<Flight>> Post([FromBody] Flight newFlight)
         {

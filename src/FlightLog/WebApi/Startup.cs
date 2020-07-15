@@ -56,6 +56,7 @@ namespace Web
             services.AddControllers()
                 //.AddJsonOptions(opts => opts.JsonSerializerOptions.PropertyNamingPolicy = null)
                 .AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore)
+                //.AddNewtonsoftJson(options => options.SerializerSettings.MaxDepth = 1)
                 .AddNewtonsoftJson(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver { NamingStrategy = new DefaultNamingStrategy() });
 
             services.AddCors(options =>
