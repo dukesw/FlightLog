@@ -21,7 +21,7 @@ namespace DukeSoftware.FlightLog.ApplicationCore.IdentityServer
 {
     public class Startup
     {
-        const string connectionString = "Server=localhost\\SQL2019;Database=IdentityServer;User=sa;Password=password321#;MultipleActiveResultSets=true";
+        const string connectionString = "Server=localhost\\SQL2016dev;Database=IdentityServer;User=sa;Password=Password1!;MultipleActiveResultSets=true";
         string migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -129,18 +129,18 @@ namespace DukeSoftware.FlightLog.ApplicationCore.IdentityServer
 
 
                 // Adding a user manually to the EF store
-                //var userManager = serviceScope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+                var userManager = serviceScope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
 
-                //var tempClaims = new List<Claim>
-                //    {
-                //        new Claim(JwtClaimTypes.Email, "rhys.jones@yahoo.co.nz"),
-                //        new Claim(JwtClaimTypes.Role, "admin")
-                //    };
+                var tempClaims = new List<Claim>
+                    {
+                        new Claim(JwtClaimTypes.Email, "rhys.jones@yahoo.co.nz"),
+                        new Claim(JwtClaimTypes.Role, "admin")
+                    };
 
-                //var identityUser = new IdentityUser("rhys");
-                //identityUser.Id = Guid.NewGuid().ToString();
-                //userManager.CreateAsync(identityUser, "Password1!").Wait();
-                //userManager.AddClaimsAsync(identityUser, tempClaims.ToList()).Wait();
+                var identityUser = new IdentityUser("rhys");
+                identityUser.Id = Guid.NewGuid().ToString();
+                userManager.CreateAsync(identityUser, "Password1!").Wait();
+                userManager.AddClaimsAsync(identityUser, tempClaims.ToList()).Wait();
             }
         }
 

@@ -15,3 +15,11 @@ Apply a migration to the database:
 
 Remove a migration, once this has been unapplied from the database by running `update-database` with a lower migration version.  
 `remove-migration -StartupProject Infrastructure -Project Infrastructure`
+
+## Identity Server Setup
+
+Identity Server uses two different DbContexts to store data. Set this up using the following commands:  
+
+`dotnet ef database update -c PersistedGrantDbContext`  
+`dotnet ef database update -c ConfigurationDbContext`  
+

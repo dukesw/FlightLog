@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
+using AutoMapper;
 using DukeSoftware.FlightLog.ApplicationCore.Interfaces;
+using DukeSoftware.FlightLog.ApplicationCore.Mapper;
 using DukeSoftware.FlightLog.ApplicationCore.Services;
 using DukeSoftware.FlightLog.Infrastructure;
 using DukeSoftware.FlightLog.Infrastructure.Data;
@@ -69,6 +72,10 @@ namespace Web
                                             .AllowAnyMethod();
                                   });
             });
+
+            services.AddAutoMapper(typeof(FlightProfile));
+            //services.AddAutoMapper(Assembly.LoadFrom("DukeSoftware.FlightLog.ApplicationCore"));
+
             // TODO How to add .AddNewtonsoftJson(options => options.SerializerSettings.TypeNameHandling.)
 
 

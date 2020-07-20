@@ -1,4 +1,6 @@
-﻿using DukeSoftware.FlightLog.ApplicationCore.Entities;
+﻿using AutoMapper;
+using DukeSoftware.FlightLog.ApplicationCore.Dtos;
+using DukeSoftware.FlightLog.ApplicationCore.Entities;
 using DukeSoftware.FlightLog.ApplicationCore.Interfaces;
 using DukeSoftware.FlightLog.ApplicationCore.Specifications;
 using DukeSoftware.GuardClauses;
@@ -15,10 +17,12 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
     {
         private readonly IFlightRepository _flightRepository;
         private readonly IAppLogger<FlightService> _logger;
-        public FlightService(IFlightRepository repository, IAppLogger<FlightService> logger)
+        private readonly IMapper _mapper;
+        public FlightService(IFlightRepository repository, IAppLogger<FlightService> logger, IMapper mapper)
         {
             _flightRepository = repository;
             _logger = logger;
+            _mapper = mapper;
         }
 
         public async Task<Flight> AddFlightAsync(Flight flight)
@@ -70,10 +74,11 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
             return  await _flightRepository.GetAllAsync();
         }
 
-        public async Task<List<Flight>> GetFlightsAsync(int modelId)
+        public async Task<IList<FlightDto>> GetFlightsAsync(int modelId)
         {
             var spec = new GetFlightsByModel(modelId);
-            return await _flightRepository.GetBySpecAsync(spec);
+            var result = await _flightRepository.GetBySpecAsync(spec);
+            return _mapper.Map<IList<Flight>, IList<FlightDto>>(result);
         }
 
         public async Task<List<Flight>> GetFlightsAsync(DateTime startDate, DateTime endDate)
