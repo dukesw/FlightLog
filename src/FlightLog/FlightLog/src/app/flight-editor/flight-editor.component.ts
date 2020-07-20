@@ -7,6 +7,8 @@ import { FlightService } from '../flight.service';
 import { IFlight } from '../interfaces/iflight';
 import { Flight } from '../models/flight';
 import { ILocation } from '../interfaces/ilocation';
+import { IPilot } from '../interfaces/ipilot';
+import { PilotService } from '../pilot.service';
 
 
 @Component({
@@ -16,8 +18,14 @@ import { ILocation } from '../interfaces/ilocation';
 })
 export class FlightEditorComponent implements OnInit {
 
-  constructor(private formBuilder: FormBuilder, private modelService: ModelService, private flightService: FlightService, private locationService: LocationService) {
-    // Get the list of models
+  constructor(
+      private formBuilder: FormBuilder, 
+      private modelService: ModelService, 
+      private flightService: FlightService, 
+      private locationService: LocationService, 
+      private pilotService: PilotService) {
+    
+        // Get the list of models
     modelService.getModels().subscribe((data: IModel[]) => {
       this.models = data;
     });
@@ -26,6 +34,11 @@ export class FlightEditorComponent implements OnInit {
     locationService.getLocations().subscribe((data: ILocation[]) => {
       this.locations = data;
     })
+
+    // Pilot
+    pilotService.getPilots().subscribe((data: IPilot[]) => {
+      this.pilots = data;
+    });
   }
 
   ngOnInit(): void {
@@ -40,6 +53,9 @@ export class FlightEditorComponent implements OnInit {
 
   locations: ILocation[]; 
   selectedLocation: ILocation;
+
+  pilots: IPilot[];
+  selectedPilot: IPilot;
 
   flightForm = this.formBuilder.group({
     date: [new Date()],
@@ -58,7 +74,7 @@ export class FlightEditorComponent implements OnInit {
     this.flight.FlightMinutes = this.flightForm.value.flightMinutes;
     this.flight.Details = this.flightForm.value.details;
     this.flight.FieldId = this.flightForm.value.locationId;
-    this.flight.PilotId = 1;//this.flightForm.value.pilotId;
+    this.flight.PilotId = this.flightForm.value.pilotId;
 
     this.flightService.addFlight(this.flight).subscribe((data: IFlight) => {
       this.savedFlight = data;
