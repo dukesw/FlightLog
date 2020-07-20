@@ -21,13 +21,20 @@
         </mat-form-field>
         <br />
         <mat-form-field>
+            <mat-label>Pilot</mat-label>
+            <mat-select [(ngModel)]="selectedPilot" formControlName="pilotId">
+                <mat-option *ngFor="let pilot of pilots" [value]="pilot.Id">{{pilot.Name}}</mat-option>
+            </mat-select> 
+        </mat-form-field>
+        <br />
+        <mat-form-field>
             <mat-label>Flight Minutes</mat-label>
             <input matInput type="number" formControlName="flightMinutes">
         </mat-form-field>
         <br />
         <mat-form-field class="input-full-width">
             <mat-label>Details</mat-label>
-            <textarea matInput formControlName="details"></textarea>
+            <textarea matInput formControlName="details" rows="6"></textarea>
         </mat-form-field>
         <br />
         <button mat-stroked-button type="submit" [disabled]="!flightForm.valid">Save</button>

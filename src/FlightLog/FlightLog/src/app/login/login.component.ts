@@ -10,8 +10,6 @@ export class LoginComponent implements OnInit {
 
   constructor(private authService: AuthService) { }
 
-  title = "Login";
-
   login() {
     this.authService.startAuthentication();
   }

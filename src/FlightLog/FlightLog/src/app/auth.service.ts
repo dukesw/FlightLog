@@ -15,15 +15,19 @@ export class AuthService {
 
   // Observable navItem source
   private _authNavStatusSource = new BehaviorSubject<boolean>(false);
+  private _userNameChangeSource = new BehaviorSubject<string>("");
+
   // Observable navItem stream
   authNavStatus$ = this._authNavStatusSource.asObservable();
+  userNameChange$ = this._userNameChangeSource.asObservable();
   
   constructor(private http: HttpClient) {
     this.manager.getUser()
       .then(user => {
         this.user = user;
-        this.userLoadedEvent.emit(user);
+        //this.userLoadedEvent.emit(user);
         this._authNavStatusSource.next(this.isAuthenticated());
+        this._userNameChangeSource.next(user?.profile.name);
       })
       .catch((err) => {
         this.user = null;
@@ -52,15 +56,15 @@ export class AuthService {
   }
 
   getUser(): any {
-     this.manager.getUser()
-      .then(user => {
-        this.user = user;
-        this.userLoadedEvent.emit(user);
-        this._authNavStatusSource.next(this.isAuthenticated());
-      })
-      .catch((err) => {
-        this.user = null;
-      });
+     return this.manager.getUser();
+      // .then(user => {
+      //   this.user = user;
+      //   this.userLoadedEvent.emit(user);
+      //   this._authNavStatusSource.next(this.isAuthenticated());
+      // })
+      // .catch((err) => {
+      //   this.user = null;
+      // });
 
   }
   async completeAuthentication(): Promise<void> {
@@ -69,6 +73,7 @@ export class AuthService {
       this.user = user;
       console.log(this.user);
       this._authNavStatusSource.next(this.isAuthenticated()); 
+      this._userNameChangeSource.next(user?.profile.name);
     });
     // this.user = await this.manager.signinRedirectCallback();
     // this._authNavStatusSource.next(this.isAuthenticated());      
