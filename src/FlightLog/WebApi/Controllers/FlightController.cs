@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DukeSoftware.FlightLog.ApplicationCore.Dtos;
 using DukeSoftware.FlightLog.ApplicationCore.Entities;
 using DukeSoftware.FlightLog.ApplicationCore.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -44,11 +45,25 @@ namespace WebApi.Controllers
         }
 
         [HttpGet("model/{modelId}")]
-        public async Task<ActionResult<List<Flight>>> GetByModelId(int modelId)
+        public async Task<ActionResult<List<FlightDto>>> GetByModelId(int modelId)
         {
             try
             {
-                var flights = await _flightService.GetFlightsAsync(modelId);
+                var flights = await _flightService.GetFlightsByModelAsync(modelId);
+                return Ok(flights);
+            }
+            catch (ArgumentNullException)
+            {
+                return NotFound($"Error finding flights for model {modelId}");
+            }
+        }
+
+        [HttpGet("summary/{modelId}")]
+        public async Task<ActionResult<FlightSummaryDto>> GetSummaryByModelId(int modelId)
+        {
+            try
+            {
+                var flights = await _flightService.GetFlightSummaryByModelAsync(modelId);
                 return Ok(flights);
             }
             catch (ArgumentNullException)

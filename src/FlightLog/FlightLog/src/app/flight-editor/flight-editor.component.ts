@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormBuilder, Form } from '@angular/forms';
+import { FormControl, FormBuilder, Form, Validators } from '@angular/forms';
 import { ModelService } from '../model.service';
 import { LocationService } from '../location.service';
 import { IModel } from '../interfaces/imodel';
@@ -58,11 +58,11 @@ export class FlightEditorComponent implements OnInit {
   selectedPilot: IPilot;
 
   flightForm = this.formBuilder.group({
-    date: [new Date()],
-    flightMinutes: [''],
-    modelId: [''],
-    locationId: [''],
-    pilotId: [''],
+    date: [new Date(), Validators.required],
+    flightMinutes: ['', Validators.required],
+    modelId: ['', Validators.required],
+    locationId: ['', Validators.required],
+    pilotId: ['', Validators.required],
     details: ['']
   });
 
@@ -91,7 +91,5 @@ export class FlightEditorComponent implements OnInit {
     this.flightForm.reset();
     this.flightForm.patchValue({ date: new Date() });
   }
-
-
 
 }

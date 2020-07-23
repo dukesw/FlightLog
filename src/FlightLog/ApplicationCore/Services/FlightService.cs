@@ -74,14 +74,35 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
             return  await _flightRepository.GetAllAsync();
         }
 
-        public async Task<IList<FlightDto>> GetFlightsAsync(int modelId)
+        public async Task<IList<FlightDto>> GetFlightsByModelAsync(int modelId)
         {
             var spec = new GetFlightsByModel(modelId);
             var result = await _flightRepository.GetBySpecAsync(spec);
             return _mapper.Map<IList<Flight>, IList<FlightDto>>(result);
         }
 
-        public async Task<List<Flight>> GetFlightsAsync(DateTime startDate, DateTime endDate)
+        public async Task<FlightSummaryDto> GetFlightSummaryByModelAsync(int modelId)
+        {
+            var allFlights = await GetFlightsByModelAsync(modelId);
+            var result = CreateFlightSummary(allFlights);
+            return result;
+        }
+
+        private FlightSummaryDto CreateFlightSummary(IList<FlightDto> flights)
+        {
+            var result = new FlightSummaryDto
+            {
+                TotalFlightTimeMinutes = flights.Sum(x => x.FlightMinutes),
+                TotalNumberOfFlights = flights.Count,
+                AverageFlightTimeMinutes = flights.Average(x => x.FlightMinutes),
+                FirstFlight = flights.Min(x => x.Date),
+                LastFlight = flights.Max(x => x.Date)
+            };
+
+            return result;
+        }
+
+        public async Task<List<Flight>> GetFlightsByDateAsync(DateTime startDate, DateTime endDate)
         {
             var spec = new GetFlightsByDateRange(startDate, endDate);
             return await _flightRepository.GetBySpecAsync(spec);

@@ -53,7 +53,9 @@ namespace Web
             services.AddScoped<IFlightRepository, FlightRepository>();
             services.AddScoped<IFlightService, FlightService>();
             services.AddScoped<ILocationRepository, LocationRepository>();
-            services.AddScoped<ILocationService, LocationService>(); 
+            services.AddScoped<ILocationService, LocationService>();
+            services.AddScoped<IPilotRepository, PilotRepository>();
+            services.AddScoped<IPilotService, PilotService > ();
             services.AddScoped(typeof(IAppLogger<>), typeof(LoggerAdapter<>));
 
             services.AddControllers()

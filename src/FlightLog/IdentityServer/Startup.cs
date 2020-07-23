@@ -21,7 +21,7 @@ namespace DukeSoftware.FlightLog.ApplicationCore.IdentityServer
 {
     public class Startup
     {
-        const string connectionString = "Server=localhost\\SQL2016dev;Database=IdentityServer;User=sa;Password=Password1!;MultipleActiveResultSets=true";
+        const string connectionString = "Server=localhost\\SQL2019;Database=IdentityServer;User=sa;Password=password321#;MultipleActiveResultSets=true";
         string migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
 
         // This method gets called by the runtime. Use this method to add services to the container.

@@ -11,7 +11,7 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Mapper
     {
         public FlightProfile()
         {
-            CreateMap<Flight, FlightDto>();
+            CreateMap<Flight, FlightDto>().MaxDepth(1);
           //      .Include<Model, ModelDto>();
                 //.ForMember(dest => dest.Field, opt => opt.MapFrom(src => src.Field)) // a (poor) example
                 //.ForMember(dest => dest.Model, opt => opt.MapFrom(src => src.Model));
@@ -19,6 +19,8 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Mapper
             CreateMap<Location, LocationDto>();
             CreateMap<Model, ModelDto>();
             CreateMap<Pilot, PilotDto>();
+
+
         }
     }
 }
