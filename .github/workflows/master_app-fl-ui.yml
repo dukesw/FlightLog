@@ -21,6 +21,7 @@ jobs:
         node-version: '12.x'
 
     - name: npm install, build, and test
+      working-directory: src/FlightLog
       run: |
         npm install
         npm run build --if-present
@@ -28,6 +29,7 @@ jobs:
 
     - name: 'Deploy to Azure Web App'
       uses: azure/webapps-deploy@v1
+      working-directory: src/FlightLog
       with:
         app-name: 'app-fl-ui'
         slot-name: 'production'
