@@ -29,7 +29,6 @@ jobs:
 
     - name: 'Deploy to Azure Web App'
       uses: azure/webapps-deploy@v1
-      working-directory: src/FlightLog
       with:
         app-name: 'app-fl-ui'
         slot-name: 'production'
