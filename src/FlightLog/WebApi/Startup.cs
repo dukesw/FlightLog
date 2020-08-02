@@ -72,6 +72,9 @@ namespace Web
                                       builder.WithOrigins("http://localhost:4200")
                                             .AllowAnyHeader()
                                             .AllowAnyMethod();
+                                      builder.WithOrigins("https://app-fl-ui.azurewebsites.net")
+                                            .AllowAnyHeader()
+                                            .AllowAnyMethod();
                                   });
             });
 
@@ -89,7 +92,7 @@ namespace Web
                 {
                     options.Authority = "https://localhost:5001";
                     //options.RequireHttpsMetadata = false;
-                    options.ApiName = "api1";
+                    options.ApiName = "flightlog-api";
                 }
                 );
                 

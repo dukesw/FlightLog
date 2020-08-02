@@ -21,9 +21,10 @@ export class FlightService {
 
   addFlight(flight: Flight): Observable<Flight> {
     return this.http.post<Flight>(this.flightUrl, flight, this.httpOptions)
-      .pipe(
-        catchError(this.handleError<Flight>('addFlight'))
-      )
+      //.pipe(
+        //catchError(this.handleError<Flight>('addFlight'))
+        //catchError()
+      //)
   }
 
     /** 
@@ -34,6 +35,9 @@ export class FlightService {
   private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
       // TODO: send to centralised logging
+      // if (error instanceof HttpErrorResponse) {
+
+      // }
       console.error(error);
       this.log(`${operation} failed with error: ${error.message}`);
       return of(result as T);

@@ -1,0 +1,8 @@
+{
+    "appService.zipIgnorePattern": [
+        "node_modules{,/**}",
+        ".vscode{,/**}"
+    ],
+    "appService.defaultWebAppToDeploy": "/subscriptions/57599be3-3006-4700-a258-553e7401018d/resourceGroups/rg_app_sandpit/providers/Microsoft.Web/sites/app-fl-ui",
+    "appService.deploySubpath": "dist\\FlightLog"
+}

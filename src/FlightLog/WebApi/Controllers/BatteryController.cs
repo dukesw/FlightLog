@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using DukeSoftware.FlightLog.ApplicationCore.Entities;
 using DukeSoftware.FlightLog.ApplicationCore.Exceptions;
 using DukeSoftware.FlightLog.ApplicationCore.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Web.Controllers { 
@@ -22,6 +23,7 @@ namespace Web.Controllers {
         }
 
         [HttpGet]
+        [Authorize(Roles = "flightlog-api.admin, flightlog-api.read")]
         public async Task<ActionResult> List()
         {
             var batteries = await _batteryService.ListBatteriesAsync();
@@ -29,6 +31,7 @@ namespace Web.Controllers {
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = "flightlog-api.admin, flightlog-api.read")]
         public async Task<ActionResult> GetById(int id)
         {
             try
@@ -43,6 +46,7 @@ namespace Web.Controllers {
         }
 
         [HttpPost]
+        [Authorize(Roles = "flightlog-api.admin, flightlog-api.write")]
         public async Task<ActionResult<Battery>> Post([FromBody] Battery newBattery)
         {
             try
@@ -58,6 +62,7 @@ namespace Web.Controllers {
 
         // TODO Fix this or create a better implemetnation with some rules for updating batteries
         [HttpPut]
+        [Authorize(Roles = "flightlog-api.admin, flightlog-api.write")]
         public async Task<ActionResult<Battery>> Put([FromBody] Battery battery)
         {
             try
@@ -77,6 +82,7 @@ namespace Web.Controllers {
 
         // TODO Fix this method
         [HttpDelete("{id}")]
+        [Authorize(Roles = "flightlog-api.admin, flightlog-api.write")]
         public async Task<ActionResult> Delete(int id)
         {
             try

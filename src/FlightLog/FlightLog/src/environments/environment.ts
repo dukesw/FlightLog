@@ -4,7 +4,10 @@
 
 export const environment = {
   production: false, 
-  apiUrl: "https://localhost:5002/"
+  apiUrl: "https://localhost:5002/", 
+  identityServerAuthority: "https://localhost:5001/",
+  identityServerRedirectUri: "http://localhost:4200/auth-callback", 
+  identityServerPostLogoutRedirectUri: "http://localhost:4200/"
 };
 
 /*

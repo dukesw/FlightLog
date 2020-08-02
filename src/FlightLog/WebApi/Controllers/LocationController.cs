@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using DukeSoftware.FlightLog.ApplicationCore.Entities;
 using DukeSoftware.FlightLog.ApplicationCore.Interfaces;
 using DukeSoftware.GuardClauses;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,6 +24,7 @@ namespace WebApi.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "flightlog-api.admin, flightlog-api.read")]
         public async Task<ActionResult> List()
         {
             var locations = await locationService.GetLocationsAsync();
@@ -30,6 +32,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "flightlog-api.admin, flightlog-api.write")]
         public async Task<ActionResult<Location>> Post([FromBody] Location newLocation)
         {
             try
