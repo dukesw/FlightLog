@@ -32,4 +32,4 @@ jobs:
         app-name: 'app-fl-ui'
         slot-name: 'production'
         publish-profile: ${{ secrets.AzureAppService_PublishProfile_3c7a3f54a35044838d70b42ad018dfc6 }}
-        package: .
+        package: ./src/FlightLog/FlightLog
