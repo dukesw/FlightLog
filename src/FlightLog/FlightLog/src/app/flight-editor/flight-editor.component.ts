@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormBuilder, Form, Validators } from '@angular/forms';
+import { FormControl, FormBuilder, Form, Validators, FormGroupDirective } from '@angular/forms';
 import { ModelService } from '../model.service';
 import { LocationService } from '../location.service';
 import { IModel } from '../interfaces/imodel';
@@ -66,7 +66,7 @@ export class FlightEditorComponent implements OnInit {
     details: ['']
   });
 
-  onSubmit() {
+  onSubmit(formDirective: FormGroupDirective): void {
     console.warn(this.flightForm.value)
 
     this.flight.Date = this.flightForm.value.date;
@@ -80,15 +80,17 @@ export class FlightEditorComponent implements OnInit {
       this.savedFlight = data;
       console.log(this.savedFlight);
       this.message = `Saved flight with Id ${this.savedFlight.Id}.`;
-      this.clearForm();
+     
+      this.clearForm(formDirective);
     });
   }
 
   // TODO Next. Better error handling - use the HeroApp components as an example with messages passed about...
 
   
-  clearForm() {
+  clearForm(formDirective: FormGroupDirective) {
     this.flightForm.reset();
+    formDirective.resetForm();
     this.flightForm.patchValue({ date: new Date() });
   }
 
