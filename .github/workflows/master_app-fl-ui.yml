@@ -21,10 +21,11 @@ jobs:
         node-version: '12.13.0'
 
     - name: npm install, build, and test
+      working-directory: src/FlightLog/FlightLog
       run: |
         npm install
         npm run build --if-present
-        npm run test --if-present
+
 
     - name: 'Deploy to Azure Web App'
       uses: azure/webapps-deploy@v1
@@ -32,4 +33,4 @@ jobs:
         app-name: 'app-fl-ui'
         slot-name: 'production'
         publish-profile: ${{ secrets.AzureAppService_PublishProfile_71def2ee2cb440b6965379b200fc8393 }}
-        package: .
+        package: ./src/FlightLog/FlightLog
