@@ -10,7 +10,7 @@ on:
 
 jobs:
   build-and-deploy:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
     - uses: actions/checkout@master
@@ -18,18 +18,18 @@ jobs:
     - name: Set up Node.js version
       uses: actions/setup-node@v1
       with:
-        node-version: '12.x'
+        node-version: '12.13.0'
 
     - name: npm install, build, and test
-      working-directory: ./src/FlightLog/FlightLog
       run: |
         npm install
         npm run build --if-present
-        
+        npm run test --if-present
+
     - name: 'Deploy to Azure Web App'
       uses: azure/webapps-deploy@v1
       with:
         app-name: 'app-fl-ui'
         slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_3c7a3f54a35044838d70b42ad018dfc6 }}
-        package: ./src/FlightLog/FlightLog
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_71def2ee2cb440b6965379b200fc8393 }}
+        package: .
