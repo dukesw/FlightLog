@@ -24,7 +24,7 @@ jobs:
       working-directory: src/FlightLog/FlightLog
       run: |
         npm install
-        npm run build --prod --if-present
+        npm run build --if-present
 
 
     - name: 'Deploy to Azure Web App'
