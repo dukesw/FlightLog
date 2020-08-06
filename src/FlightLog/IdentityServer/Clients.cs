@@ -23,7 +23,7 @@ namespace DukeSoftware.FlightLog.ApplicationCore.IdentityServer
                 //}, 
                 new Client
                 {
-                    ClientId = "flightlog-app-v2", 
+                    ClientId = "flightlog-app", 
                     ClientName = "Flight Log", 
                     ClientSecrets = new List<Secret> { new Secret("passwordtochange".Sha256()) },
                     AllowedGrantTypes = GrantTypes.Code, 

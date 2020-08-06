@@ -31,7 +31,7 @@ namespace DukeSoftware.FlightLog.ApplicationCore.IdentityServer
             {
                 new ApiResource
                 {
-                    Name = "customAPI", 
+                    Name = "role", 
                     DisplayName = "API One", 
                     Description = "Allow the application to access APO One on your behalf", 
                     Scopes = new List<string> { "api1.read", "api1.write" }, 

@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "mssql1": {
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroup')]/providers/Microsoft.Sql/servers/sandpit-dbserver/databases/FlightLog",
+      "type": "mssql.azure",
+      "connectionId": "FlightLog",
+      "secretStore": "AzureAppSettings"
+    }
+  }
+}

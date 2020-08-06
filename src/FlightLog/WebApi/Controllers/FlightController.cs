@@ -23,7 +23,7 @@ namespace WebApi.Controllers
         }
 
         [HttpGet]
-        //[Authorize]
+        [Authorize(Roles = "flightlog-api.admin, flightlog-api.read")]
         public async Task<ActionResult> Get()
         {
             var flights = await _flightService.GetFlightsAsync();
@@ -31,6 +31,7 @@ namespace WebApi.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = "flightlog-api.admin, flightlog-api.read")]
         public async Task<ActionResult<Flight>> GetById(int id)
         {
             try
@@ -45,6 +46,7 @@ namespace WebApi.Controllers
         }
 
         [HttpGet("model/{modelId}")]
+        [Authorize(Roles = "flightlog-api.admin, flightlog-api.read")]
         public async Task<ActionResult<List<FlightDto>>> GetByModelId(int modelId)
         {
             try
@@ -59,12 +61,13 @@ namespace WebApi.Controllers
         }
 
         [HttpGet("summary/{modelId}")]
+        [Authorize(Roles = "flightlog-api.admin, flightlog-api.read")]
         public async Task<ActionResult<FlightSummaryDto>> GetSummaryByModelId(int modelId)
         {
             try
             {
                 var flights = await _flightService.GetFlightSummaryByModelAsync(modelId);
-                return Ok(flights);
+                return Ok(flights);  
             }
             catch (ArgumentNullException)
             {
@@ -74,6 +77,7 @@ namespace WebApi.Controllers
 
 
         [HttpPost]
+        [Authorize(Roles = "flightlog-api.admin, flightlog-api.write")]
         public async Task<ActionResult<Flight>> Post([FromBody] Flight newFlight)
         {
             try
@@ -92,6 +96,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPut]
+        [Authorize(Roles = "flightlog-api.admin, flightlog-api.write")]
         public async Task<ActionResult<Flight>> Put([FromBody] Flight flight)
         {
             try
@@ -110,6 +115,7 @@ namespace WebApi.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "flightlog-api.admin, flightlog-api.write")]
         public async Task<ActionResult> Delete(int id)
         {
             try

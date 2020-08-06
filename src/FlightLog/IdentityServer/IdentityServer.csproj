@@ -1,9 +1,10 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <AssemblyName>DukeSoftware.FlightLog.ApplicationCore.IdentityServer</AssemblyName>
     <RootNamespace>DukeSoftware.FlightLog.ApplicationCore.IdentityServer</RootNamespace>
+    <UserSecretsId>40834696-9d9e-4ae0-a574-3babddc702e0</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

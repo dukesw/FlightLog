@@ -84,12 +84,14 @@ export class AuthService {
   }
 
   getAuthourizationHeaderValue(): string {
-    return `${this.user.token_type} ${this.user.access_token}`;
+    if (this.user != null) {
+      return `${this.user.token_type} ${this.user.access_token}`;
+    }
   }
 
-  get authorizationHeaderValue(): string {
-    return `${this.user.token_type} ${this.user.access_token}`;
-  }
+  // get authorizationHeaderValue(): string {
+  //   return `${this.user.token_type} ${this.user.access_token}`;
+  // }
 
   getName(): string {
     return this.user != null ? this.user.profile.name : '';
@@ -103,16 +105,14 @@ export class AuthService {
 
 export function getClientSettings(): UserManagerSettings {
   return {
-    authority: 'https://localhost:5001', 
-    client_id: 'flightlog-app-v2', 
+    authority: environment.identityServerAuthority, 
+    client_id: 'flightlog-app', 
     client_secret: 'passwordtochange',
-    redirect_uri: 'http://localhost:4200/auth-callback', 
-    post_logout_redirect_uri: 'http://localhost:4200/',
+    redirect_uri: environment.identityServerRedirectUri, 
+    post_logout_redirect_uri: environment.identityServerPostLogoutRedirectUri,
     response_type: "code", 
     loadUserInfo: true,
-    
-    //response_type: "code",
-    scope: "openid profile email api1.read",
+    scope: "openid profile email flightlog-api.read flightlog-api.write",
     filterProtocolClaims: true
   }
   // This is the previous attempt

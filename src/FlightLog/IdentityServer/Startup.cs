@@ -14,15 +14,25 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Logging;
 
 namespace DukeSoftware.FlightLog.ApplicationCore.IdentityServer
 {
     public class Startup
     {
-        const string connectionString = "Server=localhost\\SQL2019;Database=IdentityServer;User=sa;Password=password321#;MultipleActiveResultSets=true";
+
+        string connectionString;
         string migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
+        public IConfiguration Configuration { get; }
+
+        public Startup(IConfiguration configuration)
+        {
+            Configuration = configuration;
+            connectionString = Configuration.GetConnectionString("IdentityServerDb");
+        }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
@@ -68,6 +78,7 @@ namespace DukeSoftware.FlightLog.ApplicationCore.IdentityServer
             app.UseRouting();
 
             app.UseIdentityServer();
+    
             app.UseAuthorization();
             app.UseEndpoints(endpoints => endpoints.MapDefaultControllerRoute());
 

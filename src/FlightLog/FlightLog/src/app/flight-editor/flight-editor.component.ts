@@ -9,6 +9,10 @@ import { Flight } from '../models/flight';
 import { ILocation } from '../interfaces/ilocation';
 import { IPilot } from '../interfaces/ipilot';
 import { PilotService } from '../pilot.service';
+import { catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
+import { NotificationService } from '../notification.service';
 
 
 @Component({
@@ -23,12 +27,17 @@ export class FlightEditorComponent implements OnInit {
       private modelService: ModelService, 
       private flightService: FlightService, 
       private locationService: LocationService, 
-      private pilotService: PilotService) {
+      private pilotService: PilotService, 
+      private notificationService: NotificationService) {
     
         // Get the list of models
     modelService.getModels().subscribe((data: IModel[]) => {
       this.models = data;
+    }, 
+    error => {
+      this.message = `Error getting model data: ${error.message}`;
     });
+    
 
     // Location
     locationService.getLocations().subscribe((data: ILocation[]) => {
@@ -76,13 +85,39 @@ export class FlightEditorComponent implements OnInit {
     this.flight.FieldId = this.flightForm.value.locationId;
     this.flight.PilotId = this.flightForm.value.pilotId;
 
-    this.flightService.addFlight(this.flight).subscribe((data: IFlight) => {
-      this.savedFlight = data;
-      console.log(this.savedFlight);
-      this.message = `Saved flight with Id ${this.savedFlight.Id}.`;
-     
-      this.clearForm(formDirective);
-    });
+    this.flightService.addFlight(this.flight)
+    // .pipe(
+    //   catchError(err => of([]))
+    // )
+    .subscribe(
+      (data: IFlight) => {  
+        if (data instanceof HttpErrorResponse) {
+          this.message = "Not able to save. Try again later"
+          return;
+        } 
+        this.savedFlight = data;
+        console.log(this.savedFlight);
+        this.message = `Saved flight with Id ${this.savedFlight.Id}.`;
+        this.notificationService.notify(`Saved flight with Id ${this.savedFlight.Id}.`);
+        this.clearForm(formDirective);
+        
+      }, 
+      error => {
+        if (error instanceof HttpErrorResponse) {
+          console.log('Caught an HttpErrorResponse');
+          if (error.status === 401) 
+          {
+            this.message = 'User not authenticated';
+          }
+          if (error.status === 403) 
+          {
+            this.message = 'User not authorised to save flights';
+          }
+        } 
+        else {
+          this.message = `Error: ${error.message}`;
+        }
+      });
   }
 
   // TODO Next. Better error handling - use the HeroApp components as an example with messages passed about...
