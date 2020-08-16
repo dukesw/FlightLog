@@ -16,13 +16,13 @@ namespace DukeSoftware.FlightLog.ApplicationCore.IdentityServer
             {
                 new TestUser
                 {
-                    SubjectId = "37E84366-A840-4974-A2B3-98E4FCC30936", 
+                    SubjectId = Guid.NewGuid().ToString(), 
                     Username = "rhys", 
-                    Password = "password",
+                    Password = "Password1!",
                     Claims = new List<Claim>
                     {
                         new Claim(JwtClaimTypes.Email, "rhys.jones@yahoo.co.nz"), 
-                        new Claim(JwtClaimTypes.Role, "admin")
+                        new Claim(JwtClaimTypes.Role, "flightlog")
                     }
                 }
             };

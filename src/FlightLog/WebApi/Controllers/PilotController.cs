@@ -23,7 +23,7 @@ namespace WebApi.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "flightlog-api.admin, flightlog-api.read")]
+       // [Authorize(Roles = "flightlog-api.admin, flightlog-api.read")]
         public async Task<ActionResult> List()
         {
             var pilots = await _pilotService.GetPilotsAsync();

@@ -18,8 +18,10 @@ namespace DukeSoftware.FlightLog.Infrastructure.Data
                 .Build();
 
             var builder = new DbContextOptionsBuilder<FlightLogContext>();
-            var connectionString = configuration.GetConnectionString("FlightLog");
-            builder.UseSqlServer(connectionString);
+            var connectionString = configuration.GetConnectionString("FlightLogSqlite");
+           // builder.UseSqlServer(connectionString);
+            builder.UseSqlite(connectionString);
+
 
             return new FlightLogContext(builder.Options);
 

@@ -19,8 +19,8 @@ namespace DukeSoftware.FlightLog.ApplicationCore.IdentityServer
                 new IdentityResources.Email(),
                 new IdentityResource
                 {
-                    Name = "role",
-                    UserClaims = new List<string> { "role" }
+                    Name = "Flight Log",
+                    UserClaims = new List<string> { "flightlog" }
                 }
             };
         }
@@ -31,12 +31,12 @@ namespace DukeSoftware.FlightLog.ApplicationCore.IdentityServer
             {
                 new ApiResource
                 {
-                    Name = "role", 
-                    DisplayName = "API One", 
-                    Description = "Allow the application to access APO One on your behalf", 
-                    Scopes = new List<string> { "api1.read", "api1.write" }, 
+                    Name = "flightlog", 
+                    DisplayName = "FlightLog API", 
+                    Description = "Allow the application to access FlightLog APIs on your behalf", 
+                    Scopes = new List<string> { "flightlog-api.read", "flightlog-api.write" }, 
                     ApiSecrets = new List<Secret> { new Secret("scopepassword".Sha256()) },
-                    UserClaims = new List<string> {"role" }
+                    UserClaims = new List<string> {"flightlog" }
                 }
             };
         }
@@ -45,8 +45,8 @@ namespace DukeSoftware.FlightLog.ApplicationCore.IdentityServer
         {
             return new[]
             {
-                new ApiScope("api1.read", "Read Access to API One"),
-                new ApiScope("api1.write", "Write Access to API One")
+                new ApiScope("flightlog-api.read", "Read Access to the FlightLog API"),
+                new ApiScope("flightlog-api.write", "Write Access to the FlightLog API")
             };
         }
     }

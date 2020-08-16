@@ -23,7 +23,7 @@ namespace Web.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "flightlog-api.admin, flightlog-api.read")]
+        //[Authorize(Roles = "flightlog-api.admin, flightlog-api.read")]
         public async Task<ActionResult> List()
         {
             var models = await _modelService.GetModelsAsync();

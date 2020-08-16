@@ -36,9 +36,10 @@ namespace DukeSoftware.FlightLog.ApplicationCore.IdentityServer
                         IdentityServerConstants.StandardScopes.Profile, 
                         IdentityServerConstants.StandardScopes.Email, 
                         "role", 
-                        "api1.read"
+                        "flightlog-api.read",
+                        "flightlog-api.write"
                     },
-                    AllowedCorsOrigins = new List<string> { "http://localhost:4200" },
+                    AllowedCorsOrigins = new List<string> { "http://localhost:4200", "https://flightlogui.azurewebsites.net" },
                     RequirePkce = true, 
                     AllowPlainTextPkce = false
                 }

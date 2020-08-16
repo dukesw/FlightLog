@@ -31,15 +31,21 @@ namespace DukeSoftware.FlightLog.ApplicationCore.IdentityServer
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-            connectionString = Configuration.GetConnectionString("IdentityServerDb");
+            connectionString = Configuration.GetConnectionString("IdentityServerDbSqlite");
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<FlightLogIdentityDbContext>(builder =>
-                builder.UseSqlServer(connectionString, sqlOptions => sqlOptions.MigrationsAssembly(migrationsAssembly)));
+            //services.AddDbContext<FlightLogIdentityDbContext>(builder =>
+            //    builder.UseSqlServer(connectionString, sqlOptions => sqlOptions.MigrationsAssembly(migrationsAssembly)));
+            services.AddDbContext<FlightLogIdentityDbContext>(options =>
+                options.UseSqlite(
+                    connectionString,
+                    x => x.MigrationsAssembly(migrationsAssembly))
+                );
+
 
             services.AddIdentity<IdentityUser, IdentityRole>()
                .AddEntityFrameworkStores<FlightLogIdentityDbContext>();
@@ -52,11 +58,11 @@ namespace DukeSoftware.FlightLog.ApplicationCore.IdentityServer
                 //.AddTestUsers(Users.Get())
                 .AddDeveloperSigningCredential()
             .AddConfigurationStore(options => options.ConfigureDbContext =
-                builder => builder.UseSqlServer(
+                builder => builder.UseSqlite(
                     connectionString,
                     sqlOptions => sqlOptions.MigrationsAssembly(migrationsAssembly)))
             .AddOperationalStore(options => options.ConfigureDbContext =
-                builder => builder.UseSqlServer(
+                builder => builder.UseSqlite(
                     connectionString,
                     sqlOptions => sqlOptions.MigrationsAssembly(migrationsAssembly)))
             .AddAspNetIdentity<IdentityUser>();
@@ -145,7 +151,7 @@ namespace DukeSoftware.FlightLog.ApplicationCore.IdentityServer
                 var tempClaims = new List<Claim>
                     {
                         new Claim(JwtClaimTypes.Email, "rhys.jones@yahoo.co.nz"),
-                        new Claim(JwtClaimTypes.Role, "admin")
+                        new Claim(JwtClaimTypes.Role, "flightlog")
                     };
 
                 var identityUser = new IdentityUser("rhys");

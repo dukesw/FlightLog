@@ -1,7 +1,7 @@
 export const environment = {
   production: true,
-  apiUrl: "https://app-fl.azurewebsites.net/",
-  identityServerAuthority: "https://app-is.azurewebsites.net/",
-  identityServerRedirectUri: "https://app-fl-ui.azurewebsites.net/auth-callback", 
-  identityServerPostLogoutRedirectUri: "https://app-fl-ui.azurewebsites.net/"
+  apiUrl: "https://flightlogapi.azurewebsites.net/",
+  identityServerAuthority: "https://flightlogis.azurewebsites.net/",
+  identityServerRedirectUri: "https://flightlogui.azurewebsites.net/auth-callback", 
+  identityServerPostLogoutRedirectUri: "https://flightlogui.azurewebsites.net/"
 };

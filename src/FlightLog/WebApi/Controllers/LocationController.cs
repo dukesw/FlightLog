@@ -24,7 +24,7 @@ namespace WebApi.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "flightlog-api.admin, flightlog-api.read")]
+        [Authorize(Roles = "flightlog-api.read, flightlog-api.admin")]
         public async Task<ActionResult> List()
         {
             var locations = await locationService.GetLocationsAsync();
