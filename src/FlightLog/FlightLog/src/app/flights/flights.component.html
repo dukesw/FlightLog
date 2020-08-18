@@ -1,1 +1,31 @@
-<p>flights works!</p>
+<form class="flight-form" [formGroup]="flightFilterForm" #formDirective="ngForm" (ngSubmit)="onSubmit(formDirective)">
+    <mat-form-field>
+        <mat-label>Date From</mat-label>
+        <input matInput [matDatepicker]="fromPicker" formControlName="dateFrom">
+        <mat-datepicker-toggle matSuffix [for]="fromPicker"></mat-datepicker-toggle>
+        <mat-datepicker #fromPicker></mat-datepicker>
+    </mat-form-field>
+    <mat-form-field>
+        <mat-label>Date To</mat-label>
+        <input matInput [matDatepicker]="picker" formControlName="dateTo">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+    <br/>
+    <mat-form-field>
+        <mat-label *ngIf="isLoadingModels">
+            <div class="select-placeholder-container">
+                    <span>Loading...</span>
+                <mat-spinner class="spinner" diameter="18"></mat-spinner>
+            </div>
+        </mat-label>
+        <mat-label *ngIf="!isLoadingModels">Model</mat-label>
+        <mat-select [(ngModel)]="selectedModel" formControlName="modelId">
+            <mat-option *ngFor="let model of models" [value]="model.Id">{{model.Name}}</mat-option>
+        </mat-select> 
+        <mat-error *ngIf="modelLoadingError">Error loading models</mat-error>
+    </mat-form-field>
+    <button mat-stroked-button type="submit" [disabled]="!flightFilterForm.valid">Filter</button>
+    <button mat-stroked-button type="submit">Reset</button>
+</form>
+<p>{{message}}</p>

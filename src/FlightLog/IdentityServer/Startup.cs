@@ -57,15 +57,15 @@ namespace DukeSoftware.FlightLog.ApplicationCore.IdentityServer
                 //.AddInMemoryApiScopes(Resources.GetApiScopes())
                 //.AddTestUsers(Users.Get())
                 .AddDeveloperSigningCredential()
-            .AddConfigurationStore(options => options.ConfigureDbContext =
-                builder => builder.UseSqlite(
-                    connectionString,
-                    sqlOptions => sqlOptions.MigrationsAssembly(migrationsAssembly)))
-            .AddOperationalStore(options => options.ConfigureDbContext =
-                builder => builder.UseSqlite(
-                    connectionString,
-                    sqlOptions => sqlOptions.MigrationsAssembly(migrationsAssembly)))
-            .AddAspNetIdentity<IdentityUser>();
+                .AddConfigurationStore(options => options.ConfigureDbContext =
+                    builder => builder.UseSqlite(
+                        connectionString,
+                        sqlOptions => sqlOptions.MigrationsAssembly(migrationsAssembly)))
+                .AddOperationalStore(options => options.ConfigureDbContext =
+                    builder => builder.UseSqlite(
+                        connectionString,
+                        sqlOptions => sqlOptions.MigrationsAssembly(migrationsAssembly)))
+                .AddAspNetIdentity<IdentityUser>();
 
             services.AddControllersWithViews();
         }

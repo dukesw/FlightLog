@@ -5,6 +5,6 @@
   </PropertyGroup>
   <PropertyGroup>
     <ActiveDebugProfile>IdentityServer</ActiveDebugProfile>
-    <NameOfLastUsedPublishProfile>app-is - Web Deploy</NameOfLastUsedPublishProfile>
+    <NameOfLastUsedPublishProfile>flightlogis - Web Deploy</NameOfLastUsedPublishProfile>
   </PropertyGroup>
 </Project>
