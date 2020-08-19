@@ -18,8 +18,12 @@ export class ModelService {
   getModels(): Observable<IModel[]> {
     return this.http.get<IModel[]>(this.modelUrl)
       .pipe(
-        catchError(this.handleError<IModel[]>('getModels', []))
+        catchError(err => {
+          this.handleError<IModel[]>('getModels', [])
+          return throwError(err);
+        })
       )
+      
   }
   
   /** 

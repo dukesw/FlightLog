@@ -23,7 +23,7 @@
         <mat-select [(ngModel)]="selectedModel" formControlName="modelId">
             <mat-option *ngFor="let model of models" [value]="model.Id">{{model.Name}}</mat-option>
         </mat-select> 
-        <mat-error *ngIf="modelLoadingError">Error loading models</mat-error>
+        <mat-error *ngIf="modelLoadingError">Error loading models dude</mat-error>
     </mat-form-field>
     <button mat-stroked-button type="submit" [disabled]="!flightFilterForm.valid">Filter</button>
     <button mat-stroked-button type="submit">Reset</button>
