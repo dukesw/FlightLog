@@ -36,7 +36,10 @@ namespace DukeSoftware.FlightLog.Infrastructure.Data
 
         private void ConfigureMediaLinks(EntityTypeBuilder<MediaLink> builder)
         {
-            builder.ToTable("MediaLink");
+            builder.ToTable("MediaLink")
+                .HasOne<Account>(x => x.Account)
+                .WithMany(x => x.MediaLinks);
+
         }
 
         private void ConfigureBattery(EntityTypeBuilder<Battery> builder)
@@ -47,12 +50,18 @@ namespace DukeSoftware.FlightLog.Infrastructure.Data
                 .WithMany(b => b.Batteries)
                 .HasForeignKey(b => b.BatteryTypeId)
                 .OnDelete(DeleteBehavior.Restrict);
-                
+
+            builder.HasOne<Account>(x => x.Account)
+                .WithMany(x => x.Batteries);
+
         }
 
         private void ConfigureBatteryCharges(EntityTypeBuilder<BatteryCharge> builder)
         {
-            builder.ToTable("BatteryCharge");
+            builder.ToTable("BatteryCharge")
+                .HasOne<Account>(x => x.Account)
+                .WithMany(x => x.BatteryCharges);
+            
         }
 
         private void ConfigureBatteryType(EntityTypeBuilder<BatteryType> builder)
@@ -61,16 +70,26 @@ namespace DukeSoftware.FlightLog.Infrastructure.Data
                 .HasMany<Battery>(t => t.Batteries)
                 .WithOne(b => b.BatteryType)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasOne<Account>(x => x.Account)
+                .WithMany(x => x.BatteryTypes);
+
         }
 
         private void ConfigureLocation(EntityTypeBuilder<Location> builder)
         {
-            builder.ToTable("Location");
+            builder.ToTable("Location")
+                .HasOne<Account>(x => x.Account)
+                .WithMany(x => x.Fields);
+
         }
 
         private void ConfigurePowerPlant(EntityTypeBuilder<PowerPlant> builder)
         {
-            builder.ToTable("PowerPlant");
+            builder.ToTable("PowerPlant")
+                .HasOne<Account>(x => x.Account)
+                .WithMany(x => x.PowerPlants);
+
         }
 
         private void ConfigureModel(EntityTypeBuilder<Model> builder)
@@ -79,6 +98,10 @@ namespace DukeSoftware.FlightLog.Infrastructure.Data
                 .HasMany<Flight>(x => x.Flights)
                 .WithOne(x => x.Model)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasOne<Account>(x => x.Account)
+                .WithMany(x => x.Models);
+
         }
 
         private void ConfigureFlight(EntityTypeBuilder<Flight> builder)
@@ -93,7 +116,9 @@ namespace DukeSoftware.FlightLog.Infrastructure.Data
 
             builder.HasOne<Pilot>(x => x.Pilot)
                 .WithMany(x => x.Flights);
-                
+
+            builder.HasOne<Account>(x => x.Account)
+                .WithMany(x => x.Flights);
 
         }
 
@@ -103,6 +128,10 @@ namespace DukeSoftware.FlightLog.Infrastructure.Data
                 .HasMany<Flight>(x => x.Flights)
                 .WithOne(x => x.Pilot)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasOne<Account>(x => x.Account)
+                .WithMany(x => x.Pilots);
+
         }
     }
 }

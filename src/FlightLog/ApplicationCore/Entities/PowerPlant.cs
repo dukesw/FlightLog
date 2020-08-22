@@ -16,6 +16,8 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Entities
 
     public class PowerPlant : EntityBase
     {
+        public int AccountId { get; set; }
+        public Account Account { get; set; }
         public string Name { get; set; }
         public PowerPlantType Type { get; set; }
         public string Manufacturer { get; set; }

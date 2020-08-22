@@ -12,7 +12,7 @@ namespace Web.Controllers
     /// <summary>
     /// The BatteryController has some standard CRUD type methods in a REST style alongside some more "ProcessName" methods
     /// </summary>
-    [Route("/api/models")]
+    [Route("api/{accountid}/models")]
     public class ModelController : BaseApiController
     {
         private readonly IModelService _modelService;
@@ -23,20 +23,30 @@ namespace Web.Controllers
         }
 
         [HttpGet]
-        //[Authorize(Roles = "flightlog-api.admin, flightlog-api.read")]
-        public async Task<ActionResult> List()
+        [Authorize(Roles = "flightlog-api.admin, flightlog-api.read")]
+        public async Task<ActionResult> List(int accountId)
         {
-            var models = await _modelService.GetModelsAsync();
+            if (!IsAccountIdOk(HttpContext, accountId))
+            {
+                return Forbid();
+            }
+
+            var models = await _modelService.GetModelsAsync(accountId);
             return Ok(models.ToArray());
         }
 
         [HttpGet("{id}")]
         [Authorize(Roles = "flightlog-api.admin, flightlog-api.read")]
-        public async Task<ActionResult> GetById(int id)
+        public async Task<ActionResult> GetById(int accountId, int id)
         {
+            if (!IsAccountIdOk(HttpContext, accountId))
+            {
+                return Forbid();
+            }
+
             try
             {
-                var model = await _modelService.GetModelByIdAsync(id);
+                var model = await _modelService.GetModelByIdAsync(accountId, id);
                 return Ok(model);
             }
             catch (ArgumentNullException)
@@ -49,6 +59,11 @@ namespace Web.Controllers
         [Authorize(Roles = "flightlog-api.admin, flightlog-api.write")]
         public async Task<ActionResult<Model>> Post([FromBody] Model newModel)
         {
+            if (!IsAccountIdOk(HttpContext, newModel.AccountId))
+            {
+                return Forbid();
+            }
+
             try
             {
                 var result = await _modelService.AddModelAsync(newModel);
@@ -65,6 +80,11 @@ namespace Web.Controllers
         [Authorize(Roles = "flightlog-api.admin, flightlog-api.write")]
         public async Task<ActionResult<Model>> Put([FromBody] Model model)
         {
+            if (!IsAccountIdOk(HttpContext, model.AccountId))
+            {
+                return Forbid();
+            }
+
             try
             {
                 var result = await _modelService.UpdateModelAsync(model);
@@ -83,8 +103,13 @@ namespace Web.Controllers
         // TODO Fix this method
         [HttpDelete("{id}")]
         [Authorize(Roles = "flightlog-api.admin, flightlog-api.write")]
-        public async Task<ActionResult> Delete(int id)
+        public async Task<ActionResult> Delete(int accountId, int id)
         {
+            if (!IsAccountIdOk(HttpContext, accountId))
+            {
+                return Forbid();
+            }
+
             try
             {
                 await _modelService.DeleteModelAsync(id);

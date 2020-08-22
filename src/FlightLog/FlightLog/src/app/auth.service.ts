@@ -67,6 +67,7 @@ export class AuthService {
       // });
 
   }
+
   async completeAuthentication(): Promise<void> {
     return this.manager.signinRedirectCallback().then(user => {
       console.log('Running: completeAuthentication');
@@ -95,6 +96,12 @@ export class AuthService {
 
   getName(): string {
     return this.user != null ? this.user.profile.name : '';
+  }
+
+  getAccountId(): string {
+    console.log("Running GetAccountID");
+    console.log(this.user.profile.accountid);
+    return (this.user != null && this.user.profile != null) ? this.user.profile.accountid : '';
   }
 
   async signout() {

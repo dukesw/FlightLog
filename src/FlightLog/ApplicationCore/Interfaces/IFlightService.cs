@@ -10,7 +10,7 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Interfaces
     public interface IFlightService
     {
 
-        Task<List<Flight>> GetFlightsAsync();
+        Task<List<Flight>> GetFlightsAsync(int accountId);
         Task<IList<FlightDto>> GetFlightsByModelAsync(int modelId);
         Task<List<Flight>> GetFlightsByDateAsync(DateTime startDate, DateTime endDate);
         Task<Flight> GetFlightByIdAsync(int id);

@@ -1,3 +1,4 @@
+using DukeSoftware.FlightLog.ApplicationCore.IdentityServer;
 using IdentityModel;
 using IdentityServer4;
 using IdentityServer4.Events;
@@ -27,14 +28,14 @@ namespace IdentityServerHost.Quickstart.UI
         private readonly IClientStore _clientStore;
         private readonly ILogger<ExternalController> _logger;
         private readonly IEventService _events;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<FlightLogUser> _userManager;
 
         public ExternalController(
             IIdentityServerInteractionService interaction,
             IClientStore clientStore,
             IEventService events,
             ILogger<ExternalController> logger,
-            UserManager<IdentityUser> userManager)
+            UserManager<FlightLogUser> userManager)
         {
             _interaction = interaction;
             _clientStore = clientStore;
@@ -143,7 +144,7 @@ namespace IdentityServerHost.Quickstart.UI
             return Redirect(returnUrl);
         }
 
-        private async Task<(IdentityUser user, string provider, string providerUserId, IEnumerable<Claim> claims)> FindUserFromExternalProvider(AuthenticateResult result)
+        private async Task<(FlightLogUser user, string provider, string providerUserId, IEnumerable<Claim> claims)> FindUserFromExternalProvider(AuthenticateResult result)
         {
             var externalUser = result.Principal;
 
@@ -167,10 +168,10 @@ namespace IdentityServerHost.Quickstart.UI
             return (user, provider, providerUserId, claims);
         }
 
-        private async Task<IdentityUser> AutoProvisionUser(string provider, string providerUserId, IEnumerable<Claim> claims)
+        private async Task<FlightLogUser> AutoProvisionUser(string provider, string providerUserId, IEnumerable<Claim> claims)
         {
             // create dummy internal account (you can do something more complex)
-            var user = new IdentityUser(Guid.NewGuid().ToString());
+            var user = new FlightLogUser(Guid.NewGuid().ToString());
             await _userManager.CreateAsync(user);
 
             // add external user ID to new account

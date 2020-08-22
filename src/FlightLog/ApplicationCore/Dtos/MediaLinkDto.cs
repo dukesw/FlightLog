@@ -2,5 +2,6 @@
 {
     public class MediaLinkDto
     {
+        public int AccountId { get; set; }
     }
 }

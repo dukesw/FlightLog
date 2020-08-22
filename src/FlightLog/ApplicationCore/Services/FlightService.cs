@@ -28,6 +28,7 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
         public async Task<Flight> AddFlightAsync(Flight flight)
         {
             Guard.AgainstNull(flight, "flight");
+            // flight.AccountId = accountId;
             try
             {
                 flight = await _flightRepository.AddAsync(flight);
@@ -66,12 +67,13 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
             return result.FirstOrDefault();
         }
 
-        public async Task<List<Flight>> GetFlightsAsync()
+        public async Task<List<Flight>> GetFlightsAsync(int accountId)
         {
             // FIXME next sort this out with a spec. Or have a default one as we are getting to have a lot of specs
             // Could also create a specification... 
             //var spec = new GetAllFlightsWithAllProperties();
-            return  await _flightRepository.GetAllAsync();
+            var spec = new GetFlightsByAccount(accountId);
+            return  await _flightRepository.GetBySpecAsync(spec);
         }
 
         public async Task<IList<FlightDto>> GetFlightsByModelAsync(int modelId)

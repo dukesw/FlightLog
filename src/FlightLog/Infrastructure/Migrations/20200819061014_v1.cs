@@ -8,11 +8,29 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "Account",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Name = table.Column<string>(nullable: true),
+                    OwnerId = table.Column<string>(nullable: true),
+                    OwnerEmail = table.Column<string>(nullable: true),
+                    OpenedOn = table.Column<DateTime>(nullable: false),
+                    ClosedOn = table.Column<DateTime>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Account", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "BatteryType",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("Sqlite:Autoincrement", true),
+                    AccountId = table.Column<int>(nullable: false),
                     CapacityMah = table.Column<int>(nullable: false),
                     Cells = table.Column<int>(nullable: false),
                     Type = table.Column<string>(nullable: true),
@@ -21,6 +39,12 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_BatteryType", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_BatteryType_Account_AccountId",
+                        column: x => x.AccountId,
+                        principalTable: "Account",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -28,7 +52,8 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("Sqlite:Autoincrement", true),
+                    AccountId = table.Column<int>(nullable: false),
                     Name = table.Column<string>(nullable: true),
                     Lattitude = table.Column<float>(nullable: true),
                     Longitude = table.Column<float>(nullable: true),
@@ -38,6 +63,12 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Location", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Location_Account_AccountId",
+                        column: x => x.AccountId,
+                        principalTable: "Account",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -45,17 +76,25 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("Sqlite:Autoincrement", true),
+                    AccountId = table.Column<int>(nullable: false),
                     Name = table.Column<string>(nullable: true),
                     Manufacturer = table.Column<string>(nullable: true),
                     PowerPlant = table.Column<string>(nullable: true),
-                    PurchasedOn = table.Column<DateTime>(nullable: false),
-                    MaidenedOn = table.Column<DateTime>(nullable: false),
-                    Notes = table.Column<string>(nullable: true)
+                    PurchasedOn = table.Column<DateTime>(nullable: true),
+                    MaidenedOn = table.Column<DateTime>(nullable: true),
+                    Notes = table.Column<string>(nullable: true),
+                    SortOrder = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Model", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Model_Account_AccountId",
+                        column: x => x.AccountId,
+                        principalTable: "Account",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -63,7 +102,8 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("Sqlite:Autoincrement", true),
+                    AccountId = table.Column<int>(nullable: false),
                     Name = table.Column<string>(nullable: true),
                     UserId = table.Column<string>(nullable: true),
                     Registration = table.Column<string>(nullable: true),
@@ -72,6 +112,12 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Pilot", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Pilot_Account_AccountId",
+                        column: x => x.AccountId,
+                        principalTable: "Account",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -79,7 +125,8 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("Sqlite:Autoincrement", true),
+                    AccountId = table.Column<int>(nullable: false),
                     Name = table.Column<string>(nullable: true),
                     Type = table.Column<int>(nullable: false),
                     Manufacturer = table.Column<string>(nullable: true),
@@ -89,6 +136,12 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_PowerPlant", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PowerPlant_Account_AccountId",
+                        column: x => x.AccountId,
+                        principalTable: "Account",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -96,7 +149,8 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("Sqlite:Autoincrement", true),
+                    AccountId = table.Column<int>(nullable: false),
                     BatteryNumber = table.Column<int>(nullable: false),
                     BatteryTypeId = table.Column<int>(nullable: false),
                     IsActive = table.Column<bool>(nullable: false),
@@ -106,6 +160,12 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Battery", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Battery_Account_AccountId",
+                        column: x => x.AccountId,
+                        principalTable: "Account",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Battery_BatteryType_BatteryTypeId",
                         column: x => x.BatteryTypeId,
@@ -119,7 +179,8 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("Sqlite:Autoincrement", true),
+                    AccountId = table.Column<int>(nullable: false),
                     ChargedOn = table.Column<DateTime>(nullable: false),
                     Type = table.Column<int>(nullable: false),
                     Mah = table.Column<int>(nullable: false),
@@ -128,6 +189,12 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_BatteryCharge", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_BatteryCharge_Account_AccountId",
+                        column: x => x.AccountId,
+                        principalTable: "Account",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_BatteryCharge_Battery_BatteryId",
                         column: x => x.BatteryId,
@@ -141,7 +208,8 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("Sqlite:Autoincrement", true),
+                    AccountId = table.Column<int>(nullable: false),
                     Date = table.Column<DateTime>(nullable: false),
                     ModelFlightNumber = table.Column<int>(nullable: false),
                     FieldId = table.Column<int>(nullable: false),
@@ -154,6 +222,12 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Flight", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Flight_Account_AccountId",
+                        column: x => x.AccountId,
+                        principalTable: "Account",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Flight_Battery_BatteryId",
                         column: x => x.BatteryId,
@@ -185,13 +259,20 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("Sqlite:Autoincrement", true),
+                    AccountId = table.Column<int>(nullable: false),
                     Uri = table.Column<string>(nullable: true),
                     FlightId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_MediaLink", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_MediaLink_Account_AccountId",
+                        column: x => x.AccountId,
+                        principalTable: "Account",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_MediaLink_Flight_FlightId",
                         column: x => x.FlightId,
@@ -201,14 +282,34 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Battery_AccountId",
+                table: "Battery",
+                column: "AccountId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Battery_BatteryTypeId",
                 table: "Battery",
                 column: "BatteryTypeId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_BatteryCharge_AccountId",
+                table: "BatteryCharge",
+                column: "AccountId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_BatteryCharge_BatteryId",
                 table: "BatteryCharge",
                 column: "BatteryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BatteryType_AccountId",
+                table: "BatteryType",
+                column: "AccountId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Flight_AccountId",
+                table: "Flight",
+                column: "AccountId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Flight_BatteryId",
@@ -231,9 +332,34 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
                 column: "PilotId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Location_AccountId",
+                table: "Location",
+                column: "AccountId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MediaLink_AccountId",
+                table: "MediaLink",
+                column: "AccountId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_MediaLink_FlightId",
                 table: "MediaLink",
                 column: "FlightId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Model_AccountId",
+                table: "Model",
+                column: "AccountId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Pilot_AccountId",
+                table: "Pilot",
+                column: "AccountId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PowerPlant_AccountId",
+                table: "PowerPlant",
+                column: "AccountId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -264,6 +390,9 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "BatteryType");
+
+            migrationBuilder.DropTable(
+                name: "Account");
         }
     }
 }

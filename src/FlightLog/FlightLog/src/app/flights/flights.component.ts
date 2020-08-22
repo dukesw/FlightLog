@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormBuilder, Form, Validators, FormGroupDirective } from '@angular/forms';
 import { ModelService } from '../model.service';
 import { IModel } from '../interfaces/imodel';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-flights',
@@ -17,19 +18,26 @@ export class FlightsComponent implements OnInit {
   modelLoadingError: boolean;
 
   constructor(private formBuilder: FormBuilder,
-    private modelService: ModelService) {
+    private modelService: ModelService, 
+    private authService: AuthService ) {
       this.isLoadingModels = true;
       this.modelLoadingError = false;
+      // Get the accountId
+      var accountId = this.authService.getAccountId();
+      console.log(`Got Account ID ${accountId}"`);
+
     // Get the list of models
-    modelService.getModels().subscribe((data: IModel[]) => {
+    modelService.getModels(accountId).subscribe((data: IModel[]) => {
       this.isLoadingModels = false;
       this.models = data;
     },
       error => {
         this.isLoadingModels = false;
         this.modelLoadingError = true;
-        this.message = `Error getting model data: ${error.message}`;
-        console.log("Error");
+        this.flightFilterForm.setErrors({'modelId': error});
+        this.flightFilterForm.markAllAsTouched(); // So that the mat-error shows without needing any input.
+        // this.message = `Error getting model data: ${error.message}`;  // Debugging only
+        console.log(`Error getting model data: ${error.message}`);
       });
   }
 

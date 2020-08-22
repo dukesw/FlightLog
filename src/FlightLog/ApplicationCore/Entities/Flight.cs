@@ -6,6 +6,8 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Entities
 {
     public class Flight : EntityBase
     {
+        public int AccountId { get; set; }
+        public Account Account { get; set; }
         public DateTime Date { get; set; }
         public int ModelFlightNumber { get; set; } 
         public int FieldId { get; set; }

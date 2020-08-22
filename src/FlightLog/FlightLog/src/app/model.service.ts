@@ -13,10 +13,11 @@ export class ModelService {
 
   constructor(private http: HttpClient) {  }
 
-  modelUrl = environment.apiUrl + 'api/models';
+  baseModelUrl = `${environment.apiUrl}api/ACCOUNT_ID/models/`;
   
-  getModels(): Observable<IModel[]> {
-    return this.http.get<IModel[]>(this.modelUrl)
+  getModels(accountId: string): Observable<IModel[]> {
+    var url = this.baseModelUrl.replace('ACCOUNT_ID', accountId);
+    return this.http.get<IModel[]>(url)
       .pipe(
         catchError(err => {
           this.handleError<IModel[]>('getModels', [])

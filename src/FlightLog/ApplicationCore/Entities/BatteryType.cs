@@ -4,6 +4,8 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Entities
 {
     public class BatteryType : EntityBase
     {
+        public int AccountId { get; set; }
+        public Account Account { get; set; }
         public int CapacityMah { get; set; }
         public int Cells { get; set; }
         public string Type { get; set; }

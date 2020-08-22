@@ -6,6 +6,8 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Entities
 {
     public class Pilot : EntityBase
     {
+        public int AccountId { get; set; }
+        public Account Account { get; set; }
         public string Name { get; set; }
 
         public string UserId { get; set; }

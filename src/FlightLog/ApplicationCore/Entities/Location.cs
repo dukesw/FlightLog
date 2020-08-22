@@ -6,6 +6,8 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Entities
 {
     public class Location : EntityBase
     {
+        public int AccountId { get; set; }
+        public Account Account { get; set; }
         public string Name { get; set; }
         public float? Lattitude { get; set; }    // TODO - create a geo class, or reuse one
         public float? Longitude { get; set; }

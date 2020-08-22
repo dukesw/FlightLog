@@ -24,9 +24,9 @@ namespace WebApi.Controllers
 
         [HttpGet]
         [Authorize(Roles = "flightlog-api.admin, flightlog-api.read")]
-        public async Task<ActionResult> Get()
+        public async Task<ActionResult> Get(int accountId)
         {
-            var flights = await _flightService.GetFlightsAsync();
+            var flights = await _flightService.GetFlightsAsync(accountId);
             return Ok(flights);
         }
 

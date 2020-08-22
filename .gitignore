@@ -254,3 +254,5 @@ src/FlightLog/WebApi/bin/Release/netcoreapp3.1/zh-Hant/Microsoft.CodeAnalysis.Wo
 src/FlightLog/FlightLog/.deployment
 /src/FlightLog/IdentityServer/bin/Release/netcoreapp3.1/runtimes
 /src/FlightLog/IdentityServer/bin/Release/netcoreapp3.1
+*.db-shm
+*.db-wal

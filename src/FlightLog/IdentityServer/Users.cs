@@ -22,7 +22,9 @@ namespace DukeSoftware.FlightLog.ApplicationCore.IdentityServer
                     Claims = new List<Claim>
                     {
                         new Claim(JwtClaimTypes.Email, "rhys.jones@yahoo.co.nz"), 
-                        new Claim(JwtClaimTypes.Role, "flightlog")
+                        new Claim(JwtClaimTypes.Role, "flightlog-api.read"),
+                        new Claim(JwtClaimTypes.Role, "flightlog-api.write"),
+                        new Claim(JwtClaimTypes.Role, "flightlog-api.admin")
                     }
                 }
             };

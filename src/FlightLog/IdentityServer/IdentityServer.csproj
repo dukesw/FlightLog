@@ -8,6 +8,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\FlightLogIdentityDb\20200704220435_InitialIdentityServerMigration.cs" />
+    <Compile Remove="Migrations\FlightLogIdentityDb\20200704220435_InitialIdentityServerMigration.Designer.cs" />
+    <Compile Remove="Migrations\FlightLogIdentityDb\20200819200509_v2.cs" />
+    <Compile Remove="Migrations\FlightLogIdentityDb\20200819200509_v2.Designer.cs" />
+    <Compile Remove="Migrations\FlightLogIdentityDb\20200819201631_v2.cs" />
+    <Compile Remove="Migrations\FlightLogIdentityDb\20200819201631_v2.Designer.cs" />
+    <Compile Remove="Migrations\FlightLogIdentityDb\20200819202521_Initial.cs" />
+    <Compile Remove="Migrations\FlightLogIdentityDb\20200819202521_Initial.Designer.cs" />
+    <Compile Remove="Migrations\FlightLogIdentityDb\20200819222642_Initial.cs" />
+    <Compile Remove="Migrations\FlightLogIdentityDb\20200819222642_Initial.Designer.cs" />
+    <Compile Remove="Migrations\FlightLogIdentityDb\20200819223339_Initial.cs" />
+    <Compile Remove="Migrations\FlightLogIdentityDb\20200819223339_Initial.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="IdentityServer4" Version="4.0.2" />
     <PackageReference Include="IdentityServer4.AspNetIdentity" Version="4.0.2" />
     <PackageReference Include="IdentityServer4.EntityFramework" Version="4.0.2" />

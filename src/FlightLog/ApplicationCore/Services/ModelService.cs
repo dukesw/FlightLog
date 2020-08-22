@@ -56,17 +56,18 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
             }
         }
 
-        public async Task<Model> GetModelByIdAsync(int id)
+        public async Task<Model> GetModelByIdAsync(int accountId, int id)
         {
-            var spec = new GetModelByIdWithIncludes(id);
+            var spec = new GetModelByAccountAndIdWithIncludes(accountId, id);
             var result = await _modelRepository.GetBySpecAsync(spec);
             Guard.AgainstNull(result.FirstOrDefault(), "result");
             return result.FirstOrDefault();
         }
 
-        public async Task<List<Model>> GetModelsAsync()
+        public async Task<List<Model>> GetModelsAsync(int accountId)
         {
-            return await _modelRepository.GetAllAsync();
+            var spec = new GetModelsByAccountId(accountId);
+            return await _modelRepository.GetBySpecAsync(spec);
         }
 
         public async Task<Model> UpdateModelAsync(Model model)

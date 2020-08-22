@@ -12,5 +12,6 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Dtos
         public DateTime FirstFlight { get; set; }
         public DateTime LastFlight { get; set; }
         // Are flights needed???  
+        public int AccountId { get; set; }
     }
 }

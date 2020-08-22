@@ -13,6 +13,7 @@ import { catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { NotificationService } from '../notification.service';
+import { AuthService } from '../auth.service';
 
 
 @Component({
@@ -28,10 +29,12 @@ export class FlightEditorComponent implements OnInit {
       private flightService: FlightService, 
       private locationService: LocationService, 
       private pilotService: PilotService, 
-      private notificationService: NotificationService) {
+      private notificationService: NotificationService,
+      private authService: AuthService) {
     
+    var accountId = this.authService.getAccountId();
         // Get the list of models
-    modelService.getModels().subscribe((data: IModel[]) => {
+    modelService.getModels(accountId).subscribe((data: IModel[]) => {
       this.models = data;
     }, 
     error => {

@@ -4,10 +4,12 @@ using System.Linq;
 using System.Reflection;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using DukeSoftware.FlightLog.ApplicationCore.IdentityServer.Services;
 using IdentityModel;
 using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Mappers;
 using IdentityServer4.Models;
+using IdentityServer4.Services;
 using IdentityServer4.Test;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -46,8 +48,9 @@ namespace DukeSoftware.FlightLog.ApplicationCore.IdentityServer
                     x => x.MigrationsAssembly(migrationsAssembly))
                 );
 
+           // services.AddScoped<IProfileService, ProfileService>();
 
-            services.AddIdentity<IdentityUser, IdentityRole>()
+            services.AddIdentity<FlightLogUser, IdentityRole>()
                .AddEntityFrameworkStores<FlightLogIdentityDbContext>();
 
             services.AddIdentityServer()
@@ -65,7 +68,9 @@ namespace DukeSoftware.FlightLog.ApplicationCore.IdentityServer
                     builder => builder.UseSqlite(
                         connectionString,
                         sqlOptions => sqlOptions.MigrationsAssembly(migrationsAssembly)))
-                .AddAspNetIdentity<IdentityUser>();
+             
+                .AddAspNetIdentity<FlightLogUser>()
+                   .AddProfileService<ProfileService>();
 
             services.AddControllersWithViews();
         }
@@ -146,15 +151,18 @@ namespace DukeSoftware.FlightLog.ApplicationCore.IdentityServer
 
 
                 // Adding a user manually to the EF store
-                var userManager = serviceScope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+                var userManager = serviceScope.ServiceProvider.GetRequiredService<UserManager<FlightLogUser>>();
 
                 var tempClaims = new List<Claim>
                     {
                         new Claim(JwtClaimTypes.Email, "rhys.jones@yahoo.co.nz"),
-                        new Claim(JwtClaimTypes.Role, "flightlog")
+                        new Claim(JwtClaimTypes.Role, "flightlog-api.read"),
+                        new Claim(JwtClaimTypes.Role, "flightlog-api.write"),
+                        new Claim(JwtClaimTypes.Role, "flightlog-api.admin")
                     };
 
-                var identityUser = new IdentityUser("rhys");
+                var identityUser = new FlightLogUser("rhys");
+                identityUser.AccountId = 1;
                 identityUser.Id = Guid.NewGuid().ToString();
                 userManager.CreateAsync(identityUser, "Password1!").Wait();
                 userManager.AddClaimsAsync(identityUser, tempClaims.ToList()).Wait();

@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 
+using DukeSoftware.FlightLog.ApplicationCore.IdentityServer;
 using IdentityModel;
 using IdentityServer4;
 using IdentityServer4.Events;
@@ -35,14 +36,14 @@ namespace IdentityServerHost.Quickstart.UI
         private readonly IClientStore _clientStore;
         private readonly IAuthenticationSchemeProvider _schemeProvider;
         private readonly IEventService _events;
-        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly SignInManager<FlightLogUser> _signInManager;
 
         public AccountController(
             IIdentityServerInteractionService interaction,
             IClientStore clientStore,
             IAuthenticationSchemeProvider schemeProvider,
             IEventService events,
-            SignInManager<IdentityUser> signInManager)
+            SignInManager<FlightLogUser> signInManager)
         {
          
             _interaction = interaction;

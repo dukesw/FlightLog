@@ -6,11 +6,11 @@ using System.Text;
 
 namespace DukeSoftware.FlightLog.ApplicationCore.Specifications
 {
-    public class GetModelByIdWithIncludes : BaseSpecification<Model>, ISpecification<Model>
+    public class GetModelsByAccountId :  BaseSpecification<Model>, ISpecification<Model>
     {
-        public GetModelByIdWithIncludes(int id) : base(m => m.Id == id)
+        public GetModelsByAccountId(int accountId) : base(x => x.AccountId == accountId)
         {
-            AddInclude(m => m.Flights);
+            ApplyOrderBy(x => x.SortOrder);
         }
     }
 }

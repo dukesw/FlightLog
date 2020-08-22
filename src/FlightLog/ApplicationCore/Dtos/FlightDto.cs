@@ -22,5 +22,7 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Dtos
         public float FlightMinutes { get; set; }
         //public Pilot Pilot { get; set; }  // TODO add a pilot class
         public virtual IList<MediaLinkDto> MediaLinks { get; set; }
+
+        public int AccountId { get; set; }
     }
 }
