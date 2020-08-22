@@ -13,7 +13,7 @@ export class ModelService {
 
   constructor(private http: HttpClient) {  }
 
-  baseModelUrl = `${environment.apiUrl}api/ACCOUNT_ID/models/`;
+  baseModelUrl = `${environment.apiUrl}api/ACCOUNT_ID/models`;
   
   getModels(accountId: string): Observable<IModel[]> {
     var url = this.baseModelUrl.replace('ACCOUNT_ID', accountId);
