@@ -28,4 +28,11 @@
     <button mat-stroked-button type="submit" [disabled]="!flightFilterForm.valid">Filter</button>
     <button mat-stroked-button type="submit">Reset</button>
 </form>
+
+<p *ngIf="flightSummary != null">Total Flights: {{flightSummary.TotalNumberOfFlights}}</p>
+<p *ngIf="flightSummary != null">Total Minutes: {{flightSummary.TotalFlightTimeMinutes}}</p>
+<p *ngIf="flightSummary != null">Average Flight: {{flightSummary.AverageFlightTimeMinutes}}</p>
+<p *ngIf="flightSummary != null">First Flight: {{flightSummary.FirstFlight}}</p>
+<p *ngIf="flightSummary != null">Last Flight: {{flightSummary.LastFlight}}</p>
+
 <p>{{message}}</p>

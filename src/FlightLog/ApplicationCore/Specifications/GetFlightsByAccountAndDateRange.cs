@@ -6,9 +6,10 @@ using System.Text;
 
 namespace DukeSoftware.FlightLog.ApplicationCore.Specifications
 {
-    public class GetFlightsByDateRange : BaseSpecification<Flight>, ISpecification<Flight>
+    public class GetFlightsByAccountAndDateRange : BaseSpecification<Flight>, ISpecification<Flight>
     {
-        public GetFlightsByDateRange(DateTime startDate, DateTime endDate) : base(x => x.Date >= startDate && x.Date <= endDate)
+        public GetFlightsByAccountAndDateRange(int accountId, DateTime startDate, DateTime endDate) 
+            : base(x => x.AccountId == accountId && x.Date >= startDate && x.Date <= endDate)
         {
             Includes.Add(x => x.Model);
             Includes.Add(x => x.Battery);

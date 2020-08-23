@@ -3,6 +3,8 @@ import { FormControl, FormBuilder, Form, Validators, FormGroupDirective } from '
 import { ModelService } from '../model.service';
 import { IModel } from '../interfaces/imodel';
 import { AuthService } from '../auth.service';
+import { FlightService } from '../flight.service';
+import { IFlightSummary } from '../interfaces/iflight-summary';
 
 @Component({
   selector: 'app-flights',
@@ -16,18 +18,21 @@ export class FlightsComponent implements OnInit {
   message: string;
   isLoadingModels: boolean;
   modelLoadingError: boolean;
+  accountId: number;
+  flightSummary: IFlightSummary;
 
   constructor(private formBuilder: FormBuilder,
     private modelService: ModelService, 
+    private flightService: FlightService,
     private authService: AuthService ) {
       this.isLoadingModels = true;
       this.modelLoadingError = false;
       // Get the accountId
-      var accountId = this.authService.getAccountId();
-      console.log(`Got Account ID ${accountId}"`);
+      this.accountId = this.authService.getAccountId();
+      console.log(`Got Account ID ${this.accountId}`);
 
     // Get the list of models
-    modelService.getModels(accountId).subscribe((data: IModel[]) => {
+    modelService.getModels(this.accountId).subscribe((data: IModel[]) => {
       this.isLoadingModels = false;
       this.models = data;
     },
@@ -51,6 +56,15 @@ export class FlightsComponent implements OnInit {
   });
 
   onSubmit(FormGroupDirective): void {
+    this.flightService.getFlightSummary(this.accountId, this.flightFilterForm.value.modelId).subscribe((data: IFlightSummary) => {
+      this.flightSummary = data;
+      
+        
+      
+    }, 
+    error => {
+      console.log(`Error getting flight summery: ${error.message}`);
+    });
     console.info(this.flightFilterForm.value);
   }
 }

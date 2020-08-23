@@ -15,8 +15,8 @@ export class ModelService {
 
   baseModelUrl = `${environment.apiUrl}api/ACCOUNT_ID/models`;
   
-  getModels(accountId: string): Observable<IModel[]> {
-    var url = this.baseModelUrl.replace('ACCOUNT_ID', accountId);
+  getModels(accountId: number): Observable<IModel[]> {
+    var url = this.baseModelUrl.replace('ACCOUNT_ID', accountId.toString());
     return this.http.get<IModel[]>(url)
       .pipe(
         catchError(err => {

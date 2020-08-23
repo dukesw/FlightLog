@@ -13,7 +13,7 @@ namespace WebApi.Controllers
 {
     [Route("api/locations")]
     [ApiController]
-    public class LocationController : ControllerBase
+    public class LocationController : BaseApiController
     {
         private readonly ILocationService locationService; 
 

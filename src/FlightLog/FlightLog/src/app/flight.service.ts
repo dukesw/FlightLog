@@ -10,8 +10,7 @@ import { environment } from '../environments/environment'
   providedIn: 'root'
 })
 export class FlightService {
-
-  flightUrl = environment.apiUrl + 'api/flights';
+  flightUrl = environment.apiUrl + 'api/ACCOUNT_ID/flights';
 
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -19,12 +18,19 @@ export class FlightService {
   
   constructor(private http: HttpClient) { }
 
-  addFlight(flight: Flight): Observable<Flight> {
-    return this.http.post<Flight>(this.flightUrl, flight, this.httpOptions)
+  addFlight(accountId: number, flight: Flight): Observable<Flight> {
+    var url = this.flightUrl.replace('ACCOUNT_ID', accountId.toString());
+    return this.http.post<Flight>(url, flight, this.httpOptions)
       //.pipe(
         //catchError(this.handleError<Flight>('addFlight'))
         //catchError()
       //)
+  }
+
+  getFlightSummary(accountId: number, modelId: number)
+  {
+    var url = this.flightUrl.replace('ACCOUNT_ID', accountId.toString());
+    return this.http.get(`${url}/summary/${modelId}`, this.httpOptions);
   }
 
     /** 

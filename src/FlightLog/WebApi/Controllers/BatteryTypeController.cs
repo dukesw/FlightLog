@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 
-namespace Web.Controllers
+namespace WebApi.Controllers
 {
     [Route("/api/batteryTypes")]
     public class BatteryTypeController : BaseApiController

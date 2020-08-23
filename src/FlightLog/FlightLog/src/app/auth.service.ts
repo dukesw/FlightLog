@@ -98,10 +98,10 @@ export class AuthService {
     return this.user != null ? this.user.profile.name : '';
   }
 
-  getAccountId(): string {
+  getAccountId(): number {
     console.log("Running GetAccountID");
     console.log(this.user.profile.accountid);
-    return (this.user != null && this.user.profile != null) ? this.user.profile.accountid : '';
+    return (this.user != null && this.user.profile != null) ? this.user.profile.accountid : 0;
   }
 
   async signout() {

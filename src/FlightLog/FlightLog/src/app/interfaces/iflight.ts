@@ -3,6 +3,7 @@ import { ILocation } from './ilocation'
 
 export interface IFlight { 
     Id: number; 
+    AccountId: number;
     Date: Date;
     ModelId: number;
     FieldId: number;

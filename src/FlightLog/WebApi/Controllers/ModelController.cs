@@ -7,7 +7,7 @@ using DukeSoftware.FlightLog.ApplicationCore.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Web.Controllers
+namespace WebApi.Controllers
 {
     /// <summary>
     /// The BatteryController has some standard CRUD type methods in a REST style alongside some more "ProcessName" methods

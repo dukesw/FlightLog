@@ -32,9 +32,9 @@ export class FlightEditorComponent implements OnInit {
       private notificationService: NotificationService,
       private authService: AuthService) {
     
-    var accountId = this.authService.getAccountId();
+    this.accountId = this.authService.getAccountId();
         // Get the list of models
-    modelService.getModels(accountId).subscribe((data: IModel[]) => {
+    modelService.getModels(this.accountId).subscribe((data: IModel[]) => {
       this.models = data;
     }, 
     error => {
@@ -59,6 +59,7 @@ export class FlightEditorComponent implements OnInit {
   flight: IFlight = new Flight();
   savedFlight: IFlight;
   message: string;
+  accountId: number = 0;
 
   models: IModel[];
   selectedModel: IModel;
@@ -87,8 +88,9 @@ export class FlightEditorComponent implements OnInit {
     this.flight.Details = this.flightForm.value.details;
     this.flight.FieldId = this.flightForm.value.locationId;
     this.flight.PilotId = this.flightForm.value.pilotId;
+    this.flight.AccountId = this.accountId;
 
-    this.flightService.addFlight(this.flight)
+    this.flightService.addFlight(this.accountId, this.flight)
     // .pipe(
     //   catchError(err => of([]))
     // )

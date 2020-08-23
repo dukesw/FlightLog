@@ -12,7 +12,7 @@ namespace WebApi.Controllers
 {
     [Route("/api/pilots")]
     [ApiController]
-    public class PilotController : ControllerBase
+    public class PilotController : BaseApiController
     {
         private IPilotService _pilotService;
 

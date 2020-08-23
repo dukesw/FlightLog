@@ -11,9 +11,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers
 {
-    [Route("api/flights")]
+    [Route("api/{accountId}/flights")]
     [ApiController]
-    public class FlightController : ControllerBase
+    public class FlightController : BaseApiController
     {
         private readonly IFlightService _flightService;
 
@@ -26,17 +26,27 @@ namespace WebApi.Controllers
         [Authorize(Roles = "flightlog-api.admin, flightlog-api.read")]
         public async Task<ActionResult> Get(int accountId)
         {
+            if (!IsAccountIdOk(HttpContext, accountId))
+            {
+                return Forbid();
+            }
+
             var flights = await _flightService.GetFlightsAsync(accountId);
             return Ok(flights);
         }
 
         [HttpGet("{id}")]
         [Authorize(Roles = "flightlog-api.admin, flightlog-api.read")]
-        public async Task<ActionResult<Flight>> GetById(int id)
+        public async Task<ActionResult<Flight>> GetById(int accountId, int id)
         {
+            if (!IsAccountIdOk(HttpContext, accountId))
+            {
+                return Forbid();
+            }
+
             try
             {
-                var flight = await _flightService.GetFlightByIdAsync(id);
+                var flight = await _flightService.GetFlightByIdAsync(accountId, id);
                 return Ok(flight);
             }
             catch (ArgumentNullException)
@@ -47,11 +57,16 @@ namespace WebApi.Controllers
 
         [HttpGet("model/{modelId}")]
         [Authorize(Roles = "flightlog-api.admin, flightlog-api.read")]
-        public async Task<ActionResult<List<FlightDto>>> GetByModelId(int modelId)
+        public async Task<ActionResult<List<FlightDto>>> GetByModelId(int accountId, int modelId)
         {
+            if (!IsAccountIdOk(HttpContext, accountId))
+            {
+                return Forbid();
+            }
+
             try
             {
-                var flights = await _flightService.GetFlightsByModelAsync(modelId);
+                var flights = await _flightService.GetFlightsByModelAsync(accountId, modelId);
                 return Ok(flights);
             }
             catch (ArgumentNullException)
@@ -62,11 +77,16 @@ namespace WebApi.Controllers
 
         [HttpGet("summary/{modelId}")]
         [Authorize(Roles = "flightlog-api.admin, flightlog-api.read")]
-        public async Task<ActionResult<FlightSummaryDto>> GetSummaryByModelId(int modelId)
+        public async Task<ActionResult<FlightSummaryDto>> GetSummaryByModelId(int accountId, int modelId)
         {
+            if (!IsAccountIdOk(HttpContext, accountId))
+            {
+                return Forbid();
+            }
+
             try
             {
-                var flights = await _flightService.GetFlightSummaryByModelAsync(modelId);
+                var flights = await _flightService.GetFlightSummaryByModelAsync(accountId, modelId);
                 return Ok(flights);  
             }
             catch (ArgumentNullException)
@@ -78,8 +98,14 @@ namespace WebApi.Controllers
 
         [HttpPost]
         [Authorize(Roles = "flightlog-api.admin, flightlog-api.write")]
-        public async Task<ActionResult<Flight>> Post([FromBody] Flight newFlight)
+        public async Task<ActionResult<Flight>> Post(int accountId, [FromBody] Flight newFlight)
         {
+            if (!IsAccountIdOk(HttpContext, accountId))
+            {
+                return Forbid();
+            }
+
+            // TODO also check the account Id passed in the flight service, throwing the apporopriate exception
             try
             {
                 var result = await _flightService.AddFlightAsync(newFlight);
@@ -97,8 +123,13 @@ namespace WebApi.Controllers
 
         [HttpPut]
         [Authorize(Roles = "flightlog-api.admin, flightlog-api.write")]
-        public async Task<ActionResult<Flight>> Put([FromBody] Flight flight)
+        public async Task<ActionResult<Flight>> Put(int accountId, [FromBody] Flight flight)
         {
+            if (!IsAccountIdOk(HttpContext, accountId))
+            {
+                return Forbid();
+            }
+
             try
             {
                 var result = await _flightService.UpdateFlightAsync(flight);
@@ -116,8 +147,13 @@ namespace WebApi.Controllers
 
         [HttpDelete("{id}")]
         [Authorize(Roles = "flightlog-api.admin, flightlog-api.write")]
-        public async Task<ActionResult> Delete(int id)
+        public async Task<ActionResult> Delete(int accountId, int id)
         {
+            if (!IsAccountIdOk(HttpContext, accountId))
+            {
+                return Forbid();
+            }
+
             try
             {
                 await _flightService.DeleteFlightAsync(id);

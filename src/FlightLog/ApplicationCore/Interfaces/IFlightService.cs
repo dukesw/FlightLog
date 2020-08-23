@@ -11,10 +11,10 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Interfaces
     {
 
         Task<List<Flight>> GetFlightsAsync(int accountId);
-        Task<IList<FlightDto>> GetFlightsByModelAsync(int modelId);
-        Task<List<Flight>> GetFlightsByDateAsync(DateTime startDate, DateTime endDate);
-        Task<Flight> GetFlightByIdAsync(int id);
-        Task<FlightSummaryDto> GetFlightSummaryByModelAsync(int modelId); 
+        Task<IList<FlightDto>> GetFlightsByModelAsync(int accountId, int modelId);
+        Task<List<Flight>> GetFlightsByDateAsync(int accountId, DateTime startDate, DateTime endDate);
+        Task<Flight> GetFlightByIdAsync(int accountId, int id);
+        Task<FlightSummaryDto> GetFlightSummaryByModelAsync(int accountId, int modelId); 
         Task<Flight> AddFlightAsync(Flight flight);
         Task<Flight> UpdateFlightAsync(Flight flight);
         Task DeleteFlightAsync(int id);

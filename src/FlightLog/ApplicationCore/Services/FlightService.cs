@@ -58,7 +58,7 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
             }
         }
 
-        public async Task<Flight> GetFlightByIdAsync(int id)
+        public async Task<Flight> GetFlightByIdAsync(int accountId, int id)
         {
             // todo include a SpecificationBase class then create an instance from there
             var spec = new GetFlightByIdWithIncludes(id);
@@ -76,37 +76,37 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
             return  await _flightRepository.GetBySpecAsync(spec);
         }
 
-        public async Task<IList<FlightDto>> GetFlightsByModelAsync(int modelId)
+        public async Task<IList<FlightDto>> GetFlightsByModelAsync(int accountId, int modelId)
         {
-            var spec = new GetFlightsByModel(modelId);
+            var spec = new GetFlightsByAccountAndModel(accountId, modelId);
             var result = await _flightRepository.GetBySpecAsync(spec);
             return _mapper.Map<IList<Flight>, IList<FlightDto>>(result);
         }
 
-        public async Task<FlightSummaryDto> GetFlightSummaryByModelAsync(int modelId)
+        public async Task<FlightSummaryDto> GetFlightSummaryByModelAsync(int accountId, int modelId)
         {
-            var allFlights = await GetFlightsByModelAsync(modelId);
+            var allFlights = await GetFlightsByModelAsync(accountId, modelId);
             var result = CreateFlightSummary(allFlights);
             return result;
         }
 
         private FlightSummaryDto CreateFlightSummary(IList<FlightDto> flights)
         {
-            var result = new FlightSummaryDto
-            {
-                TotalFlightTimeMinutes = flights.Sum(x => x.FlightMinutes),
-                TotalNumberOfFlights = flights.Count,
-                AverageFlightTimeMinutes = flights.Average(x => x.FlightMinutes),
-                FirstFlight = flights.Min(x => x.Date),
-                LastFlight = flights.Max(x => x.Date)
+            var result = new FlightSummaryDto(); 
+            if (flights.Count > 0) {
+                result.TotalFlightTimeMinutes = flights.Sum(x => x.FlightMinutes);
+                result.TotalNumberOfFlights = flights.Count;
+                result.AverageFlightTimeMinutes = flights.Average(x => x.FlightMinutes);
+                result.FirstFlight = flights.Min(x => x.Date);
+                result.LastFlight = flights.Max(x => x.Date);
             };
 
             return result;
         }
 
-        public async Task<List<Flight>> GetFlightsByDateAsync(DateTime startDate, DateTime endDate)
+        public async Task<List<Flight>> GetFlightsByDateAsync(int accountId, DateTime startDate, DateTime endDate)
         {
-            var spec = new GetFlightsByDateRange(startDate, endDate);
+            var spec = new GetFlightsByAccountAndDateRange(accountId, startDate, endDate);
             return await _flightRepository.GetBySpecAsync(spec);
         }
 
