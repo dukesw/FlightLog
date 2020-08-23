@@ -27,7 +27,7 @@ namespace Web
     public class Startup
     {
 
-        private readonly string MyAllowSpecificOrigins = "localdev";
+        private readonly string MyAllowSpecificOrigins = "ApiCorsPolicy";
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -72,7 +72,8 @@ namespace Web
                 options.AddPolicy(name: MyAllowSpecificOrigins,
                                   builder =>
                                   {
-                                      builder.WithOrigins("http://localhost:4200")
+                                      builder.WithOrigins("https://flightlogui.azurewebsites.net", "http://localhost:4200")
+                                      //.AllowAnyOrigin()
                                             .AllowAnyHeader()
                                             .AllowAnyMethod();
                                       //builder.WithOrigins("https://flightlogui.azurewebsites.net")
@@ -93,8 +94,8 @@ namespace Web
             services.AddAuthentication("Bearer")
                 .AddIdentityServerAuthentication(options =>
                 {
-                    options.Authority = "https://localhost:5001";
-                  //  options.Authority = "https://flightlogis.azurewebsites.net";
+                    //options.Authority = "https://localhost:5001";
+                    options.Authority = "https://flightlogis.azurewebsites.net";
                     //options.RequireHttpsMetadata = false;
                     options.ApiName = "flightlog-api";
                 }
@@ -119,7 +120,7 @@ namespace Web
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers();
+                endpoints.MapControllers();//.RequireCors(MyAllowSpecificOrigins);
             });
 
         }
