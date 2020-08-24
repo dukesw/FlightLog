@@ -34,7 +34,7 @@
 <p>Total Flights: {{flightSummary.TotalNumberOfFlights}}</p>
 <p>Total Minutes: {{flightSummary.TotalFlightTimeMinutes}}</p>
 <p>Average Flight: {{flightSummary.AverageFlightTimeMinutes}}</p>
-<p>First Flight: {{flightSummary.FirstFlight | date }}</p>
-<p>Last Flight: {{flightSummary.LastFlight | date }}</p>
+<p *ngIf="flightSummary.FirstFlight">First Flight: {{flightSummary.FirstFlight + 'Z' | date }}</p>
+<p *ngIf="flightSummary.LastFlight">Last Flight: {{flightSummary.LastFlight + 'Z' | date}}</p>
 </div>
 <p>{{message}}</p>
