@@ -58,13 +58,16 @@ export class FlightsComponent implements OnInit {
   onSubmit(FormGroupDirective): void {
     this.flightService.getFlightSummary(this.accountId, this.flightFilterForm.value.modelId).subscribe((data: IFlightSummary) => {
       this.flightSummary = data;
-      
-        
-      
     }, 
     error => {
-      console.log(`Error getting flight summery: ${error.message}`);
+      console.log(`Error getting flight summary: ${error.message}`);
     });
     console.info(this.flightFilterForm.value);
+  }
+
+  resetForm() {
+    this.flightSummary = null;
+    // this.flightFilterForm.reset();
+    // this.flightFilterForm.clearValidators();
   }
 }

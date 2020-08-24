@@ -1,15 +1,16 @@
 <form class="flight-form" [formGroup]="flightFilterForm" #formDirective="ngForm" (ngSubmit)="onSubmit(formDirective)">
     <mat-form-field>
         <mat-label>Date From</mat-label>
-        <input matInput [matDatepicker]="fromPicker" formControlName="dateFrom">
-        <mat-datepicker-toggle matSuffix [for]="fromPicker"></mat-datepicker-toggle>
-        <mat-datepicker #fromPicker></mat-datepicker>
+        <input matInput [matDatepicker]="fromPicker" formControlName="dateFrom" [disabled]="true">
+        <mat-datepicker-toggle matSuffix [for]="fromPicker" [disabled]="true"></mat-datepicker-toggle>
+        <mat-datepicker #fromPicker [disabled]="true"></mat-datepicker>
     </mat-form-field>
+    <br/>
     <mat-form-field>
         <mat-label>Date To</mat-label>
-        <input matInput [matDatepicker]="picker" formControlName="dateTo">
-        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-        <mat-datepicker #picker></mat-datepicker>
+        <input matInput [matDatepicker]="picker" formControlName="dateTo" [disabled]="true">
+        <mat-datepicker-toggle matSuffix [for]="picker" [disabled]="true"></mat-datepicker-toggle>
+        <mat-datepicker #picker [disabled]="true"></mat-datepicker>
     </mat-form-field>
     <br/>
     <mat-form-field>
@@ -25,14 +26,15 @@
         </mat-select> 
         <mat-error *ngIf="modelLoadingError">Error loading models</mat-error>
     </mat-form-field>
+    <br/>
     <button mat-stroked-button type="submit" [disabled]="!flightFilterForm.valid">Filter</button>
-    <button mat-stroked-button type="submit">Reset</button>
+    <button mat-stroked-button type="reset" (click)="resetForm()">Reset</button>
 </form>
-
-<p *ngIf="flightSummary != null">Total Flights: {{flightSummary.TotalNumberOfFlights}}</p>
-<p *ngIf="flightSummary != null">Total Minutes: {{flightSummary.TotalFlightTimeMinutes}}</p>
-<p *ngIf="flightSummary != null">Average Flight: {{flightSummary.AverageFlightTimeMinutes}}</p>
-<p *ngIf="flightSummary != null">First Flight: {{flightSummary.FirstFlight}}</p>
-<p *ngIf="flightSummary != null">Last Flight: {{flightSummary.LastFlight}}</p>
-
+<div *ngIf="flightSummary != null">
+<p>Total Flights: {{flightSummary.TotalNumberOfFlights}}</p>
+<p>Total Minutes: {{flightSummary.TotalFlightTimeMinutes}}</p>
+<p>Average Flight: {{flightSummary.AverageFlightTimeMinutes}}</p>
+<p>First Flight: {{flightSummary.FirstFlight | date }}</p>
+<p>Last Flight: {{flightSummary.LastFlight | date }}</p>
+</div>
 <p>{{message}}</p>

@@ -95,7 +95,7 @@ namespace Web
                 .AddIdentityServerAuthentication(options =>
                 {
                     //options.Authority = "https://localhost:5001";
-                    options.Authority = "https://flightlogis.azurewebsites.net";
+                    options.Authority = Configuration.GetValue<string>("Authority"); // "https://flightlogis.azurewebsites.net";
                     //options.RequireHttpsMetadata = false;
                     options.ApiName = "flightlog-api";
                 }
