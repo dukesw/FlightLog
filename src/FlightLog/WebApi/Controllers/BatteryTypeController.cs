@@ -5,13 +5,14 @@ using System.Threading.Tasks;
 using DukeSoftware.FlightLog.ApplicationCore.Entities;
 using DukeSoftware.FlightLog.ApplicationCore.Exceptions;
 using DukeSoftware.FlightLog.ApplicationCore.Interfaces;
+using DukeSoftware.GuardClauses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 
 namespace WebApi.Controllers
 {
-    [Route("/api/batteryTypes")]
+    [Route("/api/{accountId}/batteryTypes")]
     public class BatteryTypeController : BaseApiController
     {
         private readonly IBatteryService _batteryService;
@@ -23,37 +24,55 @@ namespace WebApi.Controllers
 
         [HttpGet]
         [Authorize(Roles = "flightlog-api.admin, flightlog-api.read")]
-        public async Task<ActionResult> Get()
+        public async Task<ActionResult> Get(int accountId)
         {
-            var batteryTypes = await _batteryService.ListBatteryTypesAsync();
-            return Ok(batteryTypes.ToArray());
+            try
+            {
+                Guard.AgainstAccountNumberMismatch(GetAccountIdClaim(), accountId.ToString(), "userClaim.accountId", "accountId");
+                var batteryTypes = await _batteryService.ListBatteryTypesAsync(accountId);
+                return Ok(batteryTypes.ToArray());
+            }
+            catch (AccountConflictException)
+            {
+                return Forbid();
+            }
         }
 
         [HttpGet("{id}")]
         [Authorize(Roles = "flightlog-api.admin, flightlog-api.read")]
-        public async Task<ActionResult> GetById(int id)
+        public async Task<ActionResult> GetById(int accountId, int id)
         {
             try
             {
-                var batteryType = await _batteryService.GetBatteryTypeByIdAsync(id);
+                Guard.AgainstAccountNumberMismatch(GetAccountIdClaim(), accountId.ToString(), "userClaim.accountId", "accountId");
+                var batteryType = await _batteryService.GetBatteryTypeByIdAsync(accountId, id);
                 return Ok(batteryType);
             } 
-            catch(ArgumentNullException ex)
+            catch(ArgumentNullException)
             {
                 return NotFound($"Error finding battery type {id}");
+            }
+            catch (AccountConflictException)
+            {
+                return Forbid();
             }
         }
 
         [HttpPost]
         [Authorize(Roles = "flightlog-api.admin, flightlog-api.write")]
-        public async Task<ActionResult> AddNew([FromBody] BatteryType batteryType)
+        public async Task<ActionResult> AddNew(int accountId, [FromBody] BatteryType batteryType)
         {
             // Validate the input
             try
             {
-                var result = await _batteryService.EnterNewBatteryTypeAsync(batteryType);
+                Guard.AgainstAccountNumberMismatch(GetAccountIdClaim(), accountId.ToString(), "userClaim.accountId", "accountId");
+                var result = await _batteryService.EnterNewBatteryTypeAsync(accountId, batteryType);
                 return Ok(result);
-            } 
+            }
+            catch (AccountConflictException)
+            {
+                return Forbid();
+            }
             catch (Exception)
             {
                 return BadRequest("Error adding battery type");
@@ -62,18 +81,23 @@ namespace WebApi.Controllers
 
         [HttpPut]
         [Authorize(Roles = "flightlog-api.admin, flightlog-api.write")]
-        public async Task<ActionResult> Update([FromBody] BatteryType batteryType)
+        public async Task<ActionResult> Update(int accountId, [FromBody] BatteryType batteryType)
         {
             try
             {
-                var result = await _batteryService.UpdateBatteryTypeAsync(batteryType);
+                Guard.AgainstAccountNumberMismatch(GetAccountIdClaim(), accountId.ToString(), "userClaim.accountId", "accountId");
+                var result = await _batteryService.UpdateBatteryTypeAsync(accountId, batteryType);
                 return Ok(result);
             } 
             catch (ArgumentNullException)
             {
                 return BadRequest("Error with input battery type");
             }
-            catch(Exception)
+            catch (AccountConflictException)
+            {
+                return Forbid();
+            }
+            catch (Exception)
             {
                 return BadRequest("Error updating battery type");
             }
@@ -81,16 +105,21 @@ namespace WebApi.Controllers
 
         [HttpDelete("{id}")]
         [Authorize(Roles = "flightlog-api.admin, flightlog-api.write")]
-        public async Task<ActionResult> Delete(int id)
+        public async Task<ActionResult> Delete(int accountId, int id)
         {
             try
             {
-                await _batteryService.DeleteBatteryTypeAsync(id);
+                Guard.AgainstAccountNumberMismatch(GetAccountIdClaim(), accountId.ToString(), "userClaim.accountId", "accountId");
+                await _batteryService.DeleteBatteryTypeAsync(accountId, id);
                 return Ok();
             }
             catch (BatteryTypeNotFoundException)
             {
                 return NotFound($"Error finding battery type {id} to delete");
+            }
+            catch (AccountConflictException)
+            {
+                return Forbid();
             }
             catch (Exception)
             {

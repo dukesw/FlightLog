@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DukeSoftware.FlightLog.ApplicationCore.Exceptions;
 using DukeSoftware.FlightLog.ApplicationCore.Interfaces;
 using DukeSoftware.GuardClauses;
 using Microsoft.AspNetCore.Authorization;
@@ -10,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers
 {
-    [Route("/api/pilots")]
+    [Route("/api/{accountId}/pilots")]
     [ApiController]
     public class PilotController : BaseApiController
     {
@@ -23,13 +24,19 @@ namespace WebApi.Controllers
         }
 
         [HttpGet]
-       // [Authorize(Roles = "flightlog-api.admin, flightlog-api.read")]
-        public async Task<ActionResult> List()
+        [Authorize(Roles = "flightlog-api.admin, flightlog-api.read")]
+        public async Task<ActionResult> List(int accountId)
         {
-            var pilots = await _pilotService.GetPilotsAsync();
-            return Ok(pilots.ToArray());
+            try
+            {
+                Guard.AgainstAccountNumberMismatch(GetAccountIdClaim(), accountId.ToString(), "userClaim.accountId", "accountId");
+                var pilots = await _pilotService.GetPilotsAsync(accountId);
+                return Ok(pilots.ToArray());
+            }
+            catch (AccountConflictException)
+            {
+                return Forbid();
+            }
         }
-
-
     }
 }

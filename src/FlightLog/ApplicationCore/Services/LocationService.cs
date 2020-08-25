@@ -1,5 +1,6 @@
 ﻿using DukeSoftware.FlightLog.ApplicationCore.Entities;
 using DukeSoftware.FlightLog.ApplicationCore.Interfaces;
+using DukeSoftware.FlightLog.ApplicationCore.Specifications;
 using DukeSoftware.GuardClauses;
 using System;
 using System.Collections.Generic;
@@ -21,9 +22,11 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
             this._locationRepository = locationRepository;
             this._logger = logger;
         }
-        public async Task<Location> AddLocationAsync(Location location)
+        public async Task<Location> AddLocationAsync(int accountId, Location location)
         {
             Guard.AgainstNull(location, "location");
+            Guard.AgainstAccountNumberMismatch(accountId, location.AccountId, "accountId", "location.AccountId");
+
             try
             {
                 await _locationRepository.AddAsync(location);
@@ -37,22 +40,23 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
             }
         }
 
-        public Task DeleteLocationAsync(int id)
+        public Task DeleteLocationAsync(int accountId, int id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<Location> GetLocationByIdAsync(int id)
+        public Task<Location> GetLocationByIdAsync(int accountId, int id)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<List<Location>> GetLocationsAsync()
+        public async Task<List<Location>> GetLocationsAsync(int accountId)
         {
-            return await _locationRepository.GetAllAsync();
+            var spec = new GetLocationsByAccount(accountId);
+            return await _locationRepository.GetBySpecAsync(spec);
         }
 
-        public Task<Location> UpdateLocationAsync(Location location)
+        public Task<Location> UpdateLocationAsync(int accountId, Location location)
         {
             throw new NotImplementedException();
         }

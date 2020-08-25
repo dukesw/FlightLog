@@ -6,9 +6,9 @@ using System.Text;
 
 namespace DukeSoftware.FlightLog.ApplicationCore.Specifications
 {
-    public class GetBatteryByIdWithIncludes : BaseSpecification<Battery>, ISpecification<Battery>
+    public class GetBatteryByAccountAndIdWithIncludes : BaseSpecification<Battery>, ISpecification<Battery>
     {
-        public GetBatteryByIdWithIncludes(long id) : base(x => x.Id == id)
+        public GetBatteryByAccountAndIdWithIncludes(int accountId, long id) : base(x => x.Id == id && x.AccountId == accountId)
         {
             AddInclude(x => x.BatteryType);
         }

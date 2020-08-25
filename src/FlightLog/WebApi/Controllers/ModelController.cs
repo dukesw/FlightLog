@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DukeSoftware.FlightLog.ApplicationCore.Entities;
+using DukeSoftware.FlightLog.ApplicationCore.Exceptions;
 using DukeSoftware.FlightLog.ApplicationCore.Interfaces;
+using DukeSoftware.GuardClauses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -26,26 +28,25 @@ namespace WebApi.Controllers
         [Authorize(Roles = "flightlog-api.admin, flightlog-api.read")]
         public async Task<ActionResult> List(int accountId)
         {
-            if (!IsAccountIdOk(HttpContext, accountId))
+            try
+            {
+                Guard.AgainstAccountNumberMismatch(GetAccountIdClaim(), accountId.ToString(), "userClaim.accountId", "accountId");
+                var models = await _modelService.GetModelsAsync(accountId);
+                return Ok(models.ToArray());
+            }
+            catch (AccountConflictException)
             {
                 return Forbid();
             }
-
-            var models = await _modelService.GetModelsAsync(accountId);
-            return Ok(models.ToArray());
         }
 
         [HttpGet("{id}")]
         [Authorize(Roles = "flightlog-api.admin, flightlog-api.read")]
         public async Task<ActionResult> GetById(int accountId, int id)
         {
-            if (!IsAccountIdOk(HttpContext, accountId))
-            {
-                return Forbid();
-            }
-
             try
             {
+                Guard.AgainstAccountNumberMismatch(GetAccountIdClaim(), accountId.ToString(), "userClaim.accountId", "accountId");
                 var model = await _modelService.GetModelByIdAsync(accountId, id);
                 return Ok(model);
             }
@@ -53,21 +54,25 @@ namespace WebApi.Controllers
             {
                 return NotFound($"Error finding model {id}");
             }
+            catch (AccountConflictException)
+            {
+                return Forbid();
+            }
         }
 
         [HttpPost]
         [Authorize(Roles = "flightlog-api.admin, flightlog-api.write")]
-        public async Task<ActionResult<Model>> Post([FromBody] Model newModel)
+        public async Task<ActionResult<Model>> Post(int accountId, [FromBody] Model newModel)
         {
-            if (!IsAccountIdOk(HttpContext, newModel.AccountId))
-            {
-                return Forbid();
-            }
-
             try
             {
-                var result = await _modelService.AddModelAsync(newModel);
+                Guard.AgainstAccountNumberMismatch(GetAccountIdClaim(), accountId.ToString(), "userClaim.accountId", "accountId");
+                var result = await _modelService.AddModelAsync(accountId, newModel);
                 return Ok(result);
+            }
+            catch (AccountConflictException)
+            {
+                return Forbid();
             }
             catch (Exception)
             {
@@ -78,21 +83,21 @@ namespace WebApi.Controllers
         // TODO Fix this or create a better implemetnation with some rules for updating batteries
         [HttpPut]
         [Authorize(Roles = "flightlog-api.admin, flightlog-api.write")]
-        public async Task<ActionResult<Model>> Put([FromBody] Model model)
+        public async Task<ActionResult<Model>> Put(int accountId, [FromBody] Model model)
         {
-            if (!IsAccountIdOk(HttpContext, model.AccountId))
-            {
-                return Forbid();
-            }
-
             try
             {
-                var result = await _modelService.UpdateModelAsync(model);
+                Guard.AgainstAccountNumberMismatch(GetAccountIdClaim(), accountId.ToString(), "userClaim.accountId", "accountId");
+                var result = await _modelService.UpdateModelAsync(accountId, model);
                 return Ok(result);
             }
             catch (ArgumentNullException)
             {
                 return BadRequest("Error with input model");
+            }
+            catch (AccountConflictException)
+            {
+                return Forbid();
             }
             catch (Exception)
             {
@@ -105,19 +110,19 @@ namespace WebApi.Controllers
         [Authorize(Roles = "flightlog-api.admin, flightlog-api.write")]
         public async Task<ActionResult> Delete(int accountId, int id)
         {
-            if (!IsAccountIdOk(HttpContext, accountId))
-            {
-                return Forbid();
-            }
-
             try
             {
-                await _modelService.DeleteModelAsync(id);
+                Guard.AgainstAccountNumberMismatch(GetAccountIdClaim(), accountId.ToString(), "userClaim.accountId", "accountId");
+                await _modelService.DeleteModelAsync(accountId, id);
                 return Ok();
             }
             catch (ArgumentNullException)
             {
                 return NotFound($"Error finding model {id} to delete");
+            }
+            catch (AccountConflictException)
+            {
+                return Forbid();
             }
             catch (Exception)
             {

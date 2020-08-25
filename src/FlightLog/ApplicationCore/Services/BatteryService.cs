@@ -37,35 +37,38 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
             _logger = logger;
         }
 
-        public async Task<List<Battery>> ListBatteriesAsync()
+        public async Task<List<Battery>> ListBatteriesAsync(int accountId)
         {
-            return await _batteryRepository.GetAllAsync();
+            var spec = new GetBatteriesByAccount(accountId);
+            return await _batteryRepository.GetBySpecAsync(spec);
         }
 
-        public async Task<List<BatteryType>> ListBatteryTypesAsync()
+        public async Task<List<BatteryType>> ListBatteryTypesAsync(int accountId)
         {
-            return await _batteryTypeRepository.GetAllAsync();
+            var spec = new GetBatteryTypesByAccount(accountId);
+            return await _batteryTypeRepository.GetBySpecAsync(spec);
         }
 
-        public async Task<Battery> GetBatteryByIdAsync(int id)
+        public async Task<Battery> GetBatteryByIdAsync(int accountId, int id)
         {
             // TODO add an async version of get by spec??
-            var result = await _batteryRepository.GetBySpecAsync(new GetBatteryByIdWithIncludes(id));
+            var result = await _batteryRepository.GetBySpecAsync(new GetBatteryByAccountAndIdWithIncludes(accountId, id));
             Guard.AgainstNull(result.FirstOrDefault(), "result");
             return result.FirstOrDefault();
         }
 
-        public async Task<BatteryType> GetBatteryTypeByIdAsync(int id)
+        public async Task<BatteryType> GetBatteryTypeByIdAsync(int accountId, int id)
         {
-            var spec = new GetBatteryTypeWithAllDetails(id); 
+            var spec = new GetBatteryTypesByAccountAndIdWithIncludes(accountId, id); 
             var result = await _batteryTypeRepository.GetBySpecAsync(spec);
             Guard.AgainstNull(result.FirstOrDefault(), "result");
             return result.FirstOrDefault();
         }
 
-        public async Task<Battery> EnterNewBatteryAsync(Battery battery)
+        public async Task<Battery> EnterNewBatteryAsync(int accountId, Battery battery)
         {
             Guard.AgainstNull(battery, "battery");
+            Guard.AgainstAccountNumberMismatch(accountId, battery.AccountId, "accountId", "battery.AccountId");
             //Guard.AgainstNull(batteryType, "batteryType");
 
             // If the type does not exist, add it
@@ -88,9 +91,11 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
             }
         }
 
-        public async Task<BatteryType> EnterNewBatteryTypeAsync(BatteryType batteryType)
+        public async Task<BatteryType> EnterNewBatteryTypeAsync(int accountId, BatteryType batteryType)
         {
             Guard.AgainstNull(batteryType, "batteryType");
+            Guard.AgainstAccountNumberMismatch(accountId, batteryType.AccountId, "accountId", "batteryType.AccountId");
+
             try
             {
                 await _batteryTypeRepository.AddAsync(batteryType);
@@ -104,9 +109,11 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
             }
         }
 
-        public async Task<Battery> UpdateBatteryAsync(Battery battery)
+        public async Task<Battery> UpdateBatteryAsync(int accountId, Battery battery)
         {
             Guard.AgainstNull(battery, "battery");
+            Guard.AgainstAccountNumberMismatch(accountId, battery.AccountId, "accountId", "battery.AccountId");
+
             var result = await _batteryRepository.UpdateAsync(battery); // Use batteryex
             if (result != null)
             {
@@ -119,9 +126,11 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
             return result;
         }
 
-        public async Task<BatteryType> UpdateBatteryTypeAsync(BatteryType batteryType)
+        public async Task<BatteryType> UpdateBatteryTypeAsync(int accountId, BatteryType batteryType)
         {
             Guard.AgainstNull(batteryType, "batteryType");
+            Guard.AgainstAccountNumberMismatch(accountId, batteryType.AccountId, "accountId", "batteryType.AccountId");
+
             var result = await _batteryTypeRepository.UpdateAsync(batteryType);
             if (result != null)
             {
@@ -134,21 +143,23 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
             return result;
         }
 
-        public async Task DeleteBatteryAsync(int id)
+        public async Task DeleteBatteryAsync(int accountId, int id)
         {
             var batteryToDelete = _batteryRepository.GetById(id);
             Guard.AgainstBatteryNotFound(batteryToDelete, id, "batteryToDelete");
+            Guard.AgainstAccountNumberMismatch(accountId, batteryToDelete.AccountId, "accountId", "batteryToDelete.AccountId");
             await _batteryRepository.DeleteAsync(batteryToDelete);
         }
 
-        public async Task DeleteBatteryTypeAsync(int id)
+        public async Task DeleteBatteryTypeAsync(int accountId, int id)
         {
             var batteryTypeToDelete = _batteryTypeRepository.GetById(id);
             Guard.AgainstBatteryTypeNotFound(batteryTypeToDelete, id, "batteryTypeToDelete");
+            Guard.AgainstAccountNumberMismatch(accountId, batteryTypeToDelete.AccountId, "accountId", "batteryTypeToDelete.AccountId");
             await _batteryTypeRepository.DeleteAsync(batteryTypeToDelete);
         }
 
-        public async Task<Battery> EnterChargeDataAsync(Battery battery, DateTime chargeDate, ChargeType chargeType, int mahUsed)
+        public async Task<Battery> EnterChargeDataAsync(int accountId, Battery battery, DateTime chargeDate, ChargeType chargeType, int mahUsed)
         {
             // Seems like we need a "discharge" object or event...
             // Perhaps this could be charge data... ??? not discharge. Then idea is that when you charge it, you know how much was added. Although if you put into storage mode that will not work... 
@@ -158,9 +169,11 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
             Guard.AgainstNull(battery, "battery");
             Guard.AgainstNull(chargeDate, "chargeDate");
 
+
             // Make sure the battery exists
             var repoBattery = await _batteryRepository.GetByIdAsync(battery.Id);
             Guard.AgainstNull(repoBattery, "repoBattery");
+            Guard.AgainstAccountNumberMismatch(accountId, repoBattery.AccountId, "accountId", "repoBattery.AccountId");
 
             var batteryCharge = new BatteryCharge
             {

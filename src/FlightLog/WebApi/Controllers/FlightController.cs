@@ -4,7 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using DukeSoftware.FlightLog.ApplicationCore.Dtos;
 using DukeSoftware.FlightLog.ApplicationCore.Entities;
+using DukeSoftware.FlightLog.ApplicationCore.Exceptions;
 using DukeSoftware.FlightLog.ApplicationCore.Interfaces;
+using DukeSoftware.GuardClauses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -26,26 +28,25 @@ namespace WebApi.Controllers
         [Authorize(Roles = "flightlog-api.admin, flightlog-api.read")]
         public async Task<ActionResult> Get(int accountId)
         {
-            if (!IsAccountIdOk(HttpContext, accountId))
+            try
+            {
+                Guard.AgainstAccountNumberMismatch(GetAccountIdClaim(), accountId.ToString(), "userClaim.accountId", "accountId");
+                var flights = await _flightService.GetFlightsAsync(accountId);
+                return Ok(flights);
+            }
+            catch (AccountConflictException)
             {
                 return Forbid();
             }
-
-            var flights = await _flightService.GetFlightsAsync(accountId);
-            return Ok(flights);
         }
 
         [HttpGet("{id}")]
         [Authorize(Roles = "flightlog-api.admin, flightlog-api.read")]
         public async Task<ActionResult<Flight>> GetById(int accountId, int id)
         {
-            if (!IsAccountIdOk(HttpContext, accountId))
-            {
-                return Forbid();
-            }
-
             try
             {
+                Guard.AgainstAccountNumberMismatch(GetAccountIdClaim(), accountId.ToString(), "userClaim.accountId", "accountId");
                 var flight = await _flightService.GetFlightByIdAsync(accountId, id);
                 return Ok(flight);
             }
@@ -53,19 +54,19 @@ namespace WebApi.Controllers
             {
                 return NotFound($"Error finding flight {id}");
             }
+            catch (AccountConflictException)
+            {
+                return Forbid();
+            }
         }
 
         [HttpGet("model/{modelId}")]
         [Authorize(Roles = "flightlog-api.admin, flightlog-api.read")]
         public async Task<ActionResult<List<FlightDto>>> GetByModelId(int accountId, int modelId)
         {
-            if (!IsAccountIdOk(HttpContext, accountId))
-            {
-                return Forbid();
-            }
-
             try
             {
+                Guard.AgainstAccountNumberMismatch(GetAccountIdClaim(), accountId.ToString(), "userClaim.accountId", "accountId");
                 var flights = await _flightService.GetFlightsByModelAsync(accountId, modelId);
                 return Ok(flights);
             }
@@ -73,25 +74,29 @@ namespace WebApi.Controllers
             {
                 return NotFound($"Error finding flights for model {modelId}");
             }
+            catch (AccountConflictException)
+            {
+                return Forbid();
+            }
         }
 
         [HttpGet("summary/{modelId}")]
         [Authorize(Roles = "flightlog-api.admin, flightlog-api.read")]
         public async Task<ActionResult<FlightSummaryDto>> GetSummaryByModelId(int accountId, int modelId)
         {
-            if (!IsAccountIdOk(HttpContext, accountId))
-            {
-                return Forbid();
-            }
-
             try
             {
+                Guard.AgainstAccountNumberMismatch(GetAccountIdClaim(), accountId.ToString(), "userClaim.accountId", "accountId");
                 var flights = await _flightService.GetFlightSummaryByModelAsync(accountId, modelId);
                 return Ok(flights);  
             }
             catch (ArgumentNullException)
             {
                 return NotFound($"Error finding flights for model {modelId}");
+            }
+            catch (AccountConflictException)
+            {
+                return Forbid();
             }
         }
 
@@ -100,20 +105,19 @@ namespace WebApi.Controllers
         [Authorize(Roles = "flightlog-api.admin, flightlog-api.write")]
         public async Task<ActionResult<Flight>> Post(int accountId, [FromBody] Flight newFlight)
         {
-            if (!IsAccountIdOk(HttpContext, accountId))
-            {
-                return Forbid();
-            }
-
-            // TODO also check the account Id passed in the flight service, throwing the apporopriate exception
             try
             {
-                var result = await _flightService.AddFlightAsync(newFlight);
+                Guard.AgainstAccountNumberMismatch(GetAccountIdClaim(), accountId.ToString(), "userClaim.accountId", "accountId");
+                var result = await _flightService.AddFlightAsync(accountId, newFlight);
                 return Ok(result);
             }
             catch (ArgumentNullException)
             {
                 return BadRequest("Error with input flight");
+            }
+            catch (AccountConflictException)
+            {
+                return Forbid();
             }
             catch (Exception)
             {
@@ -125,19 +129,19 @@ namespace WebApi.Controllers
         [Authorize(Roles = "flightlog-api.admin, flightlog-api.write")]
         public async Task<ActionResult<Flight>> Put(int accountId, [FromBody] Flight flight)
         {
-            if (!IsAccountIdOk(HttpContext, accountId))
-            {
-                return Forbid();
-            }
-
             try
             {
-                var result = await _flightService.UpdateFlightAsync(flight);
+                Guard.AgainstAccountNumberMismatch(GetAccountIdClaim(), accountId.ToString(), "userClaim.accountId", "accountId");
+                var result = await _flightService.UpdateFlightAsync(accountId, flight);
                 return Ok(result);
             }
             catch (ArgumentNullException)
             {
                 return BadRequest("Error with input flight");
+            }
+            catch (AccountConflictException)
+            {
+                return Forbid();
             }
             catch (Exception)
             {
@@ -149,19 +153,19 @@ namespace WebApi.Controllers
         [Authorize(Roles = "flightlog-api.admin, flightlog-api.write")]
         public async Task<ActionResult> Delete(int accountId, int id)
         {
-            if (!IsAccountIdOk(HttpContext, accountId))
-            {
-                return Forbid();
-            }
-
             try
             {
-                await _flightService.DeleteFlightAsync(id);
+                Guard.AgainstAccountNumberMismatch(GetAccountIdClaim(), accountId.ToString(), "userClaim.accountId", "accountId");
+                await _flightService.DeleteFlightAsync(accountId, id);
                 return Ok();
             }
             catch (ArgumentNullException)
             {
                 return NotFound($"Error finding flight {id} to delete");
+            }
+            catch (AccountConflictException)
+            {
+                return Forbid();
             }
             catch (Exception)
             {

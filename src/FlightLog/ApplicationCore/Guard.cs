@@ -40,5 +40,21 @@ namespace DukeSoftware.GuardClauses
                 throw new BatteryTypeNotFoundException(batteryTypeId, variableName);
             }
         }
+
+        public static void AgainstAccountNumberMismatch(int accountIdOne, int accountIdTwo, string variableNameOne, string variableNameTwo)
+        {
+            if (accountIdOne != accountIdTwo)
+            {
+                throw new AccountConflictException(accountIdOne, accountIdTwo, variableNameOne, variableNameTwo);
+            }
+        }
+
+        public static void AgainstAccountNumberMismatch(string accountIdOne, string accountIdTwo, string variableNameOne, string variableNameTwo)
+        {
+            if (accountIdOne != accountIdTwo)
+            {
+                throw new AccountConflictException(accountIdOne, accountIdTwo, variableNameOne, variableNameTwo);
+            }
+        }
     }
 }

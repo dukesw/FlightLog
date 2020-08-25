@@ -1,5 +1,6 @@
 ﻿using DukeSoftware.FlightLog.ApplicationCore.Entities;
 using DukeSoftware.FlightLog.ApplicationCore.Interfaces;
+using DukeSoftware.FlightLog.ApplicationCore.Specifications;
 using DukeSoftware.GuardClauses;
 using System;
 using System.Collections.Generic;
@@ -20,27 +21,28 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
             this._pilotRepository = pilotRepository;
             this._logger = logger;
         }
-        public Task<Pilot> AddPilotAsync(Pilot pilot)
+        public Task<Pilot> AddPilotAsync(int accountId, Pilot pilot)
         {
             throw new NotImplementedException();
         }
 
-        public Task DeletePilotAsync(int id)
+        public Task DeletePilotAsync(int accountId, int id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<Pilot> GetPilotByIdAsync(int id)
+        public Task<Pilot> GetPilotByIdAsync(int accountId, int id)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<List<Pilot>> GetPilotsAsync()
+        public async Task<List<Pilot>> GetPilotsAsync(int accountId)
         {
-            return await _pilotRepository.GetAllAsync();
+            var spec = new GetPilotsByAccount(accountId);
+            return await _pilotRepository.GetBySpecAsync(spec);
         }
 
-        public Task<Pilot> UpdatePilotAsync(Pilot pilot)
+        public Task<Pilot> UpdatePilotAsync(int accountId, Pilot pilot)
         {
             throw new NotImplementedException();
         }

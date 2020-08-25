@@ -43,12 +43,12 @@ export class FlightEditorComponent implements OnInit {
     
 
     // Location
-    locationService.getLocations().subscribe((data: ILocation[]) => {
+    locationService.getLocations(this.accountId).subscribe((data: ILocation[]) => {
       this.locations = data;
     })
 
     // Pilot
-    pilotService.getPilots().subscribe((data: IPilot[]) => {
+    pilotService.getPilots(this.accountId).subscribe((data: IPilot[]) => {
       this.pilots = data;
     });
   }

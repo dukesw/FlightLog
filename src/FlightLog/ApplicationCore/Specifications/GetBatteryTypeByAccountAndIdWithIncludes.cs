@@ -3,10 +3,10 @@ using DukeSoftware.FlightLog.ApplicationCore.Interfaces;
 
 namespace DukeSoftware.FlightLog.ApplicationCore.Specifications
 {
-    internal class GetBatteryTypeWithAllDetails : BaseSpecification<BatteryType>, ISpecification<BatteryType>
+    internal class GetBatteryTypesByAccountAndIdWithIncludes : BaseSpecification<BatteryType>, ISpecification<BatteryType>
     {
 
-        public GetBatteryTypeWithAllDetails(long id) : base(x => x.Id == id)
+        public GetBatteryTypesByAccountAndIdWithIncludes(int accountId, long id) : base(x => x.Id == id && x.AccountId == accountId)
         {
             Includes.Add(x => x.Batteries);
         }

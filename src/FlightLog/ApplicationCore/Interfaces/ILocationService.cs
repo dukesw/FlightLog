@@ -8,10 +8,10 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Interfaces
 {
     public interface ILocationService
     {
-        Task<List<Location>> GetLocationsAsync();
-        Task<Location> GetLocationByIdAsync(int id);
-        Task<Location> AddLocationAsync(Location location);
-        Task<Location> UpdateLocationAsync(Location location);
-        Task DeleteLocationAsync(int id);
+        Task<List<Location>> GetLocationsAsync(int accountId);
+        Task<Location> GetLocationByIdAsync(int accountId, int id);
+        Task<Location> AddLocationAsync(int accountId, Location location);
+        Task<Location> UpdateLocationAsync(int accountId, Location location);
+        Task DeleteLocationAsync(int accountId, int id);
     }
 }

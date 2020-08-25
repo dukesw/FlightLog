@@ -25,10 +25,11 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
             _mapper = mapper;
         }
 
-        public async Task<Flight> AddFlightAsync(Flight flight)
+        public async Task<Flight> AddFlightAsync(int accountId, Flight flight)
         {
             Guard.AgainstNull(flight, "flight");
-            // flight.AccountId = accountId;
+            Guard.AgainstAccountNumberMismatch(accountId, flight.AccountId, "accountId", "flight.AccountId");
+
             try
             {
                 flight = await _flightRepository.AddAsync(flight);
@@ -42,12 +43,14 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
             }
         }
 
-        public async Task DeleteFlightAsync(int id)
+        public async Task DeleteFlightAsync(int accountId, int id)
         {
             try
             {
                 var flightToDelete = _flightRepository.GetById(id);
                 Guard.AgainstNull(flightToDelete, "flightToDelete");
+                Guard.AgainstAccountNumberMismatch(accountId, flightToDelete.AccountId, "accountId", "flightToDelete.AccountId");
+
                 await _flightRepository.DeleteAsync(flightToDelete);
                 _logger.LogInformation($"Deleted flight with Id: {id}");
             }
@@ -90,29 +93,17 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
             return result;
         }
 
-        private FlightSummaryDto CreateFlightSummary(IList<FlightDto> flights)
-        {
-            var result = new FlightSummaryDto(); 
-            if (flights.Count > 0) {
-                result.TotalFlightTimeMinutes = flights.Sum(x => x.FlightMinutes);
-                result.TotalNumberOfFlights = flights.Count;
-                result.AverageFlightTimeMinutes = flights.Average(x => x.FlightMinutes);
-                result.FirstFlight = flights.Min(x => x.Date);
-                result.LastFlight = flights.Max(x => x.Date);
-            };
-
-            return result;
-        }
-
         public async Task<List<Flight>> GetFlightsByDateAsync(int accountId, DateTime startDate, DateTime endDate)
         {
             var spec = new GetFlightsByAccountAndDateRange(accountId, startDate, endDate);
             return await _flightRepository.GetBySpecAsync(spec);
         }
 
-        public async Task<Flight> UpdateFlightAsync(Flight flight)
+        public async Task<Flight> UpdateFlightAsync(int accountId, Flight flight)
         {
             Guard.AgainstNull(flight, "flight");
+            Guard.AgainstAccountNumberMismatch(accountId, flight.AccountId, "accountId", "flight.AccountId");
+
             var result = await _flightRepository.UpdateAsync(flight);
             if (result != null)
             {
@@ -124,5 +115,21 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
             }
             return result;
         }
+
+        private FlightSummaryDto CreateFlightSummary(IList<FlightDto> flights)
+        {
+            var result = new FlightSummaryDto();
+            if (flights.Count > 0)
+            {
+                result.TotalFlightTimeMinutes = flights.Sum(x => x.FlightMinutes);
+                result.TotalNumberOfFlights = flights.Count;
+                result.AverageFlightTimeMinutes = flights.Average(x => x.FlightMinutes);
+                result.FirstFlight = flights.Min(x => x.Date);
+                result.LastFlight = flights.Max(x => x.Date);
+            };
+
+            return result;
+        }
+
     }
 }

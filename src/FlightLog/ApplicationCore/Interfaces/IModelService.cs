@@ -11,8 +11,8 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Interfaces
         // TODO Work on the ModelService (and interface) next... 
         Task<List<Model>> GetModelsAsync(int accountId);
         Task<Model> GetModelByIdAsync(int accountId, int id);
-        Task<Model> AddModelAsync(Model model);
-        Task<Model> UpdateModelAsync(Model model);
-        Task DeleteModelAsync(int id);
+        Task<Model> AddModelAsync(int accountId, Model model);
+        Task<Model> UpdateModelAsync(int accountId, Model model);
+        Task DeleteModelAsync(int accountId, int id);
     }
 }

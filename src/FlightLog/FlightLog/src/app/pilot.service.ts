@@ -12,10 +12,11 @@ export class PilotService {
 
   constructor(private http: HttpClient) { }
 
-  pilotUrl = environment.apiUrl + 'api/pilots';
+  pilotUrl = environment.apiUrl + 'api/ACCOUNT_ID/pilots';
 
-  getPilots(): Observable<IPilot[]> {
-    return this.http.get<IPilot[]>(this.pilotUrl)
+  getPilots(accountId: number): Observable<IPilot[]> {
+    var url = this.pilotUrl.replace('ACCOUNT_ID', accountId.toString());
+    return this.http.get<IPilot[]>(url)
       .pipe(
         catchError(this.handleError<IPilot[]>('getPilots', []))
       )

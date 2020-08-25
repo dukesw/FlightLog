@@ -24,9 +24,11 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
             this._logger = logger;
         }
 
-        public async Task<Model> AddModelAsync(Model model)
+        public async Task<Model> AddModelAsync(int accountId, Model model)
         {
             Guard.AgainstNull(model, "model");
+            Guard.AgainstAccountNumberMismatch(accountId, model.AccountId, "accountId", "model.AccountId");
+
             try
             {
                 await _modelRepository.AddAsync(model);
@@ -40,12 +42,14 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
             }
         }
 
-        public async Task DeleteModelAsync(int id)
+        public async Task DeleteModelAsync(int accountId, int id)
         {
             try
             {
                 var modelToDelete = _modelRepository.GetById(id);
                 Guard.AgainstNull(modelToDelete, "modelToDelete");
+                Guard.AgainstAccountNumberMismatch(accountId, modelToDelete.AccountId, "accountId", "modelToDelete.AccountId");
+
                 await _modelRepository.DeleteAsync(modelToDelete);
                 _logger.LogInformation($"Deleted model with Id: {id}");
             }
@@ -70,9 +74,11 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
             return await _modelRepository.GetBySpecAsync(spec);
         }
 
-        public async Task<Model> UpdateModelAsync(Model model)
+        public async Task<Model> UpdateModelAsync(int accountId, Model model)
         {
             Guard.AgainstNull(model, "model");
+            Guard.AgainstAccountNumberMismatch(accountId, model.AccountId, "accountId", "model.AccountId");
+
             var result = await _modelRepository.UpdateAsync(model);
             if (result != null)
             {

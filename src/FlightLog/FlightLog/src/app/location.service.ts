@@ -13,12 +13,13 @@ export class LocationService {
 
   constructor(private http: HttpClient) {  }
 
-  locationUrl = environment.apiUrl + 'api/locations';
+  locationUrl = environment.apiUrl + 'api/ACCOUNT_ID/locations';
   
-  getLocations(): Observable<ILocation[]> {
-    return this.http.get<ILocation[]>(this.locationUrl)
+  getLocations(accountId: number): Observable<ILocation[]> {
+    var url = this.locationUrl.replace('ACCOUNT_ID', accountId.toString());
+    return this.http.get<ILocation[]>(url)
       .pipe(
-        catchError(this.handleError<ILocation[]>('getLocationss', []))
+        catchError(this.handleError<ILocation[]>('getLocations', []))
       )
   }
   

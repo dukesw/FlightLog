@@ -15,8 +15,8 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Interfaces
         Task<List<Flight>> GetFlightsByDateAsync(int accountId, DateTime startDate, DateTime endDate);
         Task<Flight> GetFlightByIdAsync(int accountId, int id);
         Task<FlightSummaryDto> GetFlightSummaryByModelAsync(int accountId, int modelId); 
-        Task<Flight> AddFlightAsync(Flight flight);
-        Task<Flight> UpdateFlightAsync(Flight flight);
-        Task DeleteFlightAsync(int id);
+        Task<Flight> AddFlightAsync(int accountId, Flight flight);
+        Task<Flight> UpdateFlightAsync(int accountId, Flight flight);
+        Task DeleteFlightAsync(int accountId, int id);
     }
 }
