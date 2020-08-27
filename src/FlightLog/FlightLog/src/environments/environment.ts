@@ -7,7 +7,8 @@ export const environment = {
   apiUrl: "https://localhost:5002/", 
   identityServerAuthority: "https://localhost:5001/",
   identityServerRedirectUri: "http://localhost:4200/auth-callback", 
-  identityServerPostLogoutRedirectUri: "http://localhost:4200/"
+  identityServerPostLogoutRedirectUri: "http://localhost:4200/",
+  silentRedirectUri: "http://localhost:4200/silent-refresh.html"
 };
 
 /*

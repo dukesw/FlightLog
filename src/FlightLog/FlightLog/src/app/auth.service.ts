@@ -45,6 +45,12 @@ export class AuthService {
           console.log('authService user unloaded');
         }
       });
+      
+      this.manager.events.addSilentRenewError(() => {
+        console.log('Caught a addSilentRenewError event'); 
+      });
+
+      
    }
 
    isAuthenticated(): boolean {
@@ -107,7 +113,6 @@ export class AuthService {
   async signout() {
     await this.manager.signoutRedirect();
   }
-
 }
 
 export function getClientSettings(): UserManagerSettings {
@@ -120,7 +125,9 @@ export function getClientSettings(): UserManagerSettings {
     response_type: "code", 
     loadUserInfo: true,
     scope: "openid profile email flightlog-api.read flightlog-api.write",
-    filterProtocolClaims: true
+    filterProtocolClaims: true,
+    automaticSilentRenew: true,
+    silent_redirect_uri: environment.silentRedirectUri
   }
   // This is the previous attempt
   // return {
