@@ -48,7 +48,9 @@ namespace DukeSoftware.FlightLog.ApplicationCore.IdentityServer
                     x => x.MigrationsAssembly(migrationsAssembly))
                 );
 
-           // services.AddScoped<IProfileService, ProfileService>();
+            // services.AddScoped<IProfileService, ProfileService>();
+
+            services.ConfigureNonBreakingSameSiteCookies();
 
             services.AddIdentity<FlightLogUser, IdentityRole>()
                .AddEntityFrameworkStores<FlightLogIdentityDbContext>();
@@ -82,7 +84,7 @@ namespace DukeSoftware.FlightLog.ApplicationCore.IdentityServer
             {
                 app.UseDeveloperExceptionPage();
             }
-
+            app.UseCookiePolicy();
             SetUpTestUsers(app);
 
             app.UseStaticFiles();
@@ -91,6 +93,7 @@ namespace DukeSoftware.FlightLog.ApplicationCore.IdentityServer
             app.UseIdentityServer();
     
             app.UseAuthorization();
+            app.UseAuthentication();
             app.UseEndpoints(endpoints => endpoints.MapDefaultControllerRoute());
 
             ////app.UseEndpoints(endpoints =>
