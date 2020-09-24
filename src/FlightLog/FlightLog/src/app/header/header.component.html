@@ -1,9 +1,35 @@
-<h1>{{title}}</h1>
-<p>{{name}}</p>
-<nav>
-    <a routerLink="/">Home</a>
-    <a *ngIf="!isAuthenticated" (click)="login()" href="javascript:void(0)">Login</a>
-    <a *ngIf="isAuthenticated" routerLink="/flights">Flights</a>
-    <a *ngIf="isAuthenticated" routerLink="/add-flight">Add Flight</a>
-    <a *ngIf="isAuthenticated" (click)="logout()" href="javascript:void(0)">Logout</a>
-</nav>
+<header class="mdc-top-app-bar">
+    <div class="px-1">
+        <h1>{{title}}</h1>
+        <p>{{name}}</p>
+
+
+
+        <!-- <nav>
+            <a routerLink="/">Home</a>
+            <a *ngIf="!isAuthenticated"
+                (click)="login()" href="javascript:void(0)">Login</a>
+            <a *ngIf="isAuthenticated" routerLink="/flights">Flights</a>
+            <a *ngIf="isAuthenticated" routerLink="/add-flight">Add Flight</a>
+            <a *ngIf="isAuthenticated" (click)="logout()" href="javascript:void(0)">Logout</a>
+        </nav> -->
+    </div>
+
+
+    <div>
+        <div class="mdc-menu-surface--anchor">
+            <button class="mdc-button mdc-button--unelevated" *ngIf="!isAuthenticated" (click)="login()">
+                <span class="mdc-button__label">Login</span>
+            </button>
+            <button class="mdc-button mdc-button--unelevated" *ngIf="isAuthenticated" routerLink="/flights">
+                <span class="mdc-button__label">Flights</span>
+            </button>
+            <button class="mdc-button mdc-button--unelevated" *ngIf="isAuthenticated" routerLink="/add-flight">
+                <span class="mdc-button__label">Add Flight</span>
+            </button>
+            <button class="mdc-button mdc-button--unelevated" *ngIf="isAuthenticated" (click)="logout()">
+                <span class="mdc-button__label">Logout</span>
+            </button>
+        </div>
+    </div>
+</header>

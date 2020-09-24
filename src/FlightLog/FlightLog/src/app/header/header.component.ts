@@ -1,6 +1,9 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { AuthService } from '../auth.service';
+// import { MDCTopAppBar } from '@material/top-app-bar';
+import {MDCMenu} from '@material/menu';
+
 
 @Component({
   selector: 'app-header',
@@ -16,7 +19,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
   subscription: Subscription;
   userLoadedSubscription: Subscription;
 
-  constructor(private authService: AuthService) { }
+
+
+  constructor(private authService: AuthService) {
+    // const topAppBarElement = document.querySelector('.mdc-top-app-bar');
+    // const topAppBar = new MDCTopAppBar(topAppBarElement);
+   }
 
   ngOnInit(): void {
     this.subscription = this.authService.authNavStatus$.subscribe(status => { 
