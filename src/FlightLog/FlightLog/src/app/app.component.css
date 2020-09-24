@@ -8,10 +8,16 @@ h2 {
   margin-top: 0;
   padding-top: 0;
 }
+
 footer {
     font-size: x-small;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
 }
 .px-1 {
   padding-left: 1em;
   padding-right: 1em;
 }
+
+
