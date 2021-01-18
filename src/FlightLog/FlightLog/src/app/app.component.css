@@ -20,4 +20,6 @@ footer {
   padding-right: 1em;
 }
 
-
+.mdc-top-app-bar--fixed-adjust {
+  padding-top: 104px;
+}

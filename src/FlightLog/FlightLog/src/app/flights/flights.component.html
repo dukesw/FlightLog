@@ -1,16 +1,16 @@
 <form class="flight-form" [formGroup]="flightFilterForm" #formDirective="ngForm" (ngSubmit)="onSubmit(formDirective)">
     <mat-form-field>
         <mat-label>Date From</mat-label>
-        <input matInput [matDatepicker]="fromPicker" formControlName="dateFrom" [disabled]="true">
-        <mat-datepicker-toggle matSuffix [for]="fromPicker" [disabled]="true"></mat-datepicker-toggle>
-        <mat-datepicker #fromPicker [disabled]="true"></mat-datepicker>
+        <input matInput [matDatepicker]="fromPicker" formControlName="dateFrom">
+        <mat-datepicker-toggle matSuffix [for]="fromPicker"></mat-datepicker-toggle>
+        <mat-datepicker #fromPicker></mat-datepicker>
     </mat-form-field>
     <br/>
     <mat-form-field>
         <mat-label>Date To</mat-label>
-        <input matInput [matDatepicker]="picker" formControlName="dateTo" [disabled]="true">
-        <mat-datepicker-toggle matSuffix [for]="picker" [disabled]="true"></mat-datepicker-toggle>
-        <mat-datepicker #picker [disabled]="true"></mat-datepicker>
+        <input matInput [matDatepicker]="toPicker" formControlName="dateTo">
+        <mat-datepicker-toggle matSuffix [for]="toPicker"></mat-datepicker-toggle>
+        <mat-datepicker #toPicker></mat-datepicker>
     </mat-form-field>
     <br/>
     <mat-form-field>
