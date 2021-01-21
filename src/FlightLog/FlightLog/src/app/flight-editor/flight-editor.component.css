@@ -8,3 +8,12 @@
     width: 100%;;
 } 
 
+.select-placeholder-container {
+  display: flex;
+  align-items: center;
+}
+
+.select-placeholder-container > span {
+  flex: 1;
+}
+

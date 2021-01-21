@@ -23,6 +23,13 @@ import { AuthService } from '../auth.service';
 })
 export class FlightEditorComponent implements OnInit {
 
+  isLoadingModels: boolean;
+  modelLoadingError: boolean;
+  isLoadingLocations: boolean;
+  locationLoadingError: boolean;
+  isLoadingPilots: boolean;
+  pilotLoadingError: boolean;
+
   constructor(
       private formBuilder: FormBuilder, 
       private modelService: ModelService, 
@@ -32,26 +39,54 @@ export class FlightEditorComponent implements OnInit {
       private notificationService: NotificationService,
       private authService: AuthService) {
     
+        this.isLoadingModels = true;
+        this.modelLoadingError = false;
+        this.isLoadingLocations = true;
+        this.locationLoadingError = false;
+        this.isLoadingPilots = true;
+        this.pilotLoadingError = false;
+
     this.accountId = this.authService.getAccountId();
         // Get the list of models
     modelService.getModels(this.accountId).subscribe((data: IModel[]) => {
+      this.isLoadingModels = false;
       this.models = data;
     }, 
     error => {
+      this.isLoadingModels = false;
+      this.modelLoadingError = true;
+      this.flightForm.setErrors({"modelId": error});
+      this.flightForm.markAllAsTouched(); // So that the mat-error shows without needing any input.
       this.message = `Error getting model data: ${error.message}`;
     });
     
 
     // Location
     locationService.getLocations(this.accountId).subscribe((data: ILocation[]) => {
+      this.isLoadingLocations = false;
       this.locations = data;
-    })
+    },
+    error => {
+      this.isLoadingLocations = false;
+      this.locationLoadingError = true;
+      this.flightForm.setErrors({"locationId": error});
+      this.flightForm.markAllAsTouched();
+      this.message = `Error getting location data: ${error.message}`;
+    });
 
     // Pilot
     pilotService.getPilots(this.accountId).subscribe((data: IPilot[]) => {
+      this.isLoadingPilots = false;
       this.pilots = data;
-    });
-  }
+    }, 
+    error => {
+        this.isLoadingPilots = false;
+        this.pilotLoadingError = true;
+        this.flightForm.setErrors({"pilotId": error});
+        this.flightForm.markAllAsTouched();
+        this.message = `Error getting pilot data: ${error.message}`;
+      });
+    }
 
   ngOnInit(): void {
   }

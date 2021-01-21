@@ -7,24 +7,45 @@
         </mat-form-field>
         <br />
         <mat-form-field>
-            <mat-label>Model</mat-label>
+            <mat-label *ngIf="isLoadingModels">
+                <div class="select-placeholder-container">
+                    <span>Loading...</span>
+                    <mat-spinner class="spinner" diameter="18"></mat-spinner>
+                </div>
+            </mat-label>
+            <mat-label *ngIf="!isLoadingModels">Model</mat-label>
             <mat-select [(ngModel)]="selectedModel" formControlName="modelId">
                 <mat-option *ngFor="let model of models" [value]="model.Id">{{model.Name}}</mat-option>
             </mat-select> 
+            <mat-error *ngIf="modelLoadingError">Error loading models</mat-error>
         </mat-form-field>
         <br />
         <mat-form-field>
-            <mat-label>Field</mat-label>
+            <mat-label *ngIf="isLoadingLocations">
+                <div class="select-placeholder-container">
+                    <span>Loading...</span>
+                    <mat-spinner class="spinner" diameter="18"></mat-spinner>
+                </div>
+            </mat-label>     
+            <mat-label *ngIf="!isLoadingLocations">Field</mat-label>
             <mat-select [(ngModel)]="selectedLocation" formControlName="locationId">
                 <mat-option *ngFor="let location of locations" [value]="location.Id">{{location.Name}}</mat-option>
             </mat-select> 
+            <mat-error *ngIf="locationLoadingError">Error loading fields</mat-error>
         </mat-form-field>
         <br />
         <mat-form-field>
-            <mat-label>Pilot</mat-label>
+            <mat-label *ngIf="isLoadingPilots">
+                <div class="select-placeholder-container">
+                    <span>Loading...</span>
+                        <mat-spinner class="spinner" diameter="18"></mat-spinner>
+                </div>
+            </mat-label>
+            <mat-label *ngIf="!isLoadingPilots">Pilot</mat-label>
             <mat-select [(ngModel)]="selectedPilot" formControlName="pilotId">
                 <mat-option *ngFor="let pilot of pilots" [value]="pilot.Id">{{pilot.Name}}</mat-option>
             </mat-select> 
+            <mat-error *ngIf="pilotLoadingError">Error loading pilots</mat-error>
         </mat-form-field>
         <br />
         <mat-form-field>
