@@ -24,6 +24,7 @@ import { HeaderComponent } from './header/header.component';
 import { TokenInterceptor } from './token.interceptor';
 import { ErrorsHandler } from './errors-handler';
 import { NotificationService } from './notification.service';
+import { MatMomentDateModule, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
 
 @NgModule({
   declarations: [
@@ -44,7 +45,8 @@ import { NotificationService } from './notification.service';
     MatFormFieldModule, 
     MatInputModule, 
     MatDatepickerModule, 
-    MatNativeDateModule,
+    //MatNativeDateModule,
+    //MatMomentDateModule,
     MatProgressSpinnerModule,
     MatButtonModule,
     MatSelectModule
@@ -58,7 +60,12 @@ import { NotificationService } from './notification.service';
     {
       provide: ErrorHandler, 
       useClass: ErrorsHandler
-    }, 
+    },
+    // Does not currently include a moment date adapter
+    // { 
+    //   provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, 
+    //   useValue: { useUtc: true } 
+    // }, 
     NotificationService
   ],
   bootstrap: [AppComponent]

@@ -6,7 +6,8 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Dtos
 {
     public class FlightDto
     {
-        public DateTime Date { get; set; }
+        public int Id { get; set; }
+        public string Date { get; set; }
         public int ModelFlightNumber { get; set; }
         public int FieldId { get; set; }
         public LocationDto Field { get; set; }

@@ -18,19 +18,32 @@ export class FlightService {
   
   constructor(private http: HttpClient) { }
 
-  addFlight(accountId: number, flight: Flight): Observable<Flight> {
+  addOrUpdateFlight(accountId: number, flight: Flight): Observable<Flight> {
     var url = this.flightUrl.replace('ACCOUNT_ID', accountId.toString());
-    return this.http.post<Flight>(url, flight, this.httpOptions)
+    if (flight.Id > 0) {
+      return this.http.put<Flight>(url, flight, this.httpOptions)
+    } else {  
+      return this.http.post<Flight>(url, flight, this.httpOptions);
+    }
       //.pipe(
         //catchError(this.handleError<Flight>('addFlight'))
         //catchError()
       //)
   }
 
-  getFlightSummary(accountId: number, modelId: number)
-  {
+  getFlight(accountId: number, flightId: number) {
+    var url = this.flightUrl.replace('ACCOUNT_ID', accountId.toString());
+    return this.http.get(`${url}/${flightId}`, this.httpOptions);
+  }
+  
+  getFlightSummary(accountId: number, modelId: number) {
     var url = this.flightUrl.replace('ACCOUNT_ID', accountId.toString());
     return this.http.get(`${url}/summary/${modelId}`, this.httpOptions);
+  }
+
+  getFlightsByModel(accountId: number, modelId: number) {
+      var url = this.flightUrl.replace('ACCOUNT_ID', accountId.toString());
+      return this.http.get(`${url}/model/${modelId}`, this.httpOptions);
   }
 
     /** 

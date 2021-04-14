@@ -32,9 +32,20 @@
 </form>
 <div *ngIf="flightSummary != null">
 <p>Total Flights: {{flightSummary.TotalNumberOfFlights}}</p>
-<p>Total Minutes: {{flightSummary.TotalFlightTimeMinutes}}</p>
+<p>Total Minutes: {{flightSummary.TotalFlightTimeMinutes}}</p> 
 <p>Average Flight: {{flightSummary.AverageFlightTimeMinutes}}</p>
-<p *ngIf="flightSummary.FirstFlight">First Flight: {{flightSummary.FirstFlight + 'Z' | date }}</p>
-<p *ngIf="flightSummary.LastFlight">Last Flight: {{flightSummary.LastFlight + 'Z' | date}}</p>
+<!-- <p *ngIf="flightSummary.FirstFlight">First Flight: {{flightSummary.FirstFlight.format('dddd') }}</p> -->
+<p *ngIf="flightSummary.LastFlight">Last Flight: {{flightSummary.LastFlight | date}}</p>
+<!-- <p *ngIf="flightSummary.LastFlight">Last Flight: {{ moment(flightSummary.LastFlight).format('dddd') | date}}</p> -->
+<p *ngIf="flightSummary.LastFlight">Last Flight: {{flightSummary.LastFlight | date: 'd MMM yyyy':'-11:00'}}</p>
+
 </div>
+<!-- Add a list of flights  -->
+<ul>
+    <li *ngFor="let flight of flights">
+        <!-- {{flight.Date + 'Z' | date}}: {{flight.Model.Name}} - Flight {{flight.ModelFlightNumber}} -->
+        {{flight.Date | date}}: {{flight.Model.Name}} - Flight {{flight.ModelFlightNumber}}
+        <a routerLink="/edit-flight/{{flight.Id}}">Edit</a>  
+    </li>
+</ul>
 <p>{{message}}</p>

@@ -80,6 +80,26 @@ namespace WebApi.Controllers
             }
         }
 
+        [HttpGet("model/{modelId}/start/{startDate}/end/{endDate}")]
+        [Authorize(Roles = "flightlog-api.admin, flightlog-api.read")]
+        public async Task<ActionResult<List<FlightDto>>> GetByModelIdAndDateRange(int accountId, DateTime startDate, DateTime endDate, int modelId)
+        {
+            try
+            {
+                Guard.AgainstAccountNumberMismatch(GetAccountIdClaim(), accountId.ToString(), "userClaim.accountId", "accountId");
+                var flights = await _flightService.GetFlightsByDateAndModelAsync(accountId, startDate, endDate, modelId);
+                return Ok(flights);
+            }
+            catch (ArgumentNullException)
+            {
+                return NotFound($"Error finding flights for model {modelId}");
+            }
+            catch (AccountConflictException)
+            {
+                return Forbid();
+            }
+        }
+
         [HttpGet("summary/{modelId}")]
         [Authorize(Roles = "flightlog-api.admin, flightlog-api.read")]
         public async Task<ActionResult<FlightSummaryDto>> GetSummaryByModelId(int accountId, int modelId)

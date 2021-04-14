@@ -106,8 +106,18 @@ export class AuthService {
 
   getAccountId(): number {
     console.log("Running GetAccountID");
-    console.log(this.user.profile.accountid);
-    return (this.user != null && this.user.profile != null) ? this.user.profile.accountid : 0;
+   // console.log(this.user.profile.accountid);
+   if (this.user != null && this.user.profile != null) {
+    return this.user.profile.accountid;
+   }
+   else{
+     if (this.isAuthenticated()) {
+       console.log(`retrying isAuthenticated`); 
+       console.log(`Now the account is ${this.user.profile.accountid}`);
+     }
+     return 0;
+   }
+
   }
 
   async signout() {

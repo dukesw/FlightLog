@@ -14,12 +14,33 @@ import { of } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { NotificationService } from '../notification.service';
 import { AuthService } from '../auth.service';
+import { ActivatedRoute } from '@angular/router';
+//import * as dayjs from 'dayjs'
+import { MomentDateAdapter, MAT_MOMENT_DATE_FORMATS, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
+import { DateAdapter, MAT_DATE_LOCALE, MAT_DATE_FORMATS } from '@angular/material/core';
+import * as moment from 'moment';
 
+export const DATE_FORMATS = {
+  parse: {
+    dateInput: 'LL',
+  },
+  display: {
+    dateInput: 'LL',
+    monthYearLabel: 'MMM YYYY',
+    dateA11yLabel: 'LL',
+    monthYearA11yLabel: 'MMMM YYYY',
+  },
+};
 
 @Component({
   selector: 'app-flight-editor',
   templateUrl: './flight-editor.component.html',
-  styleUrls: ['./flight-editor.component.css']
+  styleUrls: ['./flight-editor.component.css'],
+  providers: [
+    { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
+    { provide: MAT_DATE_FORMATS, useValue: DATE_FORMATS },
+    { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } }  // Does not seem to make any difference...
+  ]
 })
 export class FlightEditorComponent implements OnInit {
 
@@ -29,6 +50,7 @@ export class FlightEditorComponent implements OnInit {
   locationLoadingError: boolean;
   isLoadingPilots: boolean;
   pilotLoadingError: boolean;
+  flightId: number;
 
   constructor(
       private formBuilder: FormBuilder, 
@@ -37,7 +59,8 @@ export class FlightEditorComponent implements OnInit {
       private locationService: LocationService, 
       private pilotService: PilotService, 
       private notificationService: NotificationService,
-      private authService: AuthService) {
+      private authService: AuthService, 
+      private route: ActivatedRoute) {
     
         this.isLoadingModels = true;
         this.modelLoadingError = false;
@@ -47,11 +70,14 @@ export class FlightEditorComponent implements OnInit {
         this.pilotLoadingError = false;
 
     this.accountId = this.authService.getAccountId();
+
+    this.flightId = Number(this.route.snapshot.paramMap.get('id'));
+    console.log(`FlightID: ${this.flightId}`);
         // Get the list of models
     modelService.getModels(this.accountId).subscribe((data: IModel[]) => {
       this.isLoadingModels = false;
       this.models = data;
-    }, 
+    },
     error => {
       this.isLoadingModels = false;
       this.modelLoadingError = true;
@@ -86,6 +112,33 @@ export class FlightEditorComponent implements OnInit {
         this.flightForm.markAllAsTouched();
         this.message = `Error getting pilot data: ${error.message}`;
       });
+
+      if (!isNaN(this.flightId) && this.flightId > 0) {
+        console.log(`Getting flight id ${this.flightId}`);
+        flightService.getFlight(this.accountId, this.flightId).subscribe((data: IFlight) => {
+          this.flight = data;
+          console.log(`Loaded model with date: ${this.flight.Date}`);
+          var localDate = `${this.flight.Date}Z`;
+          console.log(localDate); 
+          // Fix the date before patching the form
+          
+          this.flightForm.patchValue({
+            //date: this.flight.Date,
+            date: localDate,
+            flightMinutes: this.flight.FlightMinutes, 
+            modelId: this.flight.ModelId,
+            locationId: this.flight.FieldId, 
+            pilotId: this.flight.PilotId,
+            details: this.flight.Details
+          });
+          this.flightForm.markAsUntouched();
+          console.log(this.flight);
+        }, 
+        error => {
+          this.message = `Error loading flight`;
+        
+        });
+      }
     }
 
   ngOnInit(): void {
@@ -106,7 +159,7 @@ export class FlightEditorComponent implements OnInit {
   selectedPilot: IPilot;
 
   flightForm = this.formBuilder.group({
-    date: [new Date(), Validators.required],
+    date: [moment(), Validators.required],
     flightMinutes: ['', Validators.required],
     modelId: ['', Validators.required],
     locationId: ['', Validators.required],
@@ -125,7 +178,7 @@ export class FlightEditorComponent implements OnInit {
     this.flight.PilotId = this.flightForm.value.pilotId;
     this.flight.AccountId = this.accountId;
 
-    this.flightService.addFlight(this.accountId, this.flight)
+    this.flightService.addOrUpdateFlight(this.accountId, this.flight)
     // .pipe(
     //   catchError(err => of([]))
     // )
@@ -166,7 +219,7 @@ export class FlightEditorComponent implements OnInit {
   clearForm(formDirective: FormGroupDirective) {
     this.flightForm.reset();
     formDirective.resetForm();
-    this.flightForm.patchValue({ date: new Date() });
+    this.flightForm.patchValue({ date: moment() });
   }
 
 }

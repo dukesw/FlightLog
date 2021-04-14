@@ -99,6 +99,12 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
             return await _flightRepository.GetBySpecAsync(spec);
         }
 
+        public async Task<List<Flight>> GetFlightsByDateAndModelAsync(int accountId, DateTime startDate, DateTime endDate, int modelId)
+        {
+            var spec = new GetFlightsByAccountAndDateRangeAndModel(accountId, startDate, endDate, modelId);
+            return await _flightRepository.GetBySpecAsync(spec);
+        }
+
         public async Task<Flight> UpdateFlightAsync(int accountId, Flight flight)
         {
             Guard.AgainstNull(flight, "flight");

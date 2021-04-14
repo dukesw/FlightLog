@@ -5,6 +5,14 @@ import { IModel } from '../interfaces/imodel';
 import { AuthService } from '../auth.service';
 import { FlightService } from '../flight.service';
 import { IFlightSummary } from '../interfaces/iflight-summary';
+import { IFlight } from '../interfaces/iflight';
+import * as _moment from 'moment';
+
+// import { default as _rollupMoment} from 'moment';
+
+const moment = _moment;
+
+//const moment = require('moment');
 
 @Component({
   selector: 'app-flights',
@@ -20,6 +28,7 @@ export class FlightsComponent implements OnInit {
   modelLoadingError: boolean;
   accountId: number;
   flightSummary: IFlightSummary;
+  flights: IFlight[];
 
   constructor(private formBuilder: FormBuilder,
     private modelService: ModelService, 
@@ -28,6 +37,7 @@ export class FlightsComponent implements OnInit {
       this.isLoadingModels = true;
       this.modelLoadingError = false;
       // Get the accountId
+
       this.accountId = this.authService.getAccountId();
       console.log(`Got Account ID ${this.accountId}`);
 
@@ -62,6 +72,15 @@ export class FlightsComponent implements OnInit {
     error => {
       console.log(`Error getting flight summary: ${error.message}`);
     });
+
+    this.flightService.getFlightsByModel(this.accountId, this.flightFilterForm.value.modelId).subscribe((data: IFlight[]) => {
+      this.flights = data;
+      console.log(this.flights);
+    }, 
+    error => {
+      console.log(`Error getting flights: ${error.message}`);
+    });
+
     console.info(this.flightFilterForm.value);
   }
 
