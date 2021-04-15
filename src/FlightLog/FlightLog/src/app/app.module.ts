@@ -24,7 +24,7 @@ import { HeaderComponent } from './header/header.component';
 import { TokenInterceptor } from './token.interceptor';
 import { ErrorsHandler } from './errors-handler';
 import { NotificationService } from './notification.service';
-import { MatMomentDateModule, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
+//import { MatMomentDateModule, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
 
 @NgModule({
   declarations: [
@@ -45,7 +45,7 @@ import { MatMomentDateModule, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/m
     MatFormFieldModule, 
     MatInputModule, 
     MatDatepickerModule, 
-    //MatNativeDateModule,
+    MatNativeDateModule,
     //MatMomentDateModule,
     MatProgressSpinnerModule,
     MatButtonModule,

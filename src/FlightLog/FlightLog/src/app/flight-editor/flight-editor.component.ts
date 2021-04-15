@@ -16,7 +16,7 @@ import { NotificationService } from '../notification.service';
 import { AuthService } from '../auth.service';
 import { ActivatedRoute } from '@angular/router';
 //import * as dayjs from 'dayjs'
-import { MomentDateAdapter, MAT_MOMENT_DATE_FORMATS, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
+//import { MomentDateAdapter, MAT_MOMENT_DATE_FORMATS, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
 import { DateAdapter, MAT_DATE_LOCALE, MAT_DATE_FORMATS } from '@angular/material/core';
 import * as moment from 'moment';
 
@@ -37,9 +37,9 @@ export const DATE_FORMATS = {
   templateUrl: './flight-editor.component.html',
   styleUrls: ['./flight-editor.component.css'],
   providers: [
-    { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
-    { provide: MAT_DATE_FORMATS, useValue: DATE_FORMATS },
-    { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } }  // Does not seem to make any difference...
+    //{ provide: DateAdapter, useClass: DateAdapter, deps: [MAT_DATE_LOCALE] },
+    { provide: MAT_DATE_FORMATS, useValue: DATE_FORMATS }
+    //{ provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } }  // Does not seem to make any difference...
   ]
 })
 export class FlightEditorComponent implements OnInit {

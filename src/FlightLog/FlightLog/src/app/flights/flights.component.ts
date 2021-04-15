@@ -6,11 +6,14 @@ import { AuthService } from '../auth.service';
 import { FlightService } from '../flight.service';
 import { IFlightSummary } from '../interfaces/iflight-summary';
 import { IFlight } from '../interfaces/iflight';
-import * as _moment from 'moment';
+import { DateAdapter, MAT_DATE_LOCALE, MAT_DATE_FORMATS } from '@angular/material/core';
+
+
+//import * as _moment from 'moment';
 
 // import { default as _rollupMoment} from 'moment';
 
-const moment = _moment;
+//const moment = _moment;
 
 //const moment = require('moment');
 
