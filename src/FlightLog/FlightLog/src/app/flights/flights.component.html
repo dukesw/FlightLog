@@ -34,10 +34,9 @@
 <p>Total Flights: {{flightSummary.TotalNumberOfFlights}}</p>
 <p>Total Minutes: {{flightSummary.TotalFlightTimeMinutes}}</p> 
 <p>Average Flight: {{flightSummary.AverageFlightTimeMinutes}}</p>
-<!-- <p *ngIf="flightSummary.FirstFlight">First Flight: {{flightSummary.FirstFlight.format('dddd') }}</p> -->
+<p *ngIf="flightSummary.FirstFlight">First Flight: {{flightSummary.FirstFlight | date}}</p>
 <p *ngIf="flightSummary.LastFlight">Last Flight: {{flightSummary.LastFlight | date}}</p>
 <!-- <p *ngIf="flightSummary.LastFlight">Last Flight: {{ moment(flightSummary.LastFlight).format('dddd') | date}}</p> -->
-<p *ngIf="flightSummary.LastFlight">Last Flight: {{flightSummary.LastFlight | date: 'd MMM yyyy':'-11:00'}}</p>
 
 </div>
 <!-- Add a list of flights  -->

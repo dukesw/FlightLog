@@ -91,9 +91,10 @@ namespace DukeSoftware.FlightLog.ApplicationCore.IdentityServer
             app.UseRouting();
 
             app.UseIdentityServer();
-    
-            app.UseAuthorization();
+
             app.UseAuthentication();
+            app.UseAuthorization();
+            
             app.UseEndpoints(endpoints => endpoints.MapDefaultControllerRoute());
 
             ////app.UseEndpoints(endpoints =>

@@ -33,7 +33,7 @@ namespace WebApi.Controllers
                 Guard.AgainstAccountNumberMismatch(GetAccountIdClaim(), accountId.ToString(), "userClaim.accountId", "accountId");
                 var flights = await _flightService.GetFlightsAsync(accountId);
                 return Ok(flights);
-            }
+            } 
             catch (AccountConflictException)
             {
                 return Forbid();
@@ -80,7 +80,7 @@ namespace WebApi.Controllers
             }
         }
 
-        [HttpGet("model/{modelId}/start/{startDate}/end/{endDate}")]
+        [HttpGet("model/{modelId}/from/{startDate}/to/{endDate}")]
         [Authorize(Roles = "flightlog-api.admin, flightlog-api.read")]
         public async Task<ActionResult<List<FlightDto>>> GetByModelIdAndDateRange(int accountId, DateTime startDate, DateTime endDate, int modelId)
         {
@@ -120,6 +120,29 @@ namespace WebApi.Controllers
             }
         }
 
+        [HttpGet("summary/{modelId}/from/{startDate}/to/{endDate}")]
+        [Authorize(Roles = "flightlog-api.admin, flightlog-api.read")]
+        public async Task<ActionResult<FlightSummaryDto>> GetSummaryByModelAndDateRange(int accountId, int modelId, DateTime startDate, DateTime endDate)
+        {
+            try
+            {
+                Guard.AgainstAccountNumberMismatch(GetAccountIdClaim(), accountId.ToString(), "userClaim.accountId", "accountId");
+                // Date guards
+                Guard.AgainstNull(startDate, "startDate");
+                Guard.AgainstNull(endDate, "endDate");
+
+                var flights = await _flightService.GetFlightSummaryByModelAndDateRange(accountId, modelId, startDate, endDate);
+                return Ok(flights);
+            }
+            catch (ArgumentNullException)
+            {
+                return NotFound($"Error finding flights for model {modelId}");
+            }
+            catch (AccountConflictException)
+            {
+                return Forbid();
+            }
+        }
 
         [HttpPost]
         [Authorize(Roles = "flightlog-api.admin, flightlog-api.write")]

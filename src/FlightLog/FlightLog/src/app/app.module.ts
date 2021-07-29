@@ -25,6 +25,7 @@ import { TokenInterceptor } from './token.interceptor';
 import { ErrorsHandler } from './errors-handler';
 import { NotificationService } from './notification.service';
 //import { MatMomentDateModule, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
+import { MAT_DATE_LOCALE } from '@angular/material/core';
 
 @NgModule({
   declarations: [
@@ -66,6 +67,11 @@ import { NotificationService } from './notification.service';
     //   provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, 
     //   useValue: { useUtc: true } 
     // }, 
+    {
+        provide: MAT_DATE_LOCALE, 
+        useValue: 'en-NZ'
+    },
+
     NotificationService
   ],
   bootstrap: [AppComponent]

@@ -36,14 +36,25 @@ export class FlightService {
     return this.http.get(`${url}/${flightId}`, this.httpOptions);
   }
   
-  getFlightSummary(accountId: number, modelId: number) {
+  getFlightSummaryByModel(accountId: number, modelId: number) {
     var url = this.flightUrl.replace('ACCOUNT_ID', accountId.toString());
     return this.http.get(`${url}/summary/${modelId}`, this.httpOptions);
   }
 
+  getFlightSummaryByModelAndDateRange(accountId: number, modelId: number, dateFrom: string, dateTo: string) {
+    var url = this.flightUrl.replace('ACCOUNT_ID', accountId.toString());
+    return this.http.get(`${url}/summary/${modelId}/from/${dateFrom}/to/${dateTo}`, this.httpOptions);
+  }
+  // TODO GetFlightSummaryByDateRange to be created here :)
+
   getFlightsByModel(accountId: number, modelId: number) {
       var url = this.flightUrl.replace('ACCOUNT_ID', accountId.toString());
       return this.http.get(`${url}/model/${modelId}`, this.httpOptions);
+  }
+
+  getFlightsbyModelAndDateRange(accountId: number, modelId: number, dateFrom: string, dateTo: string) {
+    var url = this.flightUrl.replace('ACCOUNT_ID', accountId.toString());
+    return this.http.get(`${url}/model/${modelId}/from/${dateFrom}/to/${dateTo}`, this.httpOptions);
   }
 
     /** 
