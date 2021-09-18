@@ -40,6 +40,22 @@ namespace WebApi.Controllers
             }
         }
 
+        [HttpGet("recent")]
+        [Authorize(Roles = "flightlog-api.admin, flightlog-api.read")]
+        public async Task<ActionResult> GetRecent(int accountId)
+        {
+            try
+            {
+                Guard.AgainstAccountNumberMismatch(GetAccountIdClaim(), accountId.ToString(), "userClaim.accountId", "accountId");
+                var flights = await _flightService.GetRecentFlightsAsync(accountId);
+                return Ok(flights);
+            }
+            catch (AccountConflictException)
+            {
+                return Forbid();
+            }
+        }
+
         [HttpGet("{id}")]
         [Authorize(Roles = "flightlog-api.admin, flightlog-api.read")]
         public async Task<ActionResult<Flight>> GetById(int accountId, int id)

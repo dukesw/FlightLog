@@ -72,10 +72,16 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
 
         public async Task<IList<FlightDto>> GetFlightsAsync(int accountId)
         {
-            // FIXME next sort this out with a spec. Or have a default one as we are getting to have a lot of specs
-            // Could also create a specification... 
-            //var spec = new GetAllFlightsWithAllProperties();
             var spec = new GetFlightsByAccount(accountId);
+            var result = await _flightRepository.GetBySpecAsync(spec);
+            return _mapper.Map<IList<Flight>, IList<FlightDto>>(result);
+        }
+
+        public async Task<IList<FlightDto>> GetRecentFlightsAsync(int accountId)
+        {
+            // Defining recent flights as all of those within the last month, based on the date of the request
+            var dateFrom = DateTime.Now.AddMonths(-1);
+            var spec = new GetFlightsByAccountAndDateRange(accountId, dateFrom, DateTime.Now);
             var result = await _flightRepository.GetBySpecAsync(spec);
             return _mapper.Map<IList<Flight>, IList<FlightDto>>(result);
         }

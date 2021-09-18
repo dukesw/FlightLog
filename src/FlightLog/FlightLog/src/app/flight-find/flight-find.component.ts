@@ -20,10 +20,10 @@ import { formatDate } from '@angular/common';
 
 @Component({
   selector: 'app-flights',
-  templateUrl: './flights.component.html',
-  styleUrls: ['./flights.component.css']
+  templateUrl: './flight-find.component.html',
+  styleUrls: ['./flight-find.component.css']
 })
-export class FlightsComponent implements OnInit {
+export class FlightFindComponent implements OnInit {
 
   models: IModel[];
   selectedModel: IModel;

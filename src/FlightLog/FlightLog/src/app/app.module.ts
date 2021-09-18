@@ -14,7 +14,7 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { FlightsComponent } from './flights/flights.component';
+import { FlightFindComponent } from './flight-find/flight-find.component';
 import { AddFlightComponent } from './add-flight/add-flight.component';
 import { FlightEditorComponent } from './flight-editor/flight-editor.component';
 import { LoginComponent } from './login/login.component';
@@ -26,16 +26,18 @@ import { ErrorsHandler } from './errors-handler';
 import { NotificationService } from './notification.service';
 //import { MatMomentDateModule, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
+import { HomeComponent } from './home/home.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    FlightsComponent,
+    FlightFindComponent,
     AddFlightComponent,
     FlightEditorComponent,
     LoginComponent,
     AuthCallbackComponent,
-    HeaderComponent
+    HeaderComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,
