@@ -1,10 +1,7 @@
 <header class="mdc-top-app-bar">
     <div class="px-1">
-       <p href='/' class="mdc-top-app-bar__title" padding-left="0 px">{{title}}</p>   
-        <p>{{name}}</p>
-
-
-
+        <p href='/' class="mdc-top-app-bar__title" padding-left="0 px">{{title}}</p>
+        <!-- <p *ngIf="auth.user$ | async as user">-> {{ user.name }}, </p> -->
         <!-- <nav>
             <a routerLink="/">Home</a>
             <a *ngIf="!isAuthenticated"
@@ -14,22 +11,26 @@
             <a *ngIf="isAuthenticated" (click)="logout()" href="javascript:void(0)">Logout</a>
         </nav> -->
     </div>
-
-
     <div>
         <div class="mdc-menu-surface--anchor">
-            <button class="mdc-button mdc-button--unelevated" *ngIf="!isAuthenticated" (click)="login()">
-                <span class="mdc-button__label">Login</span>
-            </button>
-            <button class="mdc-button mdc-button--unelevated" *ngIf="isAuthenticated" routerLink="/flights">
-                <span class="mdc-button__label">Flights</span>
-            </button>
-            <button class="mdc-button mdc-button--unelevated" *ngIf="isAuthenticated" routerLink="/add-flight">
-                <span class="mdc-button__label">Add Flight</span>
-            </button>
-            <button class="mdc-button mdc-button--unelevated" *ngIf="isAuthenticated" (click)="logout()">
-                <span class="mdc-button__label">Logout</span>
-            </button>
+            <ng-container *ngIf="auth.isAuthenticated$ | async; else loggedOut">
+                <button class="mdc-button mdc-button--unelevated" routerLink="/flights">
+                    <span class="mdc-button__label">Flights</span>
+                </button>
+                <button class="mdc-button mdc-button--unelevated" routerLink="/add-flight">
+                    <span class="mdc-button__label">Add Flight</span>
+                </button>
+                <button class="mdc-button mdc-button--unelevated"
+                    (click)="auth.logout({ returnTo: document.location.origin })">
+                    <span class="mdc-button__label">Logout</span>
+                </button>
+                <span *ngIf="auth.user$ | async as user" class="mdc-button__label ml-auto">{{ user.name }}</span>
+              </ng-container>
+            <ng-template #loggedOut>
+                <button class="mdc-button mdc-button--unelevated" (click)="auth.loginWithRedirect()">
+                    <span class="mdc-button__label" >Login</span>
+                </button>
+            </ng-template>
         </div>
     </div>
 </header>

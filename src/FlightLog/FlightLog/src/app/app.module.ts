@@ -7,9 +7,8 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select'
-import { HttpClientModule } from '@angular/common/http'
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { MatButtonModule } from '@angular/material/button';
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -17,16 +16,18 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FlightFindComponent } from './flight-find/flight-find.component';
 import { AddFlightComponent } from './add-flight/add-flight.component';
 import { FlightEditorComponent } from './flight-editor/flight-editor.component';
-import { LoginComponent } from './login/login.component';
-import { AuthCallbackComponent } from './auth-callback/auth-callback.component';
-import { AuthGuard } from './auth-guard';
 import { HeaderComponent } from './header/header.component';
-import { TokenInterceptor } from './token.interceptor';
 import { ErrorsHandler } from './errors-handler';
 import { NotificationService } from './notification.service';
 //import { MatMomentDateModule, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { HomeComponent } from './home/home.component';
+
+import { AuthModule } from '@auth0/auth0-angular';
+import { AuthHttpInterceptor } from '@auth0/auth0-angular';
+import { AuthButtonComponent } from './auth-button/auth-button.component';
+import { ProfileComponent } from './profile/profile.component';
+import { environment as env } from '../environments/environment';
 
 @NgModule({
   declarations: [
@@ -34,10 +35,10 @@ import { HomeComponent } from './home/home.component';
     FlightFindComponent,
     AddFlightComponent,
     FlightEditorComponent,
-    LoginComponent,
-    AuthCallbackComponent,
     HeaderComponent,
-    HomeComponent
+    HomeComponent,
+    AuthButtonComponent,
+    ProfileComponent
   ],
   imports: [
     BrowserModule,
@@ -52,12 +53,31 @@ import { HomeComponent } from './home/home.component';
     //MatMomentDateModule,
     MatProgressSpinnerModule,
     MatButtonModule,
-    MatSelectModule
+    MatSelectModule, 
+    AuthModule.forRoot({
+      domain: env.auth0Domain,// 'dev-flightlog.au.auth0.com',
+      clientId: env.auth0ClientId, //'K4yvPKBlTCzvhmVSsjPiZCEIGBGbDr8n', 
+      redirectUri: env.auth0RedirectUri, 
+      audience: 'https://dev-flightlog-api.flightlog.co.nz', 
+      //scope: 'flightlog-api.admin flightlog-api.read flightlog-api.admin flightlog-api.write',
+      httpInterceptor: {
+        allowedList: [
+          {
+            uri: 'https://localhost:5002/api/*',
+            tokenOptions: {
+              audience: 'https://dev-flightlog-api.flightlog.co.nz', 
+            //  scope: 'flightlog-api.admin flightlog-api.read flightlog-api.admin flightlog-api.write'
+            }
+          }
+        ]
+      }
+
+    })
   ],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,
-      useClass: TokenInterceptor,
+      useClass: AuthHttpInterceptor,
       multi: true
     }, 
     {

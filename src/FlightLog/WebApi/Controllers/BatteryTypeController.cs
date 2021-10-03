@@ -23,7 +23,7 @@ namespace WebApi.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "flightlog-api.admin, flightlog-api.read")]
+        [Authorize(Roles = "User, Admin")]
         public async Task<ActionResult> Get(int accountId)
         {
             try
@@ -39,7 +39,7 @@ namespace WebApi.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorize(Roles = "flightlog-api.admin, flightlog-api.read")]
+        [Authorize(Roles = "User, Admin")]
         public async Task<ActionResult> GetById(int accountId, int id)
         {
             try
@@ -59,7 +59,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "flightlog-api.admin, flightlog-api.write")]
+        [Authorize(Roles = "User, Admin")]
         public async Task<ActionResult> AddNew(int accountId, [FromBody] BatteryType batteryType)
         {
             // Validate the input
@@ -80,7 +80,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPut]
-        [Authorize(Roles = "flightlog-api.admin, flightlog-api.write")]
+        [Authorize(Roles = "User, Admin")]
         public async Task<ActionResult> Update(int accountId, [FromBody] BatteryType batteryType)
         {
             try
@@ -104,7 +104,7 @@ namespace WebApi.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = "flightlog-api.admin, flightlog-api.write")]
+        [Authorize(Roles = "User, Admin")]
         public async Task<ActionResult> Delete(int accountId, int id)
         {
             try

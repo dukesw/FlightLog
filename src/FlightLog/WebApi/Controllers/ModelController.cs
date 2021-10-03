@@ -25,7 +25,8 @@ namespace WebApi.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "flightlog-api.admin, flightlog-api.read")]
+        [Authorize(Roles = "User, Admin")]
+        // [Authorize]
         public async Task<ActionResult> List(int accountId)
         {
             try
@@ -41,7 +42,7 @@ namespace WebApi.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorize(Roles = "flightlog-api.admin, flightlog-api.read")]
+        [Authorize(Roles = "User, Admin")]
         public async Task<ActionResult> GetById(int accountId, int id)
         {
             try
@@ -61,7 +62,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "flightlog-api.admin, flightlog-api.write")]
+        [Authorize(Roles = "User, Admin")]
         public async Task<ActionResult<Model>> Post(int accountId, [FromBody] Model newModel)
         {
             try
@@ -80,9 +81,8 @@ namespace WebApi.Controllers
             }
         }
 
-        // TODO Fix this or create a better implemetnation with some rules for updating batteries
         [HttpPut]
-        [Authorize(Roles = "flightlog-api.admin, flightlog-api.write")]
+        [Authorize(Roles = "User, Admin")]
         public async Task<ActionResult<Model>> Put(int accountId, [FromBody] Model model)
         {
             try
@@ -107,7 +107,7 @@ namespace WebApi.Controllers
 
         // TODO Fix this method
         [HttpDelete("{id}")]
-        [Authorize(Roles = "flightlog-api.admin, flightlog-api.write")]
+        [Authorize(Roles = "User, Admin")]
         public async Task<ActionResult> Delete(int accountId, int id)
         {
             try

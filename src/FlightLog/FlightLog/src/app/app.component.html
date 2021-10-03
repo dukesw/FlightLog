@@ -1,8 +1,13 @@
 <div>
     <app-header [title]="title"></app-header>
-    <main class="mdc-top-app-bar--fixed-adjust px-1">
-        <router-outlet></router-outlet>
-    </main>
-    <!-- <app-messages></app-messages> -->
-    <footer>&copy; 2021 Duke Software</footer>
+    <div class="container" *ngIf="auth.isLoading$ | async; else loaded">
+        <p>Loading...</p>
+    </div>
+    <ng-template #loaded>
+        <main class="mdc-top-app-bar--fixed-adjust px-1">
+            <router-outlet></router-outlet>
+        </main>
+        <!-- <app-messages></app-messages> -->
+        <footer>&copy; 2021 Duke Software</footer>
+    </ng-template>
 </div>

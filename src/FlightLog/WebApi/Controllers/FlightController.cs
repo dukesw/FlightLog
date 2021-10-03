@@ -25,7 +25,7 @@ namespace WebApi.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "flightlog-api.admin, flightlog-api.read")]
+        [Authorize(Roles = "User, Admin")]
         public async Task<ActionResult> Get(int accountId)
         {
             try
@@ -41,7 +41,7 @@ namespace WebApi.Controllers
         }
 
         [HttpGet("recent")]
-        [Authorize(Roles = "flightlog-api.admin, flightlog-api.read")]
+        [Authorize(Roles = "User, Admin")]
         public async Task<ActionResult> GetRecent(int accountId)
         {
             try
@@ -57,7 +57,7 @@ namespace WebApi.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorize(Roles = "flightlog-api.admin, flightlog-api.read")]
+        [Authorize(Roles = "User, Admin")]
         public async Task<ActionResult<Flight>> GetById(int accountId, int id)
         {
             try
@@ -77,7 +77,7 @@ namespace WebApi.Controllers
         }
 
         [HttpGet("model/{modelId}")]
-        [Authorize(Roles = "flightlog-api.admin, flightlog-api.read")]
+        [Authorize(Roles = "User, Admin")]
         public async Task<ActionResult<List<FlightDto>>> GetByModelId(int accountId, int modelId)
         {
             try
@@ -97,7 +97,7 @@ namespace WebApi.Controllers
         }
 
         [HttpGet("model/{modelId}/from/{startDate}/to/{endDate}")]
-        [Authorize(Roles = "flightlog-api.admin, flightlog-api.read")]
+        [Authorize(Roles = "User, Admin")]
         public async Task<ActionResult<List<FlightDto>>> GetByModelIdAndDateRange(int accountId, DateTime startDate, DateTime endDate, int modelId)
         {
             try
@@ -117,7 +117,7 @@ namespace WebApi.Controllers
         }
 
         [HttpGet("summary/{modelId}")]
-        [Authorize(Roles = "flightlog-api.admin, flightlog-api.read")]
+        [Authorize(Roles = "User, Admin")]
         public async Task<ActionResult<FlightSummaryDto>> GetSummaryByModelId(int accountId, int modelId)
         {
             try
@@ -137,7 +137,7 @@ namespace WebApi.Controllers
         }
 
         [HttpGet("summary/{modelId}/from/{startDate}/to/{endDate}")]
-        [Authorize(Roles = "flightlog-api.admin, flightlog-api.read")]
+        [Authorize(Roles = "User, Admin")]
         public async Task<ActionResult<FlightSummaryDto>> GetSummaryByModelAndDateRange(int accountId, int modelId, DateTime startDate, DateTime endDate)
         {
             try
@@ -161,7 +161,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "flightlog-api.admin, flightlog-api.write")]
+        [Authorize(Roles = "User, Admin")]
         public async Task<ActionResult<Flight>> Post(int accountId, [FromBody] Flight newFlight)
         {
             try
@@ -185,7 +185,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPut]
-        [Authorize(Roles = "flightlog-api.admin, flightlog-api.write")]
+        [Authorize(Roles = "User, Admin")]
         public async Task<ActionResult<Flight>> Put(int accountId, [FromBody] Flight flight)
         {
             try
@@ -209,7 +209,7 @@ namespace WebApi.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = "flightlog-api.admin, flightlog-api.write")]
+        [Authorize(Roles = "User, Admin")]
         public async Task<ActionResult> Delete(int accountId, int id)
         {
             try

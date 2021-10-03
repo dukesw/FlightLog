@@ -22,12 +22,12 @@
     "@angular/platform-browser": "~9.1.6",
     "@angular/platform-browser-dynamic": "~9.1.6",
     "@angular/router": "~9.1.6",
+    "@auth0/auth0-angular": "^1.6.2",
     "@material/top-app-bar": "^7.0.0",
     "dayjs": "^1.10.4",
     "interface": "^1.2.1",
     "material-components-web": "^7.0.0",
     "moment": "^2.29.1",
-    "oidc-client": "^1.10.1",
     "rxjs": "~6.5.4",
     "tslib": "^1.10.0",
     "zone.js": "~0.10.2"

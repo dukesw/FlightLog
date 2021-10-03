@@ -25,7 +25,7 @@ namespace WebApi.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "flightlog-api.read, flightlog-api.admin")]
+        [Authorize(Roles = "User, Admin")]
         public async Task<ActionResult> List(int accountId)
         {
             try
@@ -41,7 +41,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "flightlog-api.admin, flightlog-api.write")]
+        [Authorize(Roles = "User, Admin")]
         public async Task<ActionResult<Location>> Post(int accountId, [FromBody] Location newLocation)
         {
             try

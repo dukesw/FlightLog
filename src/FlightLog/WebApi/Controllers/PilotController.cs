@@ -24,7 +24,7 @@ namespace WebApi.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "flightlog-api.admin, flightlog-api.read")]
+        [Authorize(Roles = "User, Admin")]
         public async Task<ActionResult> List(int accountId)
         {
             try

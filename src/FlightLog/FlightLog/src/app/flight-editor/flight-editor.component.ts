@@ -13,7 +13,7 @@ import { catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { NotificationService } from '../notification.service';
-import { AuthService } from '../auth.service';
+import { AuthService } from '@auth0/auth0-angular';
 import { ActivatedRoute } from '@angular/router';
 //import * as dayjs from 'dayjs'
 //import { MomentDateAdapter, MAT_MOMENT_DATE_FORMATS, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
@@ -59,7 +59,7 @@ export class FlightEditorComponent implements OnInit {
       private locationService: LocationService, 
       private pilotService: PilotService, 
       private notificationService: NotificationService,
-      private authService: AuthService, 
+      private auth: AuthService, 
       private route: ActivatedRoute) {
     
         this.isLoadingModels = true;
@@ -69,7 +69,8 @@ export class FlightEditorComponent implements OnInit {
         this.isLoadingPilots = true;
         this.pilotLoadingError = false;
 
-    this.accountId = this.authService.getAccountId();
+        // TODO get the correct account id
+    this.accountId = 1; //this.auth.getAccountId();
 
     this.flightId = Number(this.route.snapshot.paramMap.get('id'));
     console.log(`FlightID: ${this.flightId}`);

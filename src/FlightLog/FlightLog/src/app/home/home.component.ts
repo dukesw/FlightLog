@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { AuthService } from '../auth.service';
 import { Subscription } from 'rxjs';
 
+import { AuthService } from '@auth0/auth0-angular';
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -14,11 +14,12 @@ export class HomeComponent implements OnInit {
   isAuthenticated: boolean; 
   subscription: Subscription;
 
-  constructor(private authService: AuthService) { }
+  constructor(private auth: AuthService) { }
 
   ngOnInit(): void {
-    this.subscription = this.authService.authNavStatus$.subscribe(status => { 
+    this.subscription = this.auth.isAuthenticated$.subscribe(status => { 
       this.isAuthenticated = status;
+      console.log(`Home.ngOnInit: this.isAuthenticated == ${this.isAuthenticated}`)
     });
   }
 
