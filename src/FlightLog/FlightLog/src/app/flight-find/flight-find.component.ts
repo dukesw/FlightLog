@@ -2,13 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormBuilder, Form, Validators, FormGroupDirective } from '@angular/forms';
 import { ModelService } from '../model.service';
 import { IModel } from '../interfaces/imodel';
-import { AuthService } from '../auth.service';
 import { FlightService } from '../flight.service';
 import { IFlightSummary } from '../interfaces/iflight-summary';
 import { IFlight } from '../interfaces/iflight';
 import { DateAdapter, MAT_DATE_LOCALE, MAT_DATE_FORMATS } from '@angular/material/core';
 import { formatDate } from '@angular/common';
-
+import { AuthService } from '@auth0/auth0-angular';
 
 //import * as _moment from 'moment';
 
@@ -37,12 +36,14 @@ export class FlightFindComponent implements OnInit {
   constructor(private formBuilder: FormBuilder,
     private modelService: ModelService, 
     private flightService: FlightService,
-    private authService: AuthService ) {
+    private auth: AuthService ) {
       this.isLoadingModels = true;
       this.modelLoadingError = false;
       // Get the accountId
 
-      this.accountId = this.authService.getAccountId();
+      // TODO get the correct user and account id from the Auth0 user$
+
+      this.accountId = 1;//this.auth.getAccountId();
       console.log(`Got Account ID ${this.accountId}`);
 
     // Get the list of models
