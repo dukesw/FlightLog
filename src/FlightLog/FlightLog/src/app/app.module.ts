@@ -68,6 +68,13 @@ import { environment as env } from '../environments/environment';
               audience: 'https://dev-flightlog-api.flightlog.co.nz', 
             //  scope: 'flightlog-api.admin flightlog-api.read flightlog-api.admin flightlog-api.write'
             }
+          }, 
+          {
+            uri: 'https://flightlogapi.azurewebsites.net/api/*',
+            tokenOptions: {
+              audience: 'https://dev-flightlog-api.flightlog.co.nz', 
+            //  scope: 'flightlog-api.admin flightlog-api.read flightlog-api.admin flightlog-api.write'
+            }
           }
         ]
       }
