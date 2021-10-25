@@ -1,25 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:flightlog/screens/start_screen.dart';
+import 'package:flutter_appauth/flutter_appauth.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:provider/provider.dart';
 
+import 'src/navigation/app_state_controller.dart';
+import 'src/users/auth_service.dart';
+import 'src/flightlog_app.dart';
+import 'src/utils/secure_storage_service.dart';
 
 void main() {
-  runApp(const FlightLogApp());
-}
+  const FlutterSecureStorage secureStorage = FlutterSecureStorage();
+  final SecureStorageService secureStorageService =
+      SecureStorageService(secureStorage);
 
-class FlightLogApp extends StatelessWidget {
-  const FlightLogApp({Key? key}) : super(key: key);
-
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    const String appTitle = "Flight Log";
-
-    return MaterialApp(
-      title: appTitle,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+  runApp(MultiProvider(providers: [
+    //ChangeNotifierProvider(create: (context) => _flightProvider),
+    Provider<FlutterAppAuth>(create: (_) => FlutterAppAuth()),
+    ProxyProvider<FlutterAppAuth, AuthService>(
+        update: (_, FlutterAppAuth appAuth, __) =>
+            AuthService(appAuth, secureStorageService)),
+    ChangeNotifierProvider<AppStateController>(
+      create: (BuildContext context) => AppStateController(
+        Provider.of<AuthService>(context, listen: false),
       ),
-      home: const StartScreen(title: appTitle),
-    );
-  }
+    )
+
+    // Provider<AppStateManager>(
+    //     create: (_) => AppStateManager(_authService)),
+  ], child: const FlightLogApp()));
 }
