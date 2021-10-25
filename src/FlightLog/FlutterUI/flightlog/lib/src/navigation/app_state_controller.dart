@@ -40,6 +40,11 @@ class AppStateController extends ChangeNotifier {
     notifyListeners();
   }
 
+  void closeProfile() {
+    _viewingProfile = false;
+    notifyListeners();
+  }
+
   Future<void> login() async {
     try {
       //authService.logout(); // For testing

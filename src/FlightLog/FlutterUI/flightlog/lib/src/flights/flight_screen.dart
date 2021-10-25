@@ -66,14 +66,17 @@ class _FlightScreenState extends State<FlightScreen> {
               icon: const Icon(Icons.account_circle_rounded)),
         ],
       ),
-      body: SafeArea(
-        child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: const <Widget>[
-              Text('Latest flights will be here...'),
-              Text('An add button somethere too...')
-            ]),
+      body: Padding(
+        padding: const EdgeInsets.all(8),
+        child: SafeArea(
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: const <Widget>[
+                Text('Latest flights will be here...'),
+                Text('An add button somethere too...')
+              ]),
+        ),
       ),
     );
   }

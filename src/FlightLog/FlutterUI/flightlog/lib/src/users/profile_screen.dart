@@ -58,35 +58,38 @@ class _ProfileScreenState extends State<ProfileScreen> {
         centerTitle: true,
         //automaticallyImplyLeading: false,
       ),
-      body: SafeArea(
-        child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              FutureBuilder<String?>(
-                  future: _idToken,
-                  builder:
-                      (BuildContext context, AsyncSnapshot<String?> snapshot) {
-                    if (snapshot.hasData) {
-                      var user = appStateController.authService
-                          .getUserDetails(snapshot.data);
-                      return Text(
-                          'Name: ${user.name}, Account: ${user.accountId}');
+      body: Padding(
+        padding: const EdgeInsets.all(8),
+        child: SafeArea(
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                FutureBuilder<String?>(
+                    future: _idToken,
+                    builder: (BuildContext context,
+                        AsyncSnapshot<String?> snapshot) {
+                      if (snapshot.hasData) {
+                        var user = appStateController.authService
+                            .getUserDetails(snapshot.data);
+                        return Text(
+                            'Name: ${user.name}, Account: ${user.accountId}');
 
-                      // Text('This is the main screen',
-                      //   style: Theme.of(context).textTheme.bodyText1,
-                      //   textAlign: TextAlign.start),
+                        // Text('This is the main screen',
+                        //   style: Theme.of(context).textTheme.bodyText1,
+                        //   textAlign: TextAlign.start),
 
-                    } else {
-                      return const Text('Loading user...');
-                    }
-                  }),
-              // Text('This is the main screen',
-              //     style: Theme.of(context).textTheme.bodyText1,
-              //     textAlign: TextAlign.start),
-              //   Text(${Provider.of<AuthService>().})
-              ElevatedButton(onPressed: _logout, child: const Text('Logout'))
-            ]),
+                      } else {
+                        return const Text('Loading user...');
+                      }
+                    }),
+                // Text('This is the main screen',
+                //     style: Theme.of(context).textTheme.bodyText1,
+                //     textAlign: TextAlign.start),
+                //   Text(${Provider.of<AuthService>().})
+                ElevatedButton(onPressed: _logout, child: const Text('Logout'))
+              ]),
+        ),
       ),
     );
   }

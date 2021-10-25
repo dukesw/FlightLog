@@ -1,3 +1,4 @@
+import 'package:flightlog/src/navigation/flightlog_pages.dart';
 import 'package:flutter/material.dart';
 
 import 'app_state_controller.dart';
@@ -55,6 +56,9 @@ class AppRouter extends RouterDelegate
       return false;
     }
 
+    if (route.settings.name == FlightLogPages.profilePagePath) {
+      appStateManager.closeProfile();
+    }
     // 5
     // TODO: Handle Onboarding and splash
     // TODO: Handle state when user closes grocery item screen
