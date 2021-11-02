@@ -19,6 +19,7 @@ import { ActivatedRoute } from '@angular/router';
 //import { MomentDateAdapter, MAT_MOMENT_DATE_FORMATS, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
 import { DateAdapter, MAT_DATE_LOCALE, MAT_DATE_FORMATS } from '@angular/material/core';
 import * as moment from 'moment';
+import { FlightModel } from '../models/flight-model';
 
 export const DATE_FORMATS = {
   parse: {
@@ -127,9 +128,9 @@ export class FlightEditorComponent implements OnInit {
             //date: this.flight.Date,
             date: localDate,
             flightMinutes: this.flight.FlightMinutes, 
-            modelId: this.flight.ModelId,
-            locationId: this.flight.FieldId, 
-            pilotId: this.flight.PilotId,
+            modelId: this.flight.Model.Id,
+            locationId: this.flight.Field.Id, 
+            pilotId: this.flight.Pilot.Id,
             details: this.flight.Details
           });
           this.flightForm.markAsUntouched();
@@ -172,11 +173,11 @@ export class FlightEditorComponent implements OnInit {
     console.warn(this.flightForm.value)
 
     this.flight.Date = this.flightForm.value.date;
-    this.flight.ModelId = this.flightForm.value.modelId;
+    this.flight.Model.Id = this.flightForm.value.modelId;
     this.flight.FlightMinutes = this.flightForm.value.flightMinutes;
     this.flight.Details = this.flightForm.value.details;
-    this.flight.FieldId = this.flightForm.value.locationId;
-    this.flight.PilotId = this.flightForm.value.pilotId;
+    this.flight.Field.Id = this.flightForm.value.locationId;
+    this.flight.Pilot.Id = this.flightForm.value.pilotId;
     this.flight.AccountId = this.accountId;
 
     this.flightService.addOrUpdateFlight(this.accountId, this.flight)
