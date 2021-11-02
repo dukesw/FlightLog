@@ -58,12 +58,13 @@ namespace WebApi.Controllers
 
         [HttpGet("{id}")]
         [Authorize(Roles = "User, Admin")]
-        public async Task<ActionResult<Flight>> GetById(int accountId, int id)
+        public async Task<ActionResult<FlightDto>> GetById(int accountId, int id)
         {
             try
             {
                 Guard.AgainstAccountNumberMismatch(GetAccountIdClaim(), accountId.ToString(), "userClaim.accountId", "accountId");
                 var flight = await _flightService.GetFlightByIdAsync(accountId, id);
+
                 return Ok(flight);
             }
             catch (ArgumentNullException)
@@ -162,7 +163,7 @@ namespace WebApi.Controllers
 
         [HttpPost]
         [Authorize(Roles = "User, Admin")]
-        public async Task<ActionResult<Flight>> Post(int accountId, [FromBody] Flight newFlight)
+        public async Task<ActionResult<FlightDto>> Post(int accountId, [FromBody] FlightDto newFlight)
         {
             try
             {
@@ -178,15 +179,15 @@ namespace WebApi.Controllers
             {
                 return Forbid();
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return BadRequest("Error adding flight");
+                return BadRequest($"Error adding flight");
             }
         }
 
         [HttpPut]
         [Authorize(Roles = "User, Admin")]
-        public async Task<ActionResult<Flight>> Put(int accountId, [FromBody] Flight flight)
+        public async Task<ActionResult<FlightDto>> Put(int accountId, [FromBody] FlightDto flight)
         {
             try
             {

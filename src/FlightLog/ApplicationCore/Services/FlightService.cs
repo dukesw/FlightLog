@@ -25,16 +25,17 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
             _mapper = mapper;
         }
 
-        public async Task<Flight> AddFlightAsync(int accountId, Flight flight)
+        public async Task<FlightDto> AddFlightAsync(int accountId, FlightDto flight)
         {
             Guard.AgainstNull(flight, "flight");
             Guard.AgainstAccountNumberMismatch(accountId, flight.AccountId, "accountId", "flight.AccountId");
+            var flightEntity = _mapper.Map<FlightDto, Flight>(flight);
 
             try
             {
-                flight = await _flightRepository.AddAsync(flight);
-                _logger.LogInformation($"Added flight, new Id = {flight.Id}");
-                return flight;
+                flightEntity = await _flightRepository.AddAsync(flightEntity);
+                _logger.LogInformation($"Added flight, new Id = {flightEntity.Id}");
+                return await GetFlightByIdAsync(accountId, flightEntity.Id);
             }
             catch (Exception ex)
             {
@@ -61,13 +62,13 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
             }
         }
 
-        public async Task<Flight> GetFlightByIdAsync(int accountId, int id)
+        public async Task<FlightDto> GetFlightByIdAsync(int accountId, int id)
         {
             // todo include a SpecificationBase class then create an instance from there
             var spec = new GetFlightByIdWithIncludes(id);
             var result = await _flightRepository.GetBySpecAsync(spec);
             Guard.AgainstNull(result.FirstOrDefault(), "result");
-            return result.FirstOrDefault();
+            return _mapper.Map<Flight, FlightDto>(result.FirstOrDefault());
         }
 
         public async Task<IList<FlightDto>> GetFlightsAsync(int accountId)
@@ -96,14 +97,14 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
         public async Task<FlightSummaryDto> GetFlightSummaryByModelAsync(int accountId, int modelId)
         {
             var allFlights = await GetFlightsByModelAsync(accountId, modelId);
-            var result = CreateFlightSummary(allFlights);
+            var result = CreateFlightSummary(allFlights, accountId);
             return result;
         }
 
         public async Task<FlightSummaryDto> GetFlightSummaryByModelAndDateRange(int accountId, int modelId, DateTime startDate, DateTime endDate)
         {
             var allFlights = await GetFlightsByDateAndModelAsync(accountId, startDate, endDate, modelId);
-            var result = CreateFlightSummary(allFlights);
+            var result = CreateFlightSummary(allFlights, accountId);
             return result;
         }
 
@@ -121,26 +122,29 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
             return _mapper.Map<IList<Flight>, IList<FlightDto>>(result);
         }
 
-        public async Task<Flight> UpdateFlightAsync(int accountId, Flight flight)
+        public async Task<FlightDto> UpdateFlightAsync(int accountId, FlightDto flight)
         {
             Guard.AgainstNull(flight, "flight");
             Guard.AgainstAccountNumberMismatch(accountId, flight.AccountId, "accountId", "flight.AccountId");
 
-            var result = await _flightRepository.UpdateAsync(flight);
+            var flightEntity = _mapper.Map<FlightDto, Flight>(flight);
+
+            var result = await _flightRepository.UpdateAsync(flightEntity);
             if (result != null)
             {
-                _logger.LogInformation($"Updated model, Id = {flight.Id}");
+                _logger.LogInformation($"Updated model, Id = {flightEntity.Id}");
             }
             else
             {
-                _logger.LogWarning($"Could not update model, Id = {flight.Id}");
+                _logger.LogWarning($"Could not update model, Id = {flightEntity.Id}");
             }
-            return result;
+            return await GetFlightByIdAsync(accountId, result.Id);
         }
 
-        private FlightSummaryDto CreateFlightSummary(IList<FlightDto> flights)
+        private FlightSummaryDto CreateFlightSummary(IList<FlightDto> flights, int accountId)
         {
             var result = new FlightSummaryDto();
+            result.AccountId = accountId;
             if (flights.Count > 0)
             {
                 result.TotalFlightTimeMinutes = flights.Sum(x => x.FlightMinutes);
