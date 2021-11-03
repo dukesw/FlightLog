@@ -120,7 +120,7 @@ export class FlightEditorComponent implements OnInit {
         flightService.getFlight(this.accountId, this.flightId).subscribe((data: IFlight) => {
           this.flight = data;
           console.log(`Loaded model with date: ${this.flight.Date}`);
-          var localDate = `${this.flight.Date}Z`;
+          var localDate = `${this.flight.Date}`;
           console.log(localDate); 
           // Fix the date before patching the form
           
