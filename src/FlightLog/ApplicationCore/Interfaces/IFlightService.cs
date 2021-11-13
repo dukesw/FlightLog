@@ -1,4 +1,4 @@
-﻿using DukeSoftware.FlightLog.ApplicationCore.Dtos;
+﻿using DukeSoftware.FlightLog.Shared.Dtos;
 using DukeSoftware.FlightLog.ApplicationCore.Entities;
 using System;
 using System.Collections.Generic;

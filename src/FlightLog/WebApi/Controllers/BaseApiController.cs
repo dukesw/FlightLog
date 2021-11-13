@@ -19,7 +19,9 @@ namespace WebApi.Controllers
         internal string GetAccountIdClaim()
         {
             var accountIdClaim = this.HttpContext.User.FindFirst("https://flightlog.co.nz/claims/account_id");
-            return accountIdClaim.Value;
+            //return accountIdClaim.Value;
+            // TODO revert once Auth0 integrated into the Blazor front end. 
+            return "1";
         }
 
     }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DukeSoftware.FlightLog.ApplicationCore.Dtos;
+using DukeSoftware.FlightLog.Shared.Dtos;
 using DukeSoftware.FlightLog.ApplicationCore.Entities;
 using DukeSoftware.FlightLog.ApplicationCore.Exceptions;
 using DukeSoftware.FlightLog.ApplicationCore.Interfaces;
@@ -41,7 +41,7 @@ namespace WebApi.Controllers
         }
 
         [HttpGet("recent")]
-        [Authorize(Roles = "User, Admin")]
+        //[Authorize(Roles = "User, Admin")]
         public async Task<ActionResult> GetRecent(int accountId)
         {
             try

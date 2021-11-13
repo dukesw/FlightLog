@@ -1,4 +1,4 @@
-﻿namespace DukeSoftware.FlightLog.ApplicationCore.Dtos
+﻿namespace DukeSoftware.FlightLog.Shared.Dtos
 {
     public class MediaLinkDto
     {

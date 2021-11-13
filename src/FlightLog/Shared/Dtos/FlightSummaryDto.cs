@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DukeSoftware.FlightLog.ApplicationCore.Dtos
+namespace DukeSoftware.FlightLog.Shared.Dtos
 {
     public class FlightSummaryDto
     {

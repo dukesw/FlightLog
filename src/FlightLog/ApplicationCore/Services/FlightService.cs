@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using DukeSoftware.FlightLog.ApplicationCore.Dtos;
+using DukeSoftware.FlightLog.Shared.Dtos;
 using DukeSoftware.FlightLog.ApplicationCore.Entities;
 using DukeSoftware.FlightLog.ApplicationCore.Interfaces;
 using DukeSoftware.FlightLog.ApplicationCore.Specifications;

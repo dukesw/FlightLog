@@ -256,3 +256,7 @@ src/FlightLog/FlightLog/.deployment
 /src/FlightLog/IdentityServer/bin/Release/netcoreapp3.1
 *.db-shm
 *.db-wal
+/src/FlightLog/BlazorUI/bin/Debug/net5.0
+/src/FlightLog/BlazorUI/obj
+/src/FlightLog/Shared/bin/Debug
+/src/FlightLog/Shared/obj

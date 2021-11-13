@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace DukeSoftware.FlightLog.ApplicationCore.Dtos
+namespace DukeSoftware.FlightLog.Shared.Dtos
 {
     public class LocationDto
     {
