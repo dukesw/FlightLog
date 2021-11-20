@@ -1,18 +1,88 @@
 ﻿@inherits LayoutComponentBase
 
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
-
-    <div class="main">
-        <div class="top-row px-4">
-            <a href="http://blazor.net" target="_blank" class="ml-md-auto">About</a>
+<RadzenHeader>
+    <ChildContent>
+        <div class="row justify-content-start align-items-center">
+            <div class="col-6 d-flex align-items-center">
+                <RadzenSidebarToggle Click="@(args => { sidebarExpanded = !sidebarExpanded; bodyExpanded = !bodyExpanded; })">
+                </RadzenSidebarToggle>
+                <RadzenLabel Text="Flight Log">
+                </RadzenLabel>
+            </div>
+            <div class="col-6 d-flex align-items-center justify-content-end">
+                <div class="d-none d-md-inline-flex align-items-center">
+                    <LoginDisplay></LoginDisplay>
+                </div>
+            </div>
         </div>
-
-        <div class="content px-4">
-            @Body
-        </div>
-        <footer>Duke Software 2021</footer>
-    </div>
+    </ChildContent>
+</RadzenHeader>
+<div style="width:100%">
+    <RadzenBody @ref="@body0" @bind-Expanded="@bodyExpanded">
+        <ChildContent>
+            <RadzenContentContainer Name="main">
+                <div class="container-fluid">
+                    <div class="row">
+                    <div class="col-12 pt-4 pb-5 px-3 px-lg-5">
+                        @Body
+                    </div>
+                    </div>
+                </div>
+            </RadzenContentContainer>
+        </ChildContent>
+    </RadzenBody>
 </div>
+<RadzenSidebar @ref="@sidebar0" @bind-Expanded="@sidebarExpanded">
+    <ChildContent>
+        <RadzenPanelMenu>
+            <RadzenPanelMenuItem Text="Flights" Path="/"> 
+                <RadzenPanelMenuItem Text="Recent Flights" Path="/recent-flights"></RadzenPanelMenuItem>
+                <RadzenPanelMenuItem Text="Add Flight" Path="/add-flight"></RadzenPanelMenuItem>
+            </RadzenPanelMenuItem>
+            <RadzenPanelMenuItem Text="Models" Path="/models"></RadzenPanelMenuItem>
+        </RadzenPanelMenu>
+    </ChildContent>
+</RadzenSidebar>
+
+@*<RadzenHeader>
+  <ChildContent>
+    <div class="row justify-content-start align-items-center">
+      <div class="col-6 d-flex align-items-center">
+        <RadzenSidebarToggle Click="@(args => { sidebarExpanded = !sidebarExpanded; bodyExpanded = !bodyExpanded; })">
+        </RadzenSidebarToggle>
+        <RadzenLabel Text="TestRadzen">
+        </RadzenLabel>
+      </div>
+      <div class="col-6 text-right">
+      </div>
+    </div>
+  </ChildContent>
+</RadzenHeader>
+<RadzenBody @ref="body0">
+  <ChildContent>
+    <RadzenContentContainer Name="main">
+    @Body
+    </RadzenContentContainer>
+  </ChildContent>
+</RadzenBody>
+<RadzenSidebar @ref="sidebar0">
+  <ChildContent>
+    <RadzenPanelMenu style="height: 100%">
+    </RadzenPanelMenu>
+  </ChildContent>
+</RadzenSidebar>
+
+
+@*<RadzenFooter>
+  <ChildContent>
+    <RadzenLabel Text="TestRadzen, Copyright Ⓒ 2021">
+    </RadzenLabel>
+  </ChildContent>
+</RadzenFooter>*@
+
+@code {
+    RadzenSidebar sidebar0;
+    RadzenBody body0;
+    bool sidebarExpanded = true;
+    bool bodyExpanded = false;
+}

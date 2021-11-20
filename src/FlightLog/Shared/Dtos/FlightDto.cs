@@ -7,7 +7,7 @@ namespace DukeSoftware.FlightLog.Shared.Dtos
     public class FlightDto
     {
         public int Id { get; set; }
-        public string Date { get; set; }
+        public DateTime Date { get; set; }
         public int ModelFlightNumber { get; set; }
         public FlightLocationDto Field { get; set; }
         public FlightModelDto Model { get; set; }
@@ -20,6 +20,13 @@ namespace DukeSoftware.FlightLog.Shared.Dtos
         public virtual IList<MediaLinkDto> MediaLinks { get; set; }
 
         public int AccountId { get; set; }
+
+        public FlightDto()
+        {
+            Field = new FlightLocationDto();
+            Model = new FlightModelDto();
+            Pilot = new FlightPilotDto();
+        }
     }
 
     public class FlightPilotDto

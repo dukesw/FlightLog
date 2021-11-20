@@ -1,0 +1,65 @@
+﻿@page "/recent-flights"
+
+@attribute [Authorize]
+
+@inject IHttpClientFactory ClientFactory
+
+<h2>Recent Flights</h2>
+<p>These are flights from the last month.</p>
+
+@if (loading)
+{
+    <p>Loading...</p>
+}
+else
+{
+
+    @if (recentFlights == null)
+    {
+        <p>No flights recently.</p>
+    }
+    else
+    {
+        <RadzenDataGrid Data="@recentFlights" TItem="FlightDto" AllowSorting="true">
+            <Columns>
+                <RadzenDataGridColumn TItem="FlightDto" Property="Id" Filterable="false" Title="Id" Frozen="true" Width="50px" />
+                <RadzenDataGridColumn TItem="FlightDto" Property="Date" Filterable="false" Title="Date"/>
+                <RadzenDataGridColumn TItem="FlightDto" Property="Model.Name" Filterable="false" Title="Model"/>
+                <RadzenDataGridColumn TItem="FlightDto" Property="Field.Name" Filterable="false" Title="Field"/>
+                <RadzenDataGridColumn TItem="FlightDto" Property="Pilot.Name" Filterable="false" Title="Pilot"/>
+                <RadzenDataGridColumn TItem="FlightDto" Property="FlightMinutes" Filterable="false" Title="Minutes"/>
+                @*TODO add an edit link*@
+            </Columns>
+
+        </RadzenDataGrid>
+
+    }
+}
+
+@code {
+    private FlightDto[] recentFlights;
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationState { get; set; }
+    private bool loading = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            loading = true;
+            var user = (await authenticationState).User;
+            var accountId = user.FindFirst("https://flightlog.co.nz/claims/account_id").Value;
+            var client = ClientFactory.CreateClient("FlightLogAPI");
+            recentFlights = await client.GetFromJsonAsync<FlightDto[]>($"/api/{accountId}/flights/recent");
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+        finally
+        {
+            loading = false;
+        }
+    }
+
+}

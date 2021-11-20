@@ -41,7 +41,7 @@ namespace WebApi.Controllers
         }
 
         [HttpGet("recent")]
-        //[Authorize(Roles = "User, Admin")]
+        [Authorize(Roles = "User, Admin")]
         public async Task<ActionResult> GetRecent(int accountId)
         {
             try

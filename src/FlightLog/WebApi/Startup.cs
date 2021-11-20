@@ -77,7 +77,7 @@ namespace Web
                 options.AddPolicy(name: MyAllowSpecificOrigins,
                                   builder =>
                                   {
-                                      builder.WithOrigins("https://flightlogui.azurewebsites.net", "http://localhost:4200")
+                                      builder.WithOrigins("https://flightlogui.azurewebsites.net", "http://localhost:4200", "https://localhost:5001")
                                       //.AllowAnyOrigin()
                                             .AllowAnyHeader()
                                             .AllowAnyMethod();

@@ -1,5 +1,59 @@
 ﻿@page "/"
 
-Welcome to Flight Log! The app to enter and manage your RC flights. 
+@attribute [Authorize]
+@inject IHttpClientFactory ClientFactory
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+<h2>Flights</h2>
+
+Welcome to Flight Log - the app to enter and manage your RC flights. This page is a placeholder, and will be replaced with a dishboard. 
+
+
+@if (loading)
+{
+    <p>Loading...</p>
+}
+else
+{
+
+    @if (recentFlights == null)
+    {
+        <p>No flights recently.</p>
+    }
+    else
+    {
+        <ul>
+            @foreach (var flight in recentFlights)
+            {
+                <li>Id: @flight.Id: @flight.Model.Name, @flight.FlightMinutes min</li>
+            }
+        </ul>
+    }
+}
+
+@code {
+    private FlightDto[] recentFlights;
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationState { get; set; }
+    private bool loading = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            loading = true;
+            var user = (await authenticationState).User;
+            var accountId = user.FindFirst("https://flightlog.co.nz/claims/account_id").Value;
+            var client = ClientFactory.CreateClient("FlightLogAPI");
+            recentFlights = await client.GetFromJsonAsync<FlightDto[]>($"/api/{accountId}/flights/recent");
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+        finally
+        {
+            loading = false;
+        }
+    }
+
+}

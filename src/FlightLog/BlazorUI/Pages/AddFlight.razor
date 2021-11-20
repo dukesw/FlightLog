@@ -1,0 +1,163 @@
+﻿@page "/add-flight"
+
+@inject IHttpClientFactory ClientFactory
+
+<style>
+    form .row {
+        margin-bottom: 16px;
+    }
+</style>
+
+<h2>Add Flight</h2>
+<RadzenTemplateForm Data="@newFlight" TItem="FlightDto" Submit="@Submit" InvalidSubmit="@OnInvalidSubmit"> @*" (FlightDto args) => { Submit(args);})">*@
+    <div class="row">
+        <div class="col-md-2 align-items-center d-flex">
+            <RadzenLabel Text="Date" />
+        </div>
+        <div class="col-md-8">
+            <RadzenDatePicker Name="Date" @bind-Value="@newFlight.Date" DateFormat="d"></RadzenDatePicker>
+            <RadzenRequiredValidator Component="Date" Text="Date is required" Popup="false" Style="position: absolute"></RadzenRequiredValidator>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2 align-items-center d-flex">
+            <RadzenLabel Text="Model" />
+        </div>
+        <div class="col">
+            <RadzenDropDown Name="Model" @bind-Value="@newFlight.Model.Id" AllowClear="true" Data="@models" TextProperty="Name" ValueProperty="Id"></RadzenDropDown>
+            <RadzenRequiredValidator Component="Model" Text="Model is required" DefaultValue="0" Popup="false" Style="position: relative"></RadzenRequiredValidator>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2 align-items-center d-flex">
+            <RadzenLabel Text="Field" />
+        </div>
+        <div class="col-md-8">
+            <RadzenDropDown Name="Field" @bind-Value="@newFlight.Field.Id" AllowClear="true" Data="@locations" TextProperty="Name" ValueProperty="Id"></RadzenDropDown>
+            <RadzenRequiredValidator Component="Field" Text="Field is required" DefaultValue="0" Popup="false" Style="position: relative"></RadzenRequiredValidator>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2 align-items-center d-flex">
+            <RadzenLabel Text="Pilot" />
+        </div>
+        <div class="col-md-8">
+            <RadzenDropDown Name="Pilot" @bind-Value="@newFlight.Pilot.Id" AllowClear="false" Data="@pilots" TextProperty="Name" ValueProperty="Id"></RadzenDropDown>
+            <RadzenRequiredValidator Component="Pilot" Text="Pilot is required" DefaultValue="0" Popup="false" Style="position: relative"></RadzenRequiredValidator>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2 align-items-center d-flex">
+            <RadzenLabel Text="Flight Minutes" />
+        </div>
+        <div class="col-md-8">
+            <RadzenNumeric Name="FlightMinutes" TValue="float" @bind-Value="@newFlight.FlightMinutes" Style="position: block"></RadzenNumeric>
+            @*<RadzenRequiredValidator Component="FlightMinutes" Text="Flight minutes is required" DefaultValue="0.0" Popup="false" Style="position: relative"></RadzenRequiredValidator>*@
+            @*<RadzenCompareValidator Component="FlightMinutes" Text="Flight minutes must be greater than 0" Value="0" Operator="@CompareOperator.GreaterThan" Popup="false" Style="position: relative"></RadzenCompareValidator>*@
+            <RadzenNumericRangeValidator Component="FlightMinutes" Min="0.1" Max="999" Text="Flight minutes must be greated than 0" Style="position: relative"></RadzenNumericRangeValidator>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2 align-items-top d-flex">
+            <RadzenLabel Text="Details" />
+        </div>
+        <div class="col-md-8">
+            <RadzenTextArea @bind-Value="@newFlight.Details" style="width: 100%"></RadzenTextArea>
+        </div>
+    </div>
+
+    <div class="row justify-content-start">
+        <div class="col-md-2 align-items-top d-flex"/>
+            <div class="col-md-8 d-flex align-items-end justify-content-start">
+                <RadzenButton ButtonType="ButtonType.Submit" Icon="save" Text="Save" />
+                <RadzenButton ButtonStyle="ButtonStyle.Light" Icon="cancel" style="display: inline-block; margin-left: 10px;" Text="Clear" Click="@Cancel" />
+            </div>
+        </div>
+    <div class="row">
+        <div class="col-md-2 align-items-top d-flex"/>
+        <div class="col-md-8">
+            <RadzenLabel Text="@message"></RadzenLabel>
+        </div>
+    </div>
+</RadzenTemplateForm> 
+
+
+
+@code {
+    private FlightDto newFlight = new FlightDto();
+    private ModelDto[] models;
+    private LocationDto[] locations;
+    private PilotDto[] pilots;
+    private String accountId = "0";
+    private string message = "";
+
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationState { get; set; }
+    private bool loading = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            loading = true;
+
+            var user = (await authenticationState).User;
+            accountId = user.FindFirst("https://flightlog.co.nz/claims/account_id").Value;
+
+            newFlight.Date = DateTime.Now;
+            newFlight.AccountId = Int32.Parse(accountId);
+
+            var client = ClientFactory.CreateClient("FlightLogAPI");
+            models = await client.GetFromJsonAsync<ModelDto[]>($"/api/{accountId}/models");
+            locations = await client.GetFromJsonAsync<LocationDto[]>($"/api/{accountId}/locations");
+            pilots = await client.GetFromJsonAsync<PilotDto[]>($"/api/{accountId}/pilots");
+
+
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+        finally
+        {
+            loading = false;
+        }
+    }
+
+    protected async Task Submit()
+    {
+        message = "Saving...";
+        // todo Wrap in a try/catch
+        var client = ClientFactory.CreateClient("FlightLogAPI");
+        var response = await client.PostAsJsonAsync($"/api/{accountId}/flights", newFlight);
+
+        if (response.StatusCode == System.Net.HttpStatusCode.OK)
+        {
+            var savedFlight = await response.Content.ReadFromJsonAsync<FlightDto>();
+            clearFormData();
+            message = $"Saved flight with Id {savedFlight.Id}";    
+        } else
+        {
+            message = $"Failed to save ({response.StatusCode.ToString()})";
+        }
+    }
+
+    void OnInvalidSubmit(FormInvalidSubmitEventArgs args)
+    {
+        message = "Invalid entry";
+    }
+
+    void Cancel()
+    {
+        clearFormData();
+    }
+
+    void clearFormData()
+    {
+        newFlight = new FlightDto();
+        newFlight.Date = DateTime.Now;
+        newFlight.AccountId = Int32.Parse(accountId);
+        message = "Form cleared";
+        
+    }
+}

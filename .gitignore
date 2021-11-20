@@ -260,3 +260,7 @@ src/FlightLog/FlightLog/.deployment
 /src/FlightLog/BlazorUI/obj
 /src/FlightLog/Shared/bin/Debug
 /src/FlightLog/Shared/obj
+/src/FlightLog/BlazorUI/bin/Debug/net6.0
+/src/FlightLog/.vs/FlightLog/v17
+/src/FlightLog/.vs/FlightLog/config/debuggerConfiguration-20237c31-3136-4b83-98c8-aa64c801eb5d.json
+/src/FlightLog/BlazorUI - Copy

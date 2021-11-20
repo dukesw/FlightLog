@@ -11,8 +11,8 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Mapper
     {
         public FlightProfile()
         {
-            CreateMap<Flight, FlightDto>()
-                .ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.Date.ToString("yyyy-MM-ddTHH:mm:ssZ")));
+            CreateMap<Flight, FlightDto>();
+               // .ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.Date.ToString("yyyy-MM-ddTHH:mm:ssZ")));
                 //.IncludeMembers(s => s.Field, s => s.Model, s => s.Pilot, s => s.Battery);
                 //      .Include<Model, ModelDto>();
                 //.ForMember(dest => dest.Field, opt => opt.MapFrom(src => src.Field)) // a (poor) example
