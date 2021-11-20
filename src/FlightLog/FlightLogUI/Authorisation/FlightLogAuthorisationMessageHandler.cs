@@ -9,6 +9,7 @@ namespace DukeSoftware.FlightLog.FlightLogUI.Authorisation
         NavigationManager navigationManager)
         : base(provider, navigationManager)
         {
+            // TODO make this a config
             ConfigureHandler(
                 authorizedUrls: new[] { "https://localhost:5002", "https://flightlogapi.azurewebsites.net" },
                 scopes: new[] { "flightlog-api.read", "flightlog-api.write" });
