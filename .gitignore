@@ -266,3 +266,9 @@ src/FlightLog/FlightLog/.deployment
 /src/FlightLog/BlazorUI - Copy
 /src/FlightLog/FlightLogUI/bin/Debug
 /src/FlightLog/FlightLogUI/obj
+/src/FlightLog/ApplicationCore/bin/Release/netcoreapp3.1
+/src/FlightLog/FlightLogUI/bin/Release/net6.0
+/src/FlightLog/Infrastructure/bin/Release/netcoreapp3.1
+/src/FlightLog/Shared/bin/Release/netcoreapp3.1/DukeSoftware.FlightLog.Shared..deps.json
+/src/FlightLog/Shared/bin/Release/netcoreapp3.1
+/src/FlightLog/WebApi/bin/Release/netcoreapp3.1

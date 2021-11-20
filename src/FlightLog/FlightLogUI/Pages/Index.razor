@@ -2,6 +2,7 @@
 
 @attribute [Authorize]
 @inject IHttpClientFactory ClientFactory
+@inject AuthenticationStateProvider AuthStateProvider
 
 <h2>Flights</h2>
 
@@ -32,8 +33,8 @@ else
 
 @code {
     private FlightDto[] recentFlights;
-    [CascadingParameter]
-    private Task<AuthenticationState> authenticationState { get; set; }
+    //[CascadingParameter]
+    //private Task<AuthenticationState> authenticationState { get; set; }
     private bool loading = false;
 
     protected override async Task OnInitializedAsync()
@@ -41,8 +42,17 @@ else
         try
         {
             loading = true;
-            var user = (await authenticationState).User;
-            var accountId = user.FindFirst("https://flightlog.co.nz/claims/account_id").Value;
+
+            // New try
+            var state = await AuthStateProvider.GetAuthenticationStateAsync();
+            var user = state.User;
+            var accountId = user.Claims
+                .Where(c => c.Type.Equals("https://flightlog.co.nz/claims/account_id"))
+                .Select(c => c.Value)
+                .FirstOrDefault() ?? string.Empty;           
+            
+            //var user = (await authenticationState).User;
+            //var accountId = user.FindFirst("https://flightlog.co.nz/claims/account_id").Value;
             var client = ClientFactory.CreateClient("FlightLogAPI");
             recentFlights = await client.GetFromJsonAsync<FlightDto[]>($"/api/{accountId}/flights/recent");
         }

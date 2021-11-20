@@ -11,10 +11,9 @@
         @{
             var authority = (string)Configuration["Auth0:Authority"];
             var clientId = (string)Configuration["Auth0:ClientId"];
-            var returnUrl = (string)Configuration["Auth0:PostLogoutUrl"];
-            var returnUrlEncoded = System.Net.WebUtility.UrlEncode(returnUrl);
+            var returnUrl = Uri.EscapeDataString((string)Configuration["Auth0:PostLogoutUrl"]);
 
-             Navigation.NavigateTo($"{authority}/v2/logout?returnTo={returnUrlEncoded}&client_id={clientId}");
+             Navigation.NavigateTo($"{authority}/v2/logout?returnTo={returnUrl}&client_id={clientId}");
         }
     </LogOut>
 </RemoteAuthenticatorView>

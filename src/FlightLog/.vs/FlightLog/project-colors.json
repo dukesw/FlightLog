@@ -15,7 +15,32 @@
       "ProjectGuid": "20237c31-3136-4b83-98c8-aa64c801eb5d",
       "DisplayName": "FlightLogUI",
       "ColorIndex": 2
+    },
+    "b98b06aa-ca0c-44a6-9e64-d7fb4dde92f0": {
+      "ProjectGuid": "b98b06aa-ca0c-44a6-9e64-d7fb4dde92f0",
+      "DisplayName": "Infrastructure",
+      "ColorIndex": 3
+    },
+    "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3": {
+      "ProjectGuid": "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3",
+      "DisplayName": "Miscellaneous Files",
+      "ColorIndex": -1
+    },
+    "4609886e-1fe5-457b-9c45-d102847b3ba3": {
+      "ProjectGuid": "4609886e-1fe5-457b-9c45-d102847b3ba3",
+      "DisplayName": "ApplicationCoreUnitTests",
+      "ColorIndex": 4
+    },
+    "1d3306e6-6be0-4acf-a8f0-8b0768cce2ca": {
+      "ProjectGuid": "1d3306e6-6be0-4acf-a8f0-8b0768cce2ca",
+      "DisplayName": "Shared",
+      "ColorIndex": 5
+    },
+    "f8f428a9-984d-4b69-9ef8-584ff133e32c": {
+      "ProjectGuid": "f8f428a9-984d-4b69-9ef8-584ff133e32c",
+      "DisplayName": "FlightLogUI",
+      "ColorIndex": 6
     }
   },
-  "NextColorIndex": 3
+  "NextColorIndex": 7
 }
