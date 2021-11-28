@@ -6,7 +6,7 @@
                     @if (!context.User.Identity.IsAuthenticated)
                     {
                         @*<RedirectToLogin />*@
-                         <p>You need to login to manage your flights.</p>
+                         <p>You need to <a href="authentication/login">login</a> to manage your flights.</p>
                     }
                     @*else
                     {

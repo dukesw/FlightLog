@@ -1,4 +1,6 @@
-﻿namespace DukeSoftware.FlightLog.Shared.Dtos
+﻿using System;
+
+namespace DukeSoftware.FlightLog.Shared.Dtos
 {
     public class ModelDto
     {
@@ -6,5 +8,9 @@
         public string Name { get; set; }
         public string Manufacturer { get; set; }
         public int AccountId { get; set; }
+        public string PowerPlant { get; set; }
+        public DateTime? MaidenedOn { get; set; }
+        public DateTime? PurchasedOn { get; set; }
+        public string Notes { get; set; }
     }
 }

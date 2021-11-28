@@ -77,6 +77,27 @@ namespace WebApi.Controllers
             }
         }
 
+        [HttpGet("from/{startDate}/to/{endDate}")]
+        [Authorize(Roles = "User, Admin")]
+        public async Task<ActionResult<List<FlightDto>>> GetByDateRange(int accountId, DateTime startDate, DateTime endDate)
+        {
+            try
+            {
+                Guard.AgainstAccountNumberMismatch(GetAccountIdClaim(), accountId.ToString(), "userClaim.accountId", "accountId");
+                var flights = await _flightService.GetFlightsByDateAsync(accountId, startDate, endDate);
+                return Ok(flights);
+            }
+            catch (ArgumentNullException)
+            {
+                return NotFound($"Error finding flights from {startDate} to {endDate}");
+            }
+            catch (AccountConflictException)
+            {
+                return Forbid();
+            }
+        }
+
+
         [HttpGet("model/{modelId}")]
         [Authorize(Roles = "User, Admin")]
         public async Task<ActionResult<List<FlightDto>>> GetByModelId(int accountId, int modelId)

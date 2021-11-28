@@ -1,5 +1,30 @@
 ﻿@page "/models"
 @attribute [Authorize]
 
+@inject IHttpClientFactory ClientFactory
+
 <h2>Models</h2>
-<p>TODO</p>
+ <RadzenDataGrid Data="@models" TItem="ModelDto" AllowSorting="true">
+            <Columns>
+                @*<RadzenDataGridColumn TItem="FlightDto" Property="Id" Filterable="false" Title="Id" Frozen="true" Width="50px" />*@
+                <RadzenDataGridColumn TItem="ModelDto" Property="Date" Filterable="false" Title="Date">
+                    <Template Context="flight">
+                        <div>@flight.Date.ToString("d-MMM-yyyy")</div>
+                    </Template> 
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="ModelDto" Property="Model.Name" Filterable="false" Title="Model"/>
+                <RadzenDataGridColumn TItem="ModelDto" Property="Field.Name" Filterable="false" Title="Field"/>
+                <RadzenDataGridColumn TItem="ModelDto" Property="Pilot.Name" Filterable="false" Title="Pilot"/>
+                <RadzenDataGridColumn TItem="ModelDto" Property="FlightMinutes" Filterable="false" Title="Minutes"/>
+                <RadzenDataGridColumn TItem="ModelDto" Property="Id" Filterable="false" Sortable="false" Title="">
+                    <Template Context="model">
+                        <a href="@($"/edit-model/{model.Id}")">Edit</a>
+                    </Template> 
+                </RadzenDataGridColumn>
+              
+
+                @*TODO add an edit link*@
+            </Columns>
+
+        </RadzenDataGrid>
+

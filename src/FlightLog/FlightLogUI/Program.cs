@@ -34,6 +34,8 @@ namespace DukeSoftware.FlightLog.FlightLogUI
             {
                 builder.Configuration.Bind("Auth0", options.ProviderOptions);
                 options.ProviderOptions.ResponseType = "code";
+                options.ProviderOptions.DefaultScopes.Add("profile");
+                options.ProviderOptions.DefaultScopes.Add("offline_access");    // For Refresh token
 
             });
             //builder.Services.AddApiAuthorization();

@@ -272,3 +272,5 @@ src/FlightLog/FlightLog/.deployment
 /src/FlightLog/Shared/bin/Release/netcoreapp3.1/DukeSoftware.FlightLog.Shared..deps.json
 /src/FlightLog/Shared/bin/Release/netcoreapp3.1
 /src/FlightLog/WebApi/bin/Release/netcoreapp3.1
+/src/FlightLog/FlightLogUI/Properties/PublishProfiles/flightlogapp - Web Deploy.pubxml.user
+/src/FlightLog/WebApi/Properties/PublishProfiles/flightlogapi - Web Deploy.pubxml.user

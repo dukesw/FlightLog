@@ -22,12 +22,23 @@ else
     {
         <RadzenDataGrid Data="@recentFlights" TItem="FlightDto" AllowSorting="true">
             <Columns>
-                <RadzenDataGridColumn TItem="FlightDto" Property="Id" Filterable="false" Title="Id" Frozen="true" Width="50px" />
-                <RadzenDataGridColumn TItem="FlightDto" Property="Date" Filterable="false" Title="Date"/>
+                @*<RadzenDataGridColumn TItem="FlightDto" Property="Id" Filterable="false" Title="Id" Frozen="true" Width="50px" />*@
+                <RadzenDataGridColumn TItem="FlightDto" Property="Date" Filterable="false" Title="Date">
+                    <Template Context="flight">
+                        <div>@flight.Date.ToString("d-MMM-yyyy")</div>
+                    </Template> 
+                </RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="FlightDto" Property="Model.Name" Filterable="false" Title="Model"/>
                 <RadzenDataGridColumn TItem="FlightDto" Property="Field.Name" Filterable="false" Title="Field"/>
                 <RadzenDataGridColumn TItem="FlightDto" Property="Pilot.Name" Filterable="false" Title="Pilot"/>
                 <RadzenDataGridColumn TItem="FlightDto" Property="FlightMinutes" Filterable="false" Title="Minutes"/>
+                <RadzenDataGridColumn TItem="FlightDto" Property="Id" Filterable="false" Sortable="false" Title="">
+                    <Template Context="flight">
+                        <a href="@($"/edit-flight/{flight.Id}")">Edit</a>
+                    </Template> 
+                </RadzenDataGridColumn>
+              
+
                 @*TODO add an edit link*@
             </Columns>
 

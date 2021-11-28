@@ -2,6 +2,7 @@
 
 @attribute [Authorize]
 @inject IHttpClientFactory ClientFactory
+@inject IAccessTokenProvider AccessTokenProvider
 @inject AuthenticationStateProvider AuthStateProvider
 
 <h2>Flights</h2>
@@ -42,6 +43,12 @@ else
         try
         {
             loading = true;
+            //var tokenResult = await AccessTokenProvider.RequestAccessToken();
+            //if (tokenResult.TryGetToken(out var token))
+            //{
+            //    token.ToString();
+            //}
+
 
             // New try
             var state = await AuthStateProvider.GetAuthenticationStateAsync();
