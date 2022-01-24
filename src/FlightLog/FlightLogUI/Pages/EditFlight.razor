@@ -22,7 +22,7 @@
             <RadzenLabel Text="Date" />
         </div>
         <div class="col-md-8">
-            <RadzenDatePicker Name="Date" @bind-Value="@flight.Date" DateFormat="d"></RadzenDatePicker>
+            <RadzenDatePicker Name="Date" @bind-Value="@flight.Date" DateFormat="d-MMM-yyyy" Change="@(args => OnDateChanged(args))"></RadzenDatePicker>
             <RadzenRequiredValidator Component="Date" Text="Date is required" Popup="false" Style="display: block"></RadzenRequiredValidator>
         </div>
     </div>
@@ -69,7 +69,7 @@
             <RadzenLabel Text="Details" />
         </div>
         <div class="col-md-8">
-            <RadzenTextArea @bind-Value="@flight.Details" style="width: 100%"></RadzenTextArea>
+            <RadzenTextArea @bind-Value="@flight.Details" Rows=5 style="width: 100%"></RadzenTextArea>
         </div>
     </div>
 
@@ -115,11 +115,13 @@
             var user = (await authenticationState).User;
             accountId = user.FindFirst("https://flightlog.co.nz/claims/account_id").Value;
 
-            flight.Date = DateTime.Now;
+            flight.Date = new DateTimeOffset(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0, new TimeSpan(0, 0, 0)).Date;
+            Console.WriteLine($"OnInitializedAsync(): flight.Date == {flight.Date}");
+
             flight.AccountId = Int32.Parse(accountId);
 
             var client = ClientFactory.CreateClient("FlightLogAPI");
-            models = await client.GetFromJsonAsync<ModelDto[]>($"/api/{accountId}/models");
+            models = await client.GetFromJsonAsync<ModelDto[]>($"/api/{accountId}/models/active");
             locations = await client.GetFromJsonAsync<LocationDto[]>($"/api/{accountId}/locations");
             pilots = await client.GetFromJsonAsync<PilotDto[]>($"/api/{accountId}/pilots");
 
@@ -142,6 +144,8 @@
     {
         message = "Saving...";
         HttpResponseMessage response;
+
+        Console.WriteLine($"Submit(): flight.Date == {flight.Date}");
 
         // todo Wrap in a try/catch
         var client = ClientFactory.CreateClient("FlightLogAPI");
@@ -168,22 +172,31 @@
     void OnInvalidSubmit(FormInvalidSubmitEventArgs args)
     {
         message = "Invalid entry";
-        
+
+    }
+
+    void OnDateChanged(DateTime? value) {
+        //if (value.HasValue)
+        //{
+        //    flight.Date = value.Value.Date;
+        //    Console.WriteLine($"OnDateChanged(): flight.Date == {flight.Date}");
+
+        //}
     }
 
     void Cancel()
     {
         //clearFormData();
-       // JSRuntime.InvokeAsync. window.back();
+        // JSRuntime.InvokeAsync. window.back();
         JsRuntime.InvokeVoidAsync("history.go", -1);
     }
 
     void clearFormData()
     {
         flight = new FlightDto();
-        flight.Date = DateTime.Now;
         flight.AccountId = Int32.Parse(accountId);
+        flight.Date = new DateTimeOffset(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0, new TimeSpan(0, 0, 0)).Date;
         message = "Form cleared";
-        
+        Console.WriteLine($"clearFormData(): flight.Date == {flight.Date}");
     }
 }

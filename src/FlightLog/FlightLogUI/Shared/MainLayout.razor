@@ -1,4 +1,11 @@
-﻿@inherits LayoutComponentBase
+﻿@*@using Microsoft.AspNetCore.Http*@
+
+@inherits LayoutComponentBase
+
+@*@inject IHttpContextAccessor httpContextAccessor*@
+@inject IJSRuntime JsRuntime;
+
+
 
 <RadzenHeader>
     <ChildContent>
@@ -23,9 +30,7 @@
             <RadzenContentContainer Name="main">
                 <div class="container-fluid">
                     <div class="row">
-                    <div class="col-12 pt-4 pb-5 px-3 px-lg-5">
-                        @Body
-                    </div>
+                        <div class="col-12 pt-4 pb-5 px-3 px-lg-5">@Body</div>
                     </div>
                 </div>
             </RadzenContentContainer>
@@ -40,7 +45,10 @@
                 <RadzenPanelMenuItem Text="Add Flight" Path="/edit-flight"></RadzenPanelMenuItem>
                 <RadzenPanelMenuItem Text="Search Flights" Path="/search-flights"></RadzenPanelMenuItem>
             </RadzenPanelMenuItem>
-            <RadzenPanelMenuItem Text="Models" Path="/models"></RadzenPanelMenuItem>
+            <RadzenPanelMenuItem Text="Models" Path="/models">
+                <RadzenPanelMenuItem Text="Add Model" Path="/edit-model"></RadzenPanelMenuItem>    
+            </RadzenPanelMenuItem>
+
         </RadzenPanelMenu>
     </ChildContent>
 </RadzenSidebar>
@@ -86,4 +94,19 @@
     RadzenBody body0;
     bool sidebarExpanded = true;
     bool bodyExpanded = false;
+    string userAgent;
+
+    protected override async Task OnInitializedAsync()
+    {
+        userAgent = await JsRuntime.InvokeAsync<string>("getUserAgent");
+       
+        if (!string.IsNullOrEmpty(userAgent))
+        {
+            if (userAgent.Contains("iPhone") || userAgent.Contains("Android") || userAgent.Contains("Googlebot"))
+            {
+                sidebarExpanded = false;
+                bodyExpanded = true;
+            }
+        }
+    }
 }

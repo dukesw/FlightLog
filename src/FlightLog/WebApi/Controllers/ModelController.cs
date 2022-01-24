@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using DukeSoftware.FlightLog.ApplicationCore.Entities;
 using DukeSoftware.FlightLog.ApplicationCore.Exceptions;
 using DukeSoftware.FlightLog.ApplicationCore.Interfaces;
+using DukeSoftware.FlightLog.Shared.Dtos;
 using DukeSoftware.GuardClauses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -41,6 +42,24 @@ namespace WebApi.Controllers
             }
         }
 
+        [HttpGet("active")]
+        [Authorize(Roles = "User, Admin")]
+        // [Authorize]
+        public async Task<ActionResult> ListActive(int accountId)
+        {
+            try
+            {
+                Guard.AgainstAccountNumberMismatch(GetAccountIdClaim(), accountId.ToString(), "userClaim.accountId", "accountId");
+                var models = await _modelService.GetModelsByIsActiveAsync(accountId, true);
+                return Ok(models.ToArray());
+            }
+            catch (AccountConflictException)
+            {
+                return Forbid();
+            }
+        }
+
+
         [HttpGet("{id}")]
         [Authorize(Roles = "User, Admin")]
         public async Task<ActionResult> GetById(int accountId, int id)
@@ -63,7 +82,7 @@ namespace WebApi.Controllers
 
         [HttpPost]
         [Authorize(Roles = "User, Admin")]
-        public async Task<ActionResult<Model>> Post(int accountId, [FromBody] Model newModel)
+        public async Task<ActionResult<ModelDto>> Post(int accountId, [FromBody] ModelDto newModel)
         {
             try
             {
@@ -83,7 +102,7 @@ namespace WebApi.Controllers
 
         [HttpPut]
         [Authorize(Roles = "User, Admin")]
-        public async Task<ActionResult<Model>> Put(int accountId, [FromBody] Model model)
+        public async Task<ActionResult<ModelDto>> Put(int accountId, [FromBody] ModelDto model)
         {
             try
             {

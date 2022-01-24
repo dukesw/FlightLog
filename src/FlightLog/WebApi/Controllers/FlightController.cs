@@ -158,6 +158,55 @@ namespace WebApi.Controllers
             }
         }
 
+        [HttpGet("group/from/{startDate}/to/{endDate}")]
+        [Authorize(Roles = "User, Admin")]
+        public async Task<ActionResult<FlightSummaryDto>> GetGroupsByMonthForDateRange(int accountId, DateTime startDate, DateTime endDate)
+        {
+            try
+            {
+                Guard.AgainstAccountNumberMismatch(GetAccountIdClaim(), accountId.ToString(), "userClaim.accountId", "accountId");
+                // Date guards
+                Guard.AgainstNull(startDate, "startDate");
+                Guard.AgainstNull(endDate, "endDate");
+
+                var flights = await _flightService.GetGroupedFlightsByMonthForDates(accountId, startDate, endDate);
+                return Ok(flights);
+            }
+            catch (ArgumentNullException)
+            {
+                return NotFound($"Error finding flights for summary");
+            }
+            catch (AccountConflictException)
+            {
+                return Forbid();
+            }
+        }
+
+
+        [HttpGet("summary/from/{startDate}/to/{endDate}")]
+        [Authorize(Roles = "User, Admin")]
+        public async Task<ActionResult<FlightSummaryDto>> GetSummaryByDateRange(int accountId, DateTime startDate, DateTime endDate)
+        {
+            try
+            {
+                Guard.AgainstAccountNumberMismatch(GetAccountIdClaim(), accountId.ToString(), "userClaim.accountId", "accountId");
+                // Date guards
+                Guard.AgainstNull(startDate, "startDate");
+                Guard.AgainstNull(endDate, "endDate");
+
+                var flights = await _flightService.GetFlightSummaryByDateRange(accountId, startDate, endDate);
+                return Ok(flights);
+            }
+            catch (ArgumentNullException)
+            {
+                return NotFound($"Error finding flights for summary");
+            }
+            catch (AccountConflictException)
+            {
+                return Forbid();
+            }
+        }
+
         [HttpGet("summary/{modelId}/from/{startDate}/to/{endDate}")]
         [Authorize(Roles = "User, Admin")]
         public async Task<ActionResult<FlightSummaryDto>> GetSummaryByModelAndDateRange(int accountId, int modelId, DateTime startDate, DateTime endDate)

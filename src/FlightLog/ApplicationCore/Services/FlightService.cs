@@ -16,11 +16,13 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
     public class FlightService : IFlightService
     {
         private readonly IFlightRepository _flightRepository;
+        private readonly IModelRepository _modelRepository;
         private readonly IAppLogger<FlightService> _logger;
         private readonly IMapper _mapper;
-        public FlightService(IFlightRepository repository, IAppLogger<FlightService> logger, IMapper mapper)
+        public FlightService(IFlightRepository repository, IModelRepository modelRepository, IAppLogger<FlightService> logger, IMapper mapper)
         {
             _flightRepository = repository;
+            _modelRepository = modelRepository;
             _logger = logger;
             _mapper = mapper;
         }
@@ -35,6 +37,9 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
             {
                 flightEntity = await _flightRepository.AddAsync(flightEntity);
                 _logger.LogInformation($"Added flight, new Id = {flightEntity.Id}");
+
+                await UpdateFlightCountForModel(accountId, flightEntity.ModelId);
+
                 return await GetFlightByIdAsync(accountId, flightEntity.Id);
             }
             catch (Exception ex)
@@ -71,6 +76,8 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
             return _mapper.Map<Flight, FlightDto>(result.FirstOrDefault());
         }
 
+
+
         public async Task<IList<FlightDto>> GetFlightsAsync(int accountId)
         {
             var spec = new GetFlightsByAccount(accountId);
@@ -81,8 +88,9 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
         public async Task<IList<FlightDto>> GetRecentFlightsAsync(int accountId)
         {
             // Defining recent flights as all of those within the last month, based on the date of the request
-            var dateFrom = DateTime.Now.AddMonths(-1);
-            var spec = new GetFlightsByAccountAndDateRange(accountId, dateFrom, DateTime.Now);
+            var dateFrom = DateTime.Now.Date.AddMonths(-1);
+            // TODO update this to get flights SINCE a date. Will need a new spec. Hacked to get around timezones on server (as not passed from client)
+            var spec = new GetFlightsByAccountAndDateRange(accountId, dateFrom, DateTime.Now.Date.AddDays(2).AddSeconds(-1));
             var result = await _flightRepository.GetBySpecAsync(spec);
             return _mapper.Map<IList<Flight>, IList<FlightDto>>(result);
         }
@@ -94,6 +102,18 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
             return _mapper.Map<IList<Flight>, IList<FlightDto>>(result);
         }
 
+        public async Task<int> GetFlightCountByModelAsync(int accountId, int modelId)
+        {
+            var spec = new GetFlightCountsByAccountAndModel(accountId, modelId);
+            var result = await _flightRepository.GetCountBySpecAsync(spec);
+            return result;
+        }
+
+        public async Task<IList<FlightGroupDto>> GetGroupedFlightsByMonthForDates(int accountId, DateTime startDate, DateTime endDate)
+        {
+            var result = await _flightRepository.GetGroupedFlightsByMonthForDates(accountId, startDate, endDate);
+            return result;
+        }
         public async Task<FlightSummaryDto> GetFlightSummaryByModelAsync(int accountId, int modelId)
         {
             var allFlights = await GetFlightsByModelAsync(accountId, modelId);
@@ -101,23 +121,30 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
             return result;
         }
 
-        public async Task<FlightSummaryDto> GetFlightSummaryByModelAndDateRange(int accountId, int modelId, DateTime startDate, DateTime endDate)
+        public async Task<FlightSummaryDto> GetFlightSummaryByDateRange(int accountId, DateTime startDate, DateTime endDate)
         {
-            var allFlights = await GetFlightsByDateAndModelAsync(accountId, startDate, endDate, modelId);
+            var allFlights = await GetFlightsByDateAsync(accountId, startDate.Date, endDate.Date.AddDays(1).AddSeconds(-1));
             var result = CreateFlightSummary(allFlights, accountId);
             return result;
         }
 
+        public async Task<FlightSummaryDto> GetFlightSummaryByModelAndDateRange(int accountId, int modelId, DateTime startDate, DateTime endDate)
+        {
+            var allFlights = await GetFlightsByDateAndModelAsync(accountId, startDate.Date, endDate.Date.AddDays(1).AddSeconds(-1), modelId);
+            var result = CreateFlightSummary(allFlights, accountId);
+            return result;
+        }
+        
         public async Task<IList<FlightDto>> GetFlightsByDateAsync(int accountId, DateTime startDate, DateTime endDate)
         {
-            var spec = new GetFlightsByAccountAndDateRange(accountId, startDate, endDate);
+            var spec = new GetFlightsByAccountAndDateRange(accountId, startDate.Date, endDate.Date.AddDays(1).AddSeconds(-1));
             var result = await _flightRepository.GetBySpecAsync(spec);
             return _mapper.Map<IList<Flight>, IList<FlightDto>>(result);
         }
 
         public async Task<IList<FlightDto>> GetFlightsByDateAndModelAsync(int accountId, DateTime startDate, DateTime endDate, int modelId)
         {
-            var spec = new GetFlightsByAccountAndDateRangeAndModel(accountId, startDate, endDate, modelId);
+            var spec = new GetFlightsByAccountAndDateRangeAndModel(accountId, startDate.Date, endDate.Date.AddDays(1).AddSeconds(-1), modelId);
             var result = await _flightRepository.GetBySpecAsync(spec);
             return _mapper.Map<IList<Flight>, IList<FlightDto>>(result);
         }
@@ -155,6 +182,14 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
             };
 
             return result;
+        }
+
+        private async Task UpdateFlightCountForModel(int accountId, int modelId)
+        {
+            // Updating the total flights for a model
+            var model = await _modelRepository.GetByIdAsync(modelId);
+            model.TotalFlights = await GetFlightCountByModelAsync(accountId, modelId);
+            var modelResult = await _modelRepository.UpdateAsync(model);
         }
 
     }

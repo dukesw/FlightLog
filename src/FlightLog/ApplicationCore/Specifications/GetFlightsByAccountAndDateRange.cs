@@ -15,6 +15,7 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Specifications
             Includes.Add(x => x.Battery);
             Includes.Add(x => x.Field);
             Includes.Add(x => x.Pilot);
+            ApplyOrderBy(x => x.Date);
         }
     }
 }

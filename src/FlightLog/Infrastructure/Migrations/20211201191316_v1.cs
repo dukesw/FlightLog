@@ -1,7 +1,9 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace DukeSoftware.FlightLog.Infrastructure.Migrations
+#nullable disable
+
+namespace Infrastructure.Migrations
 {
     public partial class v1 : Migration
     {
@@ -11,13 +13,13 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
                 name: "Account",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(nullable: true),
-                    OwnerId = table.Column<string>(nullable: true),
-                    OwnerEmail = table.Column<string>(nullable: true),
-                    OpenedOn = table.Column<DateTime>(nullable: false),
-                    ClosedOn = table.Column<DateTime>(nullable: true)
+                    Name = table.Column<string>(type: "TEXT", nullable: true),
+                    OwnerId = table.Column<string>(type: "TEXT", nullable: true),
+                    OwnerEmail = table.Column<string>(type: "TEXT", nullable: true),
+                    OpenedOn = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    ClosedOn = table.Column<DateTime>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -25,16 +27,30 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ModelStatus",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Name = table.Column<string>(type: "TEXT", nullable: true),
+                    IsActive = table.Column<bool>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ModelStatus", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "BatteryType",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    AccountId = table.Column<int>(nullable: false),
-                    CapacityMah = table.Column<int>(nullable: false),
-                    Cells = table.Column<int>(nullable: false),
-                    Type = table.Column<string>(nullable: true),
-                    WeightInGrams = table.Column<int>(nullable: false)
+                    AccountId = table.Column<int>(type: "INTEGER", nullable: false),
+                    CapacityMah = table.Column<int>(type: "INTEGER", nullable: false),
+                    Cells = table.Column<int>(type: "INTEGER", nullable: false),
+                    Type = table.Column<string>(type: "TEXT", nullable: true),
+                    WeightInGrams = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -51,14 +67,14 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
                 name: "Location",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    AccountId = table.Column<int>(nullable: false),
-                    Name = table.Column<string>(nullable: true),
-                    Lattitude = table.Column<float>(nullable: true),
-                    Longitude = table.Column<float>(nullable: true),
-                    Notes = table.Column<string>(nullable: true),
-                    WeatherStationLink = table.Column<string>(nullable: true)
+                    AccountId = table.Column<int>(type: "INTEGER", nullable: false),
+                    Name = table.Column<string>(type: "TEXT", nullable: true),
+                    Lattitude = table.Column<float>(type: "REAL", nullable: true),
+                    Longitude = table.Column<float>(type: "REAL", nullable: true),
+                    Notes = table.Column<string>(type: "TEXT", nullable: true),
+                    WeatherStationLink = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -72,42 +88,16 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Model",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    AccountId = table.Column<int>(nullable: false),
-                    Name = table.Column<string>(nullable: true),
-                    Manufacturer = table.Column<string>(nullable: true),
-                    PowerPlant = table.Column<string>(nullable: true),
-                    PurchasedOn = table.Column<DateTime>(nullable: true),
-                    MaidenedOn = table.Column<DateTime>(nullable: true),
-                    Notes = table.Column<string>(nullable: true),
-                    SortOrder = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Model", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Model_Account_AccountId",
-                        column: x => x.AccountId,
-                        principalTable: "Account",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Pilot",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    AccountId = table.Column<int>(nullable: false),
-                    Name = table.Column<string>(nullable: true),
-                    UserId = table.Column<string>(nullable: true),
-                    Registration = table.Column<string>(nullable: true),
-                    Club = table.Column<string>(nullable: true)
+                    AccountId = table.Column<int>(type: "INTEGER", nullable: false),
+                    Name = table.Column<string>(type: "TEXT", nullable: true),
+                    UserId = table.Column<string>(type: "TEXT", nullable: true),
+                    Registration = table.Column<string>(type: "TEXT", nullable: true),
+                    Club = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -124,14 +114,14 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
                 name: "PowerPlant",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    AccountId = table.Column<int>(nullable: false),
-                    Name = table.Column<string>(nullable: true),
-                    Type = table.Column<int>(nullable: false),
-                    Manufacturer = table.Column<string>(nullable: true),
-                    PurchasedOn = table.Column<DateTime>(nullable: false),
-                    Notes = table.Column<string>(nullable: true)
+                    AccountId = table.Column<int>(type: "INTEGER", nullable: false),
+                    Name = table.Column<string>(type: "TEXT", nullable: true),
+                    Type = table.Column<int>(type: "INTEGER", nullable: false),
+                    Manufacturer = table.Column<string>(type: "TEXT", nullable: true),
+                    PurchasedOn = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    Notes = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -145,17 +135,52 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Model",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    AccountId = table.Column<int>(type: "INTEGER", nullable: false),
+                    Name = table.Column<string>(type: "TEXT", nullable: true),
+                    Manufacturer = table.Column<string>(type: "TEXT", nullable: true),
+                    PowerPlant = table.Column<string>(type: "TEXT", nullable: true),
+                    PurchasedOn = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    MaidenedOn = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    DisposedOn = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    ModelStatusId = table.Column<int>(type: "INTEGER", nullable: false),
+                    Notes = table.Column<string>(type: "TEXT", nullable: true),
+                    SortOrder = table.Column<int>(type: "INTEGER", nullable: false),
+                    TotalFlights = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Model", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Model_Account_AccountId",
+                        column: x => x.AccountId,
+                        principalTable: "Account",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Model_ModelStatus_ModelStatusId",
+                        column: x => x.ModelStatusId,
+                        principalTable: "ModelStatus",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Battery",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    AccountId = table.Column<int>(nullable: false),
-                    BatteryNumber = table.Column<int>(nullable: false),
-                    BatteryTypeId = table.Column<int>(nullable: false),
-                    IsActive = table.Column<bool>(nullable: false),
-                    Notes = table.Column<string>(nullable: true),
-                    PurchaseDate = table.Column<DateTime>(nullable: false)
+                    AccountId = table.Column<int>(type: "INTEGER", nullable: false),
+                    BatteryNumber = table.Column<int>(type: "INTEGER", nullable: false),
+                    BatteryTypeId = table.Column<int>(type: "INTEGER", nullable: false),
+                    IsActive = table.Column<bool>(type: "INTEGER", nullable: false),
+                    Notes = table.Column<string>(type: "TEXT", nullable: true),
+                    PurchaseDate = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -178,13 +203,13 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
                 name: "BatteryCharge",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    AccountId = table.Column<int>(nullable: false),
-                    ChargedOn = table.Column<DateTime>(nullable: false),
-                    Type = table.Column<int>(nullable: false),
-                    Mah = table.Column<int>(nullable: false),
-                    BatteryId = table.Column<int>(nullable: false)
+                    AccountId = table.Column<int>(type: "INTEGER", nullable: false),
+                    ChargedOn = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    Type = table.Column<int>(type: "INTEGER", nullable: false),
+                    Mah = table.Column<int>(type: "INTEGER", nullable: false),
+                    BatteryId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -207,17 +232,17 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
                 name: "Flight",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    AccountId = table.Column<int>(nullable: false),
-                    Date = table.Column<DateTime>(nullable: false),
-                    ModelFlightNumber = table.Column<int>(nullable: false),
-                    FieldId = table.Column<int>(nullable: false),
-                    ModelId = table.Column<int>(nullable: false),
-                    BatteryId = table.Column<int>(nullable: true),
-                    PilotId = table.Column<int>(nullable: false),
-                    Details = table.Column<string>(nullable: true),
-                    FlightMinutes = table.Column<float>(nullable: false)
+                    AccountId = table.Column<int>(type: "INTEGER", nullable: false),
+                    Date = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    ModelFlightNumber = table.Column<int>(type: "INTEGER", nullable: false),
+                    FieldId = table.Column<int>(type: "INTEGER", nullable: false),
+                    ModelId = table.Column<int>(type: "INTEGER", nullable: false),
+                    BatteryId = table.Column<int>(type: "INTEGER", nullable: true),
+                    PilotId = table.Column<int>(type: "INTEGER", nullable: false),
+                    Details = table.Column<string>(type: "TEXT", nullable: true),
+                    FlightMinutes = table.Column<float>(type: "REAL", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -232,8 +257,7 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
                         name: "FK_Flight_Battery_BatteryId",
                         column: x => x.BatteryId,
                         principalTable: "Battery",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Flight_Location_FieldId",
                         column: x => x.FieldId,
@@ -258,11 +282,11 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
                 name: "MediaLink",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    AccountId = table.Column<int>(nullable: false),
-                    Uri = table.Column<string>(nullable: true),
-                    FlightId = table.Column<int>(nullable: true)
+                    AccountId = table.Column<int>(type: "INTEGER", nullable: false),
+                    Uri = table.Column<string>(type: "TEXT", nullable: true),
+                    FlightId = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -277,8 +301,7 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
                         name: "FK_MediaLink_Flight_FlightId",
                         column: x => x.FlightId,
                         principalTable: "Flight",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
@@ -352,6 +375,11 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
                 column: "AccountId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Model_ModelStatusId",
+                table: "Model",
+                column: "ModelStatusId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Pilot_AccountId",
                 table: "Pilot",
                 column: "AccountId");
@@ -390,6 +418,9 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "BatteryType");
+
+            migrationBuilder.DropTable(
+                name: "ModelStatus");
 
             migrationBuilder.DropTable(
                 name: "Account");

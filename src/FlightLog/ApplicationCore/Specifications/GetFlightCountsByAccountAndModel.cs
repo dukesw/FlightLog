@@ -6,12 +6,11 @@ using System.Text;
 
 namespace DukeSoftware.FlightLog.ApplicationCore.Specifications
 {
-    public class GetModelsByAccountId :  BaseSpecification<Model>, ISpecification<Model>
+    public class GetFlightCountsByAccountAndModel : BaseSpecification<Flight>
     {
-        public GetModelsByAccountId(int accountId) : base(x => x.AccountId == accountId)
+        public GetFlightCountsByAccountAndModel(int accountId, int modelId) : base(x => x.AccountId == accountId && x.ModelId == modelId)
         {
-            Includes.Add(x => x.Status);
-            ApplyOrderBy(x => x.SortOrder);
+
         }
     }
 }

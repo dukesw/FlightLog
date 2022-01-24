@@ -15,6 +15,8 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Interfaces
 
         IEnumerable<T> GetBySpec(ISpecification<T> spec);
 
+        int GetCountBySpec(ISpecification<T> spec);
+
         IEnumerable<T> GetAll();
 
         T Update(T entity);

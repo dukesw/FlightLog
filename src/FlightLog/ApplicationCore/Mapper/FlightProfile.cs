@@ -20,6 +20,7 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Mapper
             CreateMap<Location, FlightLocationDto>();
             CreateMap<Model, FlightModelDto>();
             CreateMap<Pilot, FlightPilotDto>();
+           
 
 
             CreateMap<FlightDto, Flight>()
@@ -43,10 +44,15 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Mapper
             CreateMap<FlightPilotDto, Pilot>(MemberList.None);
 
             CreateMap<Location, LocationDto>();
-            CreateMap<Model, ModelDto>();
+ 
+            CreateMap<ModelDto, Model>()
+                .ForMember(dest => dest.Status, opt => opt.Ignore())
+                .ForMember(dest => dest.ModelStatusId, opt => opt.MapFrom(src => src.Status.Id));
+            
+            CreateMap<ModelStatus, ModelStatusDto>();
             CreateMap<Pilot, PilotDto>();
-
-
+            CreateMap<ModelStatusDto, ModelStatus>();
+            CreateMap<Model, ModelDto>();
         }
     }
 }

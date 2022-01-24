@@ -6,17 +6,18 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace DukeSoftware.FlightLog.Infrastructure.Migrations
+#nullable disable
+
+namespace Infrastructure.Migrations
 {
     [DbContext(typeof(FlightLogContext))]
-    [Migration("20200819061014_v1")]
+    [Migration("20211201191316_v1")]
     partial class v1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.7");
+            modelBuilder.HasAnnotation("ProductVersion", "6.0.0");
 
             modelBuilder.Entity("DukeSoftware.FlightLog.ApplicationCore.Entities.Account", b =>
                 {
@@ -74,7 +75,7 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
 
                     b.HasIndex("BatteryTypeId");
 
-                    b.ToTable("Battery");
+                    b.ToTable("Battery", (string)null);
                 });
 
             modelBuilder.Entity("DukeSoftware.FlightLog.ApplicationCore.Entities.BatteryCharge", b =>
@@ -104,7 +105,7 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
 
                     b.HasIndex("BatteryId");
 
-                    b.ToTable("BatteryCharge");
+                    b.ToTable("BatteryCharge", (string)null);
                 });
 
             modelBuilder.Entity("DukeSoftware.FlightLog.ApplicationCore.Entities.BatteryType", b =>
@@ -132,7 +133,7 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
 
                     b.HasIndex("AccountId");
 
-                    b.ToTable("BatteryType");
+                    b.ToTable("BatteryType", (string)null);
                 });
 
             modelBuilder.Entity("DukeSoftware.FlightLog.ApplicationCore.Entities.Flight", b =>
@@ -180,7 +181,7 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
 
                     b.HasIndex("PilotId");
 
-                    b.ToTable("Flight");
+                    b.ToTable("Flight", (string)null);
                 });
 
             modelBuilder.Entity("DukeSoftware.FlightLog.ApplicationCore.Entities.Location", b =>
@@ -211,7 +212,7 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
 
                     b.HasIndex("AccountId");
 
-                    b.ToTable("Location");
+                    b.ToTable("Location", (string)null);
                 });
 
             modelBuilder.Entity("DukeSoftware.FlightLog.ApplicationCore.Entities.MediaLink", b =>
@@ -235,7 +236,7 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
 
                     b.HasIndex("FlightId");
 
-                    b.ToTable("MediaLink");
+                    b.ToTable("MediaLink", (string)null);
                 });
 
             modelBuilder.Entity("DukeSoftware.FlightLog.ApplicationCore.Entities.Model", b =>
@@ -247,11 +248,17 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
                     b.Property<int>("AccountId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<DateTime?>("DisposedOn")
+                        .HasColumnType("TEXT");
+
                     b.Property<DateTime?>("MaidenedOn")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Manufacturer")
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("ModelStatusId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
                         .HasColumnType("TEXT");
@@ -268,11 +275,33 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
                     b.Property<int>("SortOrder")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("TotalFlights")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AccountId");
 
-                    b.ToTable("Model");
+                    b.HasIndex("ModelStatusId");
+
+                    b.ToTable("Model", (string)null);
+                });
+
+            modelBuilder.Entity("DukeSoftware.FlightLog.ApplicationCore.Entities.ModelStatus", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ModelStatus", (string)null);
                 });
 
             modelBuilder.Entity("DukeSoftware.FlightLog.ApplicationCore.Entities.Pilot", b =>
@@ -300,7 +329,7 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
 
                     b.HasIndex("AccountId");
 
-                    b.ToTable("Pilot");
+                    b.ToTable("Pilot", (string)null);
                 });
 
             modelBuilder.Entity("DukeSoftware.FlightLog.ApplicationCore.Entities.PowerPlant", b =>
@@ -331,7 +360,7 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
 
                     b.HasIndex("AccountId");
 
-                    b.ToTable("PowerPlant");
+                    b.ToTable("PowerPlant", (string)null);
                 });
 
             modelBuilder.Entity("DukeSoftware.FlightLog.ApplicationCore.Entities.Battery", b =>
@@ -347,6 +376,10 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
                         .HasForeignKey("BatteryTypeId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Account");
+
+                    b.Navigation("BatteryType");
                 });
 
             modelBuilder.Entity("DukeSoftware.FlightLog.ApplicationCore.Entities.BatteryCharge", b =>
@@ -362,6 +395,10 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
                         .HasForeignKey("BatteryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Account");
+
+                    b.Navigation("Battery");
                 });
 
             modelBuilder.Entity("DukeSoftware.FlightLog.ApplicationCore.Entities.BatteryType", b =>
@@ -371,6 +408,8 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
                         .HasForeignKey("AccountId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Account");
                 });
 
             modelBuilder.Entity("DukeSoftware.FlightLog.ApplicationCore.Entities.Flight", b =>
@@ -402,6 +441,16 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
                         .HasForeignKey("PilotId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Account");
+
+                    b.Navigation("Battery");
+
+                    b.Navigation("Field");
+
+                    b.Navigation("Model");
+
+                    b.Navigation("Pilot");
                 });
 
             modelBuilder.Entity("DukeSoftware.FlightLog.ApplicationCore.Entities.Location", b =>
@@ -411,6 +460,8 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
                         .HasForeignKey("AccountId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Account");
                 });
 
             modelBuilder.Entity("DukeSoftware.FlightLog.ApplicationCore.Entities.MediaLink", b =>
@@ -424,6 +475,8 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
                     b.HasOne("DukeSoftware.FlightLog.ApplicationCore.Entities.Flight", null)
                         .WithMany("MediaLinks")
                         .HasForeignKey("FlightId");
+
+                    b.Navigation("Account");
                 });
 
             modelBuilder.Entity("DukeSoftware.FlightLog.ApplicationCore.Entities.Model", b =>
@@ -433,6 +486,16 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
                         .HasForeignKey("AccountId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("DukeSoftware.FlightLog.ApplicationCore.Entities.ModelStatus", "Status")
+                        .WithMany()
+                        .HasForeignKey("ModelStatusId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Account");
+
+                    b.Navigation("Status");
                 });
 
             modelBuilder.Entity("DukeSoftware.FlightLog.ApplicationCore.Entities.Pilot", b =>
@@ -442,6 +505,8 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
                         .HasForeignKey("AccountId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Account");
                 });
 
             modelBuilder.Entity("DukeSoftware.FlightLog.ApplicationCore.Entities.PowerPlant", b =>
@@ -451,6 +516,54 @@ namespace DukeSoftware.FlightLog.Infrastructure.Migrations
                         .HasForeignKey("AccountId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Account");
+                });
+
+            modelBuilder.Entity("DukeSoftware.FlightLog.ApplicationCore.Entities.Account", b =>
+                {
+                    b.Navigation("Batteries");
+
+                    b.Navigation("BatteryCharges");
+
+                    b.Navigation("BatteryTypes");
+
+                    b.Navigation("Fields");
+
+                    b.Navigation("Flights");
+
+                    b.Navigation("MediaLinks");
+
+                    b.Navigation("Models");
+
+                    b.Navigation("Pilots");
+
+                    b.Navigation("PowerPlants");
+                });
+
+            modelBuilder.Entity("DukeSoftware.FlightLog.ApplicationCore.Entities.BatteryType", b =>
+                {
+                    b.Navigation("Batteries");
+                });
+
+            modelBuilder.Entity("DukeSoftware.FlightLog.ApplicationCore.Entities.Flight", b =>
+                {
+                    b.Navigation("MediaLinks");
+                });
+
+            modelBuilder.Entity("DukeSoftware.FlightLog.ApplicationCore.Entities.Location", b =>
+                {
+                    b.Navigation("Flights");
+                });
+
+            modelBuilder.Entity("DukeSoftware.FlightLog.ApplicationCore.Entities.Model", b =>
+                {
+                    b.Navigation("Flights");
+                });
+
+            modelBuilder.Entity("DukeSoftware.FlightLog.ApplicationCore.Entities.Pilot", b =>
+                {
+                    b.Navigation("Flights");
                 });
 #pragma warning restore 612, 618
         }

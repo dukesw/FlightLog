@@ -13,6 +13,7 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Interfaces
         Task<List<T>> GetAllAsync();
       //  Task<List<T>> ListAllAsync(List<Expression<Func<T, object>>> includes);
         Task<List<T>> GetBySpecAsync(ISpecification<T> spec);
+        Task<int> GetCountBySpecAsync(ISpecification<T> spec);
         Task<T> AddAsync(T entity);
         Task<T> UpdateAsync(T entity);
         Task DeleteAsync(T entity);

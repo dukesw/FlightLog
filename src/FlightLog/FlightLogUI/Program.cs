@@ -10,6 +10,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using DukeSoftware.FlightLog.FlightLogUI.Authorisation;
+using Microsoft.AspNetCore.Http;
 
 namespace DukeSoftware.FlightLog.FlightLogUI
 {
@@ -22,6 +23,12 @@ namespace DukeSoftware.FlightLog.FlightLogUI
 
             //builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.Configuration["FlightLogApiUri"]) });
             builder.Services.AddScoped<FlightLogAuthorisationMessageHandler>();
+
+
+           // builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            builder.Services.AddHttpContextAccessor();
+            builder.Services.AddScoped<HttpContextAccessor>();
+
 
             builder.Services.AddHttpClient("FlightLogAPI",
                 client => client.BaseAddress = new Uri(builder.Configuration["FlightLogApiUri"]))

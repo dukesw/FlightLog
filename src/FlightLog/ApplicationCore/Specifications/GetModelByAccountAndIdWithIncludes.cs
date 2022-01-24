@@ -11,6 +11,7 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Specifications
         public GetModelByAccountAndIdWithIncludes(int accountId, int id) : base(m => m.AccountId == accountId && m.Id == id)
         {
             AddInclude(m => m.Flights);
+            AddInclude(x => x.Status);
         }
     }
 }

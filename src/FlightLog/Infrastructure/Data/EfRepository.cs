@@ -74,6 +74,11 @@ namespace DukeSoftware.FlightLog.Infrastructure.Data
 
         }
 
+        public int GetCountBySpec(ISpecification<T> spec)
+        {
+            return _dbContext.Set<T>().Count<T>(spec.Criteria);
+        }
+
         public IEnumerable<T> GetAll()
         {
             return _dbContext.Set<T>().AsEnumerable();
@@ -121,6 +126,11 @@ namespace DukeSoftware.FlightLog.Infrastructure.Data
 
             // Return the result. 
             return query.ToListAsync<T>();
+        }
+
+        public Task<int> GetCountBySpecAsync(ISpecification<T> spec)
+        {
+            return _dbContext.Set<T>().CountAsync<T>(spec.Criteria);
         }
 
         public T Update(T entity)

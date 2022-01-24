@@ -7,7 +7,7 @@
 
 <h2>Flights</h2>
 
-Welcome to Flight Log - the app to enter and manage your RC flights. This page is a placeholder, and will be replaced with a dishboard. 
+Welcome to Flight Log - the app to enter and manage your RC flights. 
 
 
 @if (loading)
@@ -17,23 +17,42 @@ Welcome to Flight Log - the app to enter and manage your RC flights. This page i
 else
 {
 
-    @if (recentFlights == null)
+@*    @if (recentFlightGroups == null)
     {
         <p>No flights recently.</p>
     }
     else
     {
         <ul>
-            @foreach (var flight in recentFlights)
+            @foreach (var flight in recentFlightGroups)
             {
-                <li>Id: @flight.Id: @flight.Model.Name, @flight.FlightMinutes min</li>
+                <li>Period: @flight.PeriodName, Model: @flight.Model.Name, Flights: @flight.FlightCount</li>
             }
         </ul>
-    }
+    }*@
+    <RadzenChart>
+        @foreach(List<FlightGroupDto> flightGroupSeries in flightGroupSerieses)
+        {
+            <RadzenColumnSeries Data="@flightGroupSeries" CategoryProperty="PeriodName" Title="@flightGroupSeries[0].Model.Name" LineType="LineType.Dashed" ValueProperty="FlightCount" />
+        }
+        
+
+         <RadzenColumnOptions Radius="2" Margin="2" />
+        <RadzenValueAxis>
+            <RadzenGridLines Visible="true" />
+            <RadzenAxisTitle Text="Flights" />
+        </RadzenValueAxis>
+        <RadzenLegend Position=LegendPosition.Bottom />
+    </RadzenChart>
+
+
 }
 
 @code {
-    private FlightDto[] recentFlights;
+    private List<FlightGroupDto> recentFlightGroups;
+    private List<string> modelSeries;
+
+    private List<List<FlightGroupDto>> flightGroupSerieses = new List<List<FlightGroupDto>>();
     //[CascadingParameter]
     //private Task<AuthenticationState> authenticationState { get; set; }
     private bool loading = false;
@@ -57,11 +76,22 @@ else
                 .Where(c => c.Type.Equals("https://flightlog.co.nz/claims/account_id"))
                 .Select(c => c.Value)
                 .FirstOrDefault() ?? string.Empty;           
-            
+
             //var user = (await authenticationState).User;
             //var accountId = user.FindFirst("https://flightlog.co.nz/claims/account_id").Value;
             var client = ClientFactory.CreateClient("FlightLogAPI");
-            recentFlights = await client.GetFromJsonAsync<FlightDto[]>($"/api/{accountId}/flights/recent");
+            var startDate = DateTime.Now.AddDays(-DateTime.Now.Day).AddMonths(-5);
+            var endDate = DateTime.Now.AddDays(-DateTime.Now.Day).AddMonths(1).AddSeconds(-1);
+            recentFlightGroups = await client.GetFromJsonAsync<List<FlightGroupDto>>($"/api/{accountId}/flights/group/from/{startDate.ToString("yyyy-MM-dd")}/to/{endDate.ToString("yyyy-MM-dd")}");
+
+            var modelSeries = recentFlightGroups.Select(x => x.Model.Name).Distinct().ToList();
+            // Now split into separate serieses based on model
+            foreach (string modelName in modelSeries)
+            {
+                var series = recentFlightGroups.Where(x => x.Model.Name == modelName);
+                flightGroupSerieses.Add(series.ToList());
+            }
+
         }
         catch (AccessTokenNotAvailableException exception)
         {

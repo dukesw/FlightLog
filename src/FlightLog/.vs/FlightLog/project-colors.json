@@ -40,7 +40,32 @@
       "ProjectGuid": "f8f428a9-984d-4b69-9ef8-584ff133e32c",
       "DisplayName": "FlightLogUI",
       "ColorIndex": 6
+    },
+    "36e340ff-0b26-4fe8-85a9-ad4868f43779": {
+      "ProjectGuid": "36e340ff-0b26-4fe8-85a9-ad4868f43779",
+      "DisplayName": "ApplicationCoreIntegrationTests",
+      "ColorIndex": 7
+    },
+    "4b550437-8a33-4d48-b38f-f249fa28d11f": {
+      "ProjectGuid": "4b550437-8a33-4d48-b38f-f249fa28d11f",
+      "DisplayName": "ClassLibrary",
+      "ColorIndex": 8
+    },
+    "4713029f-a541-4eab-8191-1e1881093627": {
+      "ProjectGuid": "4713029f-a541-4eab-8191-1e1881093627",
+      "DisplayName": "Infrastructure",
+      "ColorIndex": 9
+    },
+    "a9f88f53-283f-42be-a235-f7cd44279501": {
+      "ProjectGuid": "a9f88f53-283f-42be-a235-f7cd44279501",
+      "DisplayName": "Infrastructure",
+      "ColorIndex": 10
+    },
+    "919fd655-f067-4ba2-b932-d926e85dd6b4": {
+      "ProjectGuid": "919fd655-f067-4ba2-b932-d926e85dd6b4",
+      "DisplayName": "Script Documents",
+      "ColorIndex": 11
     }
   },
-  "NextColorIndex": 7
+  "NextColorIndex": 12
 }

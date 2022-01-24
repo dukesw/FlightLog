@@ -274,3 +274,19 @@ src/FlightLog/FlightLog/.deployment
 /src/FlightLog/WebApi/bin/Release/netcoreapp3.1
 /src/FlightLog/FlightLogUI/Properties/PublishProfiles/flightlogapp - Web Deploy.pubxml.user
 /src/FlightLog/WebApi/Properties/PublishProfiles/flightlogapi - Web Deploy.pubxml.user
+/src/FlightLog/ApplicationCore/bin/Release/net6.0
+/src/FlightLog/ApplicationCoreUnitTests/bin/Debug/net6.0
+/src/FlightLog/ClassLibrary/bin/Debug/net6.0
+/src/FlightLog/ClassLibrary/obj
+/src/FlightLog/Infrastructure/bin/Release/net6.0
+/src/FlightLog/InfrastructureBackup
+/src/FlightLog/Shared/bin/Release/net6.0
+/src/FlightLog/WebApi/app_data/models.csv
+/src/FlightLog/WebApi/app_data/flightlog_prod_20220124.db
+/src/FlightLog/WebApi/app_data/flightlog-test.db
+/src/FlightLog/WebApi/app_data/flightlog-prod-20211203.db
+/src/FlightLog/WebApi/app_data/flightlog-dev.db
+/src/FlightLog/WebApi/app_data/flightlog-bad.db
+/src/FlightLog/WebApi/app_data/flightlog - Copy.db
+/src/FlightLog/WebApi/bin
+/src/FlightLog/ClassLibrary

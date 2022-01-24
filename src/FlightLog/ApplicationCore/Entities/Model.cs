@@ -15,9 +15,13 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Entities
         public string PowerPlant { get; set; }
         public DateTime? PurchasedOn { get; set; }
         public DateTime? MaidenedOn { get; set; }
+        public DateTime? DisposedOn { get; set; }
+        public int ModelStatusId { get; set; }
+        public ModelStatus Status { get; set; }
         public string Notes { get; set; }
         public int SortOrder { get; set; }
-        public virtual IList<Flight> Flights { get; set; }
+        public int TotalFlights { get; set; }
+        public ICollection<Flight> Flights { get; }
 
     }
 }

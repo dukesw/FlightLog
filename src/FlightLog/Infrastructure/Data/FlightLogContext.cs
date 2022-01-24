@@ -18,6 +18,7 @@ namespace DukeSoftware.FlightLog.Infrastructure.Data
         public DbSet<Location> Locations { get; set; }
         public DbSet<PowerPlant> PowerPlants { get; set; }
         public DbSet<Model> Models { get; set; }
+        public DbSet<ModelStatus> ModelStatuses { get; set; } 
         public DbSet<Flight> Flights { get; set; }
         public DbSet<MediaLink> MediaLinks { get; set; }
 
@@ -29,6 +30,7 @@ namespace DukeSoftware.FlightLog.Infrastructure.Data
             builder.Entity<Location>(ConfigureLocation);
             builder.Entity<PowerPlant>(ConfigurePowerPlant);
             builder.Entity<Model>(ConfigureModel);
+            builder.Entity<ModelStatus>(ConfigureModelStatus);
             builder.Entity<Flight>(ConfigureFlight);
             builder.Entity<MediaLink>(ConfigureMediaLinks);
             builder.Entity<Pilot>(ConfigurePilot);
@@ -102,6 +104,18 @@ namespace DukeSoftware.FlightLog.Infrastructure.Data
             builder.HasOne<Account>(x => x.Account)
                 .WithMany(x => x.Models);
 
+            builder.HasOne<ModelStatus>(x => x.Status)
+                .WithMany()
+                .OnDelete(DeleteBehavior.Restrict);
+
+        }
+
+        private void ConfigureModelStatus(EntityTypeBuilder<ModelStatus> builder)
+        {
+            builder.ToTable("ModelStatus");
+                //.HasMany<Model>(x => x.Models)
+                //.WithOne(x => x.Status)
+                //.OnDelete(DeleteBehavior.Restrict);
         }
 
         private void ConfigureFlight(EntityTypeBuilder<Flight> builder)

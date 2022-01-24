@@ -4,9 +4,11 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
 using DukeSoftware.FlightLog.ApplicationCore.Entities;
 using DukeSoftware.FlightLog.ApplicationCore.Interfaces;
 using DukeSoftware.FlightLog.ApplicationCore.Specifications;
+using DukeSoftware.FlightLog.Shared.Dtos;
 using DukeSoftware.GuardClauses;
 
 namespace DukeSoftware.FlightLog.ApplicationCore.Services
@@ -15,25 +17,28 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
     {
         private readonly IModelRepository _modelRepository;
         private readonly IAppLogger<ModelService> _logger;
-        public ModelService(IModelRepository modelRepository, IAppLogger<ModelService> logger)
+        private readonly IMapper _mapper;
+        public ModelService(IModelRepository modelRepository, IAppLogger<ModelService> logger, IMapper mapper)
         {
             Guard.AgainstNull(modelRepository, "modelRepository");
             Guard.AgainstNull(logger, "logger");
 
-            this._modelRepository = modelRepository;
-            this._logger = logger;
+            _modelRepository = modelRepository;
+            _logger = logger;
+            _mapper = mapper;
         }
 
-        public async Task<Model> AddModelAsync(int accountId, Model model)
+        public async Task<ModelDto> AddModelAsync(int accountId, ModelDto model)
         {
             Guard.AgainstNull(model, "model");
             Guard.AgainstAccountNumberMismatch(accountId, model.AccountId, "accountId", "model.AccountId");
+            var modelEntity = _mapper.Map<ModelDto, Model>(model);
 
             try
             {
-                await _modelRepository.AddAsync(model);
-                _logger.LogInformation($"Added model, new Id = {model.Id}");
-                return model;
+                await _modelRepository.AddAsync(modelEntity);
+                _logger.LogInformation($"Added model, new Id = {modelEntity.Id}");
+                return await GetModelByIdAsync(accountId, modelEntity.Id);
             }
             catch (Exception ex)
             {
@@ -60,35 +65,45 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
             }
         }
 
-        public async Task<Model> GetModelByIdAsync(int accountId, int id)
+        public async Task<ModelDto> GetModelByIdAsync(int accountId, int id)
         {
             var spec = new GetModelByAccountAndIdWithIncludes(accountId, id);
             var result = await _modelRepository.GetBySpecAsync(spec);
             Guard.AgainstNull(result.FirstOrDefault(), "result");
-            return result.FirstOrDefault();
+            return _mapper.Map<Model, ModelDto>(result.FirstOrDefault());
         }
 
-        public async Task<List<Model>> GetModelsAsync(int accountId)
+        public async Task<IList<ModelDto>> GetModelsAsync(int accountId)
         {
             var spec = new GetModelsByAccountId(accountId);
-            return await _modelRepository.GetBySpecAsync(spec);
+            var result = await _modelRepository.GetBySpecAsync(spec);
+            return _mapper.Map<IList<Model>, IList<ModelDto>>(result);
         }
 
-        public async Task<Model> UpdateModelAsync(int accountId, Model model)
+        public async Task<IList<ModelDto>> GetModelsByIsActiveAsync(int accountId, bool isActive)
+        {
+            var spec = new GetModelsByAccountIdAndIsActive(accountId, isActive);
+            var result = await _modelRepository.GetBySpecAsync(spec);
+            return _mapper.Map<IList<Model>, IList<ModelDto>>(result);
+        }
+
+        public async Task<ModelDto> UpdateModelAsync(int accountId, ModelDto model)
         {
             Guard.AgainstNull(model, "model");
             Guard.AgainstAccountNumberMismatch(accountId, model.AccountId, "accountId", "model.AccountId");
 
-            var result = await _modelRepository.UpdateAsync(model);
+            var modelEntity = _mapper.Map<ModelDto, Model>(model);
+
+            var result = await _modelRepository.UpdateAsync(modelEntity);
             if (result != null)
             {
-                _logger.LogInformation($"Updated model, Id = {model.Id}");
+                _logger.LogInformation($"Updated model, Id = {modelEntity.Id}");
             }
             else
             {
-                _logger.LogWarning($"Could not update model, Id = {model.Id}");
+                _logger.LogWarning($"Could not update model, Id = {modelEntity.Id}");
             }
-            return result;
+            return await GetModelByIdAsync(accountId, modelEntity.Id);
         }
     }
 }

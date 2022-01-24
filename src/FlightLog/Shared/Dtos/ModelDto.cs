@@ -11,6 +11,16 @@ namespace DukeSoftware.FlightLog.Shared.Dtos
         public string PowerPlant { get; set; }
         public DateTime? MaidenedOn { get; set; }
         public DateTime? PurchasedOn { get; set; }
+        public DateTime? DisposedOn { get; set; }
+
+        public ModelStatusDto Status { get; set; }
+        public int TotalFlights { get; set; }
+        public int SortOrder { get; set; }
         public string Notes { get; set; }
+
+        public ModelDto()
+        {
+            Status = new ModelStatusDto();
+        }
     }
 }
