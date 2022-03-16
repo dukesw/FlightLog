@@ -158,9 +158,9 @@ namespace WebApi.Controllers
             }
         }
 
-        [HttpGet("group/from/{startDate}/to/{endDate}")]
+        [HttpGet("groupbymonthandmodel/from/{startDate}/to/{endDate}")]
         [Authorize(Roles = "User, Admin")]
-        public async Task<ActionResult<FlightSummaryDto>> GetGroupsByMonthForDateRange(int accountId, DateTime startDate, DateTime endDate)
+        public async Task<ActionResult<FlightSummaryDto>> GetGroupedFlightsByMonthAndModelForDateRange(int accountId, DateTime startDate, DateTime endDate)
         {
             try
             {
@@ -169,7 +169,7 @@ namespace WebApi.Controllers
                 Guard.AgainstNull(startDate, "startDate");
                 Guard.AgainstNull(endDate, "endDate");
 
-                var flights = await _flightService.GetGroupedFlightsByMonthForDates(accountId, startDate, endDate);
+                var flights = await _flightService.GetGroupedFlightsByMonthAndModelForDates(accountId, startDate, endDate);
                 return Ok(flights);
             }
             catch (ArgumentNullException)

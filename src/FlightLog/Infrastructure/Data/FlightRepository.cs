@@ -14,7 +14,7 @@ namespace DukeSoftware.FlightLog.Infrastructure.Data
         {
         }
 
-        public async Task<IList<FlightGroupDto>> GetGroupedFlightsByMonthForDates(int accountId, DateTime startDate, DateTime endDate)
+        public async Task<IList<FlightGroupDto>> GetGroupedFlightsByMonthAndModelForDates(int accountId, DateTime startDate, DateTime endDate)
         {
             var query = from f in _dbContext.Set<Flight>()
                         where f.Date >= startDate

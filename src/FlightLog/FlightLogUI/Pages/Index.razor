@@ -82,7 +82,7 @@ else
             var client = ClientFactory.CreateClient("FlightLogAPI");
             var startDate = DateTime.Now.AddDays(-DateTime.Now.Day).AddMonths(-5);
             var endDate = DateTime.Now.AddDays(-DateTime.Now.Day).AddMonths(1).AddSeconds(-1);
-            recentFlightGroups = await client.GetFromJsonAsync<List<FlightGroupDto>>($"/api/{accountId}/flights/group/from/{startDate.ToString("yyyy-MM-dd")}/to/{endDate.ToString("yyyy-MM-dd")}");
+            recentFlightGroups = await client.GetFromJsonAsync<List<FlightGroupDto>>($"/api/{accountId}/flights/groupbymonthandmodel/from/{startDate.ToString("yyyy-MM-dd")}/to/{endDate.ToString("yyyy-MM-dd")}");
 
             var modelSeries = recentFlightGroups.Select(x => x.Model.Name).Distinct().ToList();
             // Now split into separate serieses based on model

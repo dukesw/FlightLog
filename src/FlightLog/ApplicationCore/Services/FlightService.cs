@@ -109,9 +109,9 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
             return result;
         }
 
-        public async Task<IList<FlightGroupDto>> GetGroupedFlightsByMonthForDates(int accountId, DateTime startDate, DateTime endDate)
+        public async Task<IList<FlightGroupDto>> GetGroupedFlightsByMonthAndModelForDates(int accountId, DateTime startDate, DateTime endDate)
         {
-            var result = await _flightRepository.GetGroupedFlightsByMonthForDates(accountId, startDate, endDate);
+            var result = await _flightRepository.GetGroupedFlightsByMonthAndModelForDates(accountId, startDate, endDate);
             return result;
         }
         public async Task<FlightSummaryDto> GetFlightSummaryByModelAsync(int accountId, int modelId)
