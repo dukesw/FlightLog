@@ -30,8 +30,8 @@ else
             }
         </ul>
     }*@
-    <RadzenChart>
-        @foreach(List<FlightGroupDto> flightGroupSeries in flightGroupSerieses)
+@*    <RadzenChart>
+        @foreach(List<FlightsGroupedByModelAndTimeDto> flightGroupSeries in flightGroupSerieses)
         {
             <RadzenColumnSeries Data="@flightGroupSeries" CategoryProperty="PeriodName" Title="@flightGroupSeries[0].Model.Name" LineType="LineType.Dashed" ValueProperty="FlightCount" />
         }
@@ -43,16 +43,34 @@ else
             <RadzenAxisTitle Text="Flights" />
         </RadzenValueAxis>
         <RadzenLegend Position=LegendPosition.Bottom />
+    </RadzenChart>*@
+
+    <RadzenChart>
+       
+            <RadzenColumnSeries Title="Weeks Flights" Data="@recentFlightsGroupedByWeek" CategoryProperty="PeriodName" LineType="LineType.Dashed" ValueProperty="FlightCount" />
+        
+
+         <RadzenColumnOptions Radius="2" Margin="2" />
+        <RadzenValueAxis>
+            <RadzenGridLines Visible="true" />
+            <RadzenAxisTitle Text="Flights" />
+        </RadzenValueAxis>
+        <RadzenLegend Position=LegendPosition.Bottom />
     </RadzenChart>
+
 
 
 }
 
 @code {
-    private List<FlightGroupDto> recentFlightGroups;
+    private List<FlightsGroupedByModelAndTimeDto> recentFlightsGroupedByModel;
+    private List<FlightsGroupedByModelAndTimeDto> recentFlightsGroupedByWeek;
+
     private List<string> modelSeries;
 
-    private List<List<FlightGroupDto>> flightGroupSerieses = new List<List<FlightGroupDto>>();
+    private List<List<FlightsGroupedByModelAndTimeDto>> flightGroupSerieses = new List<List<FlightsGroupedByModelAndTimeDto>>();
+    private List<List<FlightsGroupedByTimeDto>> flightsGroupedByWeekSeries = new List<List<FlightsGroupedByTimeDto>>();
+
     //[CascadingParameter]
     //private Task<AuthenticationState> authenticationState { get; set; }
     private bool loading = false;
@@ -80,17 +98,24 @@ else
             //var user = (await authenticationState).User;
             //var accountId = user.FindFirst("https://flightlog.co.nz/claims/account_id").Value;
             var client = ClientFactory.CreateClient("FlightLogAPI");
-            var startDate = DateTime.Now.AddDays(-DateTime.Now.Day).AddMonths(-5);
-            var endDate = DateTime.Now.AddDays(-DateTime.Now.Day).AddMonths(1).AddSeconds(-1);
-            recentFlightGroups = await client.GetFromJsonAsync<List<FlightGroupDto>>($"/api/{accountId}/flights/groupbymonthandmodel/from/{startDate.ToString("yyyy-MM-dd")}/to/{endDate.ToString("yyyy-MM-dd")}");
+            var startDate = DateTime.Now.AddDays(-DateTime.Now.Day).AddMonths(-3);
+            var endDate = DateTime.Now; //.AddDays(-DateTime.Now.Day).AddMonths(1).AddSeconds(-1);
 
-            var modelSeries = recentFlightGroups.Select(x => x.Model.Name).Distinct().ToList();
-            // Now split into separate serieses based on model
-            foreach (string modelName in modelSeries)
-            {
-                var series = recentFlightGroups.Where(x => x.Model.Name == modelName);
-                flightGroupSerieses.Add(series.ToList());
-            }
+            //recentFlightsGroupedByModel = await client.GetFromJsonAsync<List<FlightsGroupedByModelAndTimeDto>>($"/api/{accountId}/flights/group/monthandmodel/from/{startDate.ToString("yyyy-MM-dd")}/to/{endDate.ToString("yyyy-MM-dd")}");
+
+            //var modelSeries = recentFlightsGroupedByModel.Select(x => x.Model.Name).Distinct().ToList();
+            //// Now split into separate serieses based on model
+            //foreach (string modelName in modelSeries)
+            //{
+            //    var series = recentFlightsGroupedByModel.Where(x => x.Model.Name == modelName);
+            //    flightGroupSerieses.Add(series.ToList());
+            //}
+
+            // Second graph :)
+            recentFlightsGroupedByWeek = await client.GetFromJsonAsync<List<FlightsGroupedByModelAndTimeDto>>($"/api/{accountId}/flights/group/week/from/{startDate.ToString("yyyy-MM-dd")}/to/{endDate.ToString("yyyy-MM-dd")}");
+
+
+
 
         }
         catch (AccessTokenNotAvailableException exception)

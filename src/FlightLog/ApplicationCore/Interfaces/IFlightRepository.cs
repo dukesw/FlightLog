@@ -9,6 +9,7 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Interfaces
 {
     public interface IFlightRepository : IRepository<Flight>, IAsyncRepository<Flight>
     {
-        Task<IList<FlightGroupDto>> GetGroupedFlightsByMonthAndModelForDates(int accountId, DateTime startDate, DateTime endDate);
+        Task<IList<FlightsGroupedByTimeDto>> GetGroupedFlightsByWeekForDates(int accountId, DateTime startDate, DateTime endDate);
+        Task<IList<FlightsGroupedByModelAndTimeDto>> GetGroupedFlightsByMonthAndModelForDates(int accountId, DateTime startDate, DateTime endDate);
     }
 }
