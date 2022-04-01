@@ -8,86 +8,96 @@
         margin-bottom: 16px;
     }
 </style>
-@if(Id!= null)
+@if (Id != null)
 {
     <h2>Edit Flight</h2>
-} else
+}
+else
 {
     <h2>Add Flight</h2>
 }
 
-<RadzenTemplateForm Data="@flight" TItem="FlightDto" Submit="@Submit" InvalidSubmit="@OnInvalidSubmit"> @*" (FlightDto args) => { Submit(args);})">*@
-    <div class="row">
-        <div class="col-md-2 align-items-center d-flex">
-            <RadzenLabel Text="Date" />
-        </div>
-        <div class="col-md-8">
-            <RadzenDatePicker Name="Date" @bind-Value="@flight.Date" DateFormat="d-MMM-yyyy" Change="@(args => OnDateChanged(args))"></RadzenDatePicker>
-            <RadzenRequiredValidator Component="Date" Text="Date is required" Popup="false" Style="display: block"></RadzenRequiredValidator>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-2 align-items-center d-flex">
-            <RadzenLabel Text="Model" />
-        </div>
-        <div class="col-md-8">
-            <RadzenDropDown Name="Model" @bind-Value="@flight.Model.Id" AllowClear="false" Data="@models" TextProperty="Name" ValueProperty="Id"></RadzenDropDown>
-            <RadzenRequiredValidator Component="Model" Text="Model is required" DefaultValue="0" Popup="false" Style="display: block"></RadzenRequiredValidator>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-2 align-items-center d-flex">
-            <RadzenLabel Text="Field" />
-        </div>
-        <div class="col-md-8">
-            <RadzenDropDown Name="Field" @bind-Value="@flight.Field.Id" AllowClear="false" Data="@locations" TextProperty="Name" ValueProperty="Id"></RadzenDropDown>
-            <RadzenRequiredValidator Component="Field" Text="Field is required" DefaultValue="0" Popup="false" Style="display: block"></RadzenRequiredValidator>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-2 align-items-center d-flex">
-            <RadzenLabel Text="Pilot" />
-        </div>
-        <div class="col-md-8">
-            <RadzenDropDown Name="Pilot" @bind-Value="@flight.Pilot.Id" AllowClear="false" Data="@pilots" TextProperty="Name" ValueProperty="Id"></RadzenDropDown>
-            <RadzenRequiredValidator Component="Pilot" Text="Pilot is required" DefaultValue="0" Popup="false" Style="display: block"></RadzenRequiredValidator>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-2 align-items-center d-flex">
-            <RadzenLabel Text="Flight Minutes" />
-        </div>
-        <div class="col-md-8">
-            <RadzenNumeric Name="FlightMinutes" TValue="float" @bind-Value="@flight.FlightMinutes"></RadzenNumeric>
-            @*<RadzenRequiredValidator Component="FlightMinutes" Text="Flight minutes is required" DefaultValue="0.0" Popup="false" Style="position: relative"></RadzenRequiredValidator>*@
-            @*<RadzenCompareValidator Component="FlightMinutes" Text="Flight minutes must be greater than 0" Value="0" Operator="@CompareOperator.GreaterThan" Popup="false" Style="position: relative"></RadzenCompareValidator>*@
-            <RadzenNumericRangeValidator Component="FlightMinutes" Min="0.1" Max="999" Text="Flight minutes must be greated than 0" Style="display: block"></RadzenNumericRangeValidator>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-2 align-items-top d-flex">
-            <RadzenLabel Text="Details" />
-        </div>
-        <div class="col-md-8">
-            <RadzenTextArea @bind-Value="@flight.Details" Rows=5 style="width: 100%"></RadzenTextArea>
-        </div>
-    </div>
+@if (loading)
+{
+    @*<p>Loading...</p>*@
+    <div class="spinner"></div>
+}
+else
+{
 
-    <div class="row justify-content-start">
-        <div class="col-md-2 align-items-top d-flex"/>
+    <RadzenTemplateForm Data="@flight" TItem="FlightDto" Submit="@Submit" InvalidSubmit="@OnInvalidSubmit">
+        @*" (FlightDto args) => { Submit(args);})">*@
+        <div class="row">
+            <div class="col-md-2 align-items-center d-flex">
+                <RadzenLabel Text="Date" />
+            </div>
+            <div class="col-md-8">
+                <RadzenDatePicker Name="Date" @bind-Value="@flight.Date" DateFormat="d-MMM-yyyy" Change="@(args => OnDateChanged(args))"></RadzenDatePicker>
+                <RadzenRequiredValidator Component="Date" Text="Date is required" Popup="false" Style="display: block"></RadzenRequiredValidator>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-2 align-items-center d-flex">
+                <RadzenLabel Text="Model" />
+            </div>
+            <div class="col-md-8">
+                <RadzenDropDown Name="Model" @bind-Value="@flight.Model.Id" AllowClear="false" Data="@models" TextProperty="Name" ValueProperty="Id"></RadzenDropDown>
+                <RadzenRequiredValidator Component="Model" Text="Model is required" DefaultValue="0" Popup="false" Style="display: block"></RadzenRequiredValidator>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-2 align-items-center d-flex">
+                <RadzenLabel Text="Field" />
+            </div>
+            <div class="col-md-8">
+                <RadzenDropDown Name="Field" @bind-Value="@flight.Field.Id" AllowClear="false" Data="@locations" TextProperty="Name" ValueProperty="Id"></RadzenDropDown>
+                <RadzenRequiredValidator Component="Field" Text="Field is required" DefaultValue="0" Popup="false" Style="display: block"></RadzenRequiredValidator>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-2 align-items-center d-flex">
+                <RadzenLabel Text="Pilot" />
+            </div>
+            <div class="col-md-8">
+                <RadzenDropDown Name="Pilot" @bind-Value="@flight.Pilot.Id" AllowClear="false" Data="@pilots" TextProperty="Name" ValueProperty="Id"></RadzenDropDown>
+                <RadzenRequiredValidator Component="Pilot" Text="Pilot is required" DefaultValue="0" Popup="false" Style="display: block"></RadzenRequiredValidator>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-2 align-items-center d-flex">
+                <RadzenLabel Text="Flight Minutes" />
+            </div>
+            <div class="col-md-8">
+                <RadzenNumeric Name="FlightMinutes" TValue="float" @bind-Value="@flight.FlightMinutes"></RadzenNumeric>
+                @*<RadzenRequiredValidator Component="FlightMinutes" Text="Flight minutes is required" DefaultValue="0.0" Popup="false" Style="position: relative"></RadzenRequiredValidator>*@
+                @*<RadzenCompareValidator Component="FlightMinutes" Text="Flight minutes must be greater than 0" Value="0" Operator="@CompareOperator.GreaterThan" Popup="false" Style="position: relative"></RadzenCompareValidator>*@
+                <RadzenNumericRangeValidator Component="FlightMinutes" Min="0.1" Max="999" Text="Flight minutes must be greated than 0" Style="display: block"></RadzenNumericRangeValidator>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-2 align-items-top d-flex">
+                <RadzenLabel Text="Details" />
+            </div>
+            <div class="col-md-8">
+                <RadzenTextArea @bind-Value="@flight.Details" Rows=5 style="width: 100%"></RadzenTextArea>
+            </div>
+        </div>
+
+        <div class="row justify-content-start">
+            <div class="col-md-2 align-items-top d-flex" />
             <div class="col-md-8 d-flex align-items-end justify-content-start">
                 <RadzenButton ButtonType="ButtonType.Submit" Icon="save" Text="Save" />
                 <RadzenButton ButtonStyle="ButtonStyle.Light" Icon="cancel" style="display: inline-block; margin-left: 10px;" Text="Cancel" Click="@Cancel" />
             </div>
         </div>
-    <div class="row">
-        <div class="col-md-2 align-items-top d-flex"/>
-        <div class="col-md-8">
-            <RadzenLabel Text="@message"></RadzenLabel>
+        <div class="row">
+            <div class="col-md-2 align-items-top d-flex" />
+            <div class="col-md-8">
+                <RadzenLabel Text="@message"></RadzenLabel>
+            </div>
         </div>
-    </div>
-</RadzenTemplateForm> 
-
+    </RadzenTemplateForm>
+}
 
 
 @code {
@@ -162,8 +172,9 @@
         {
             var savedFlight = await response.Content.ReadFromJsonAsync<FlightDto>();
             clearFormData();
-            message = $"Saved flight with Id {savedFlight.Id}";    
-        } else
+            message = $"Saved flight with Id {savedFlight.Id}";
+        }
+        else
         {
             message = $"Failed to save ({response.StatusCode.ToString()})";
         }
@@ -175,7 +186,8 @@
 
     }
 
-    void OnDateChanged(DateTime? value) {
+    void OnDateChanged(DateTime? value)
+    {
         //if (value.HasValue)
         //{
         //    flight.Date = value.Value.Date;

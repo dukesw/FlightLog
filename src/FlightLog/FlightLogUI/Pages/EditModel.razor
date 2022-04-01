@@ -15,91 +15,97 @@
 {
     <h2>Add Model</h2>
 }
-
-<RadzenTemplateForm Data="@model" TItem="ModelDto" Submit="@Submit" InvalidSubmit="@OnInvalidSubmit"> 
-    <div class="row">
-        <div class="col-md-2 align-items-center d-flex">
-            <RadzenLabel Text="Name" />
+@if (loading)
+{
+    @*<p>Loading...</p>*@
+    <div class="spinner"></div>
+}
+else
+{
+    <RadzenTemplateForm Data="@model" TItem="ModelDto" Submit="@Submit" InvalidSubmit="@OnInvalidSubmit">
+        <div class="row">
+            <div class="col-md-2 align-items-center d-flex">
+                <RadzenLabel Text="Name" />
+            </div>
+            <div class="col-md-8">
+                <RadzenTextBox Name="Name" @bind-Value="@model.Name"></RadzenTextBox>
+                <RadzenRequiredValidator Component="Name" Text="Name is required Popup="false" Style="display: block"></RadzenRequiredValidator>
+            </div>
         </div>
-        <div class="col-md-8">
-            <RadzenTextBox Name="Name" @bind-Value="@model.Name"></RadzenTextBox>
-            <RadzenRequiredValidator Component="Name" Text="Name is required Popup="false" Style="display: block"></RadzenRequiredValidator>
+        <div class="row">
+            <div class="col-md-2 align-items-center d-flex">
+                <RadzenLabel Text="Manufacturer" />
+            </div>
+            <div class="col-md-8">
+                <RadzenTextBox Name="Manufacturer" @bind-Value="@model.Manufacturer"></RadzenTextBox>
+            </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-md-2 align-items-center d-flex">
-            <RadzenLabel Text="Manufacturer" />
+        <div class="row">
+            <div class="col-md-2 align-items-center d-flex">
+                <RadzenLabel Text="Status" />
+            </div>
+            <div class="col-md-8">
+                <RadzenDropDown Name="ModelStatus" @bind-Value="@model.Status.Id" AllowClear="false" Data="@modelStatuses" TextProperty="Name" ValueProperty="Id"></RadzenDropDown>
+                <RadzenRequiredValidator Component="ModelStatus" Text="Status is required" DefaultValue="0" Popup="false" Style="display: block"></RadzenRequiredValidator>
+            </div>
         </div>
-        <div class="col-md-8">
-            <RadzenTextBox Name="Manufacturer" @bind-Value="@model.Manufacturer"></RadzenTextBox>
+        <div class="row">
+            <div class="col-md-2 align-items-center d-flex">
+                <RadzenLabel Text="Total Flights" />
+            </div>
+            <div class="col-md-8">
+                <RadzenNumeric Name="TotalFlights" TValue="int" @bind-Value="@model.TotalFlights" Disabled="true"></RadzenNumeric>
+            </div>
         </div>
-    </div>
-     <div class="row">
-        <div class="col-md-2 align-items-center d-flex">
-            <RadzenLabel Text="Status" />
+        <div class="row">
+            <div class="col-md-2 align-items-center d-flex">
+                <RadzenLabel Text="Purchase Date" />
+            </div>
+            <div class="col-md-8">
+                <RadzenDatePicker Name="PurchaseDate" @bind-Value="@model.PurchasedOn" DateFormat="d"></RadzenDatePicker>
+            </div>
         </div>
-        <div class="col-md-8">
-            <RadzenDropDown Name="ModelStatus" @bind-Value="@model.Status.Id" AllowClear="false" Data="@modelStatuses" TextProperty="Name" ValueProperty="Id"></RadzenDropDown>
-            <RadzenRequiredValidator Component="ModelStatus" Text="Status is required" DefaultValue="0" Popup="false" Style="display: block"></RadzenRequiredValidator>
+        <div class="row">
+            <div class="col-md-2 align-items-center d-flex">
+                <RadzenLabel Text="Maiden Date" />
+            </div>
+            <div class="col-md-8">
+                <RadzenDatePicker Name="MaidenDate" @bind-Value="@model.MaidenedOn" DateFormat="d"></RadzenDatePicker>
+            </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-md-2 align-items-center d-flex">
-            <RadzenLabel Text="Total Flights" />
+        <div class="row">
+            <div class="col-md-2 align-items-center d-flex">
+                <RadzenLabel Text="Powered By" />
+            </div>
+            <div class="col-md-8">
+                <RadzenTextBox Name="PowerPlant" @bind-Value="@model.PowerPlant"></RadzenTextBox>
+            </div>
         </div>
-        <div class="col-md-8">
-             <RadzenNumeric Name="TotalFlights" TValue="int" @bind-Value="@model.TotalFlights" Disabled="true"></RadzenNumeric>
+        <div class="row">
+            <div class="col-md-2 align-items-center d-flex">
+                <RadzenLabel Text="Sort Order" />
+            </div>
+            <div class="col-md-8">
+                <RadzenNumeric Name="SortOrder" TValue="int" @bind-Value="@model.SortOrder"></RadzenNumeric>
+            </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-md-2 align-items-center d-flex">
-            <RadzenLabel Text="Purchase Date" />
+        <div class="row">
+            <div class="col-md-2 align-items-top d-flex">
+                <RadzenLabel Text="Notes" />
+            </div>
+            <div class="col-md-8">
+                <RadzenTextArea @bind-Value="@model.Notes" Rows=5 style="width: 100%"></RadzenTextArea>
+            </div>
         </div>
-        <div class="col-md-8">
-            <RadzenDatePicker Name="PurchaseDate" @bind-Value="@model.PurchasedOn" DateFormat="d"></RadzenDatePicker>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-2 align-items-center d-flex">
-            <RadzenLabel Text="Maiden Date" />
-        </div>
-        <div class="col-md-8">
-            <RadzenDatePicker Name="MaidenDate" @bind-Value="@model.MaidenedOn" DateFormat="d"></RadzenDatePicker>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-2 align-items-center d-flex">
-            <RadzenLabel Text="Powered By" />
-        </div>
-        <div class="col-md-8">
-            <RadzenTextBox Name="PowerPlant" @bind-Value="@model.PowerPlant"></RadzenTextBox>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-2 align-items-center d-flex">
-            <RadzenLabel Text="Sort Order" />
-        </div>
-        <div class="col-md-8">
-             <RadzenNumeric Name="SortOrder" TValue="int" @bind-Value="@model.SortOrder"></RadzenNumeric>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-2 align-items-top d-flex">
-            <RadzenLabel Text="Notes" />
-        </div>
-        <div class="col-md-8">
-            <RadzenTextArea @bind-Value="@model.Notes" Rows=5 style="width: 100%"></RadzenTextArea>
-        </div>
-    </div>
-    <div class="row justify-content-start">
-        <div class="col-md-2 align-items-top d-flex"/>
+        <div class="row justify-content-start">
+            <div class="col-md-2 align-items-top d-flex" />
             <div class="col-md-8 d-flex align-items-end justify-content-start">
                 <RadzenButton ButtonType="ButtonType.Submit" Icon="save" Text="Save" />
                 <RadzenButton ButtonStyle="ButtonStyle.Light" Icon="cancel" style="display: inline-block; margin-left: 10px;" Text="Cancel" Click="@Cancel" />
             </div>
         </div>
-  </RadzenTemplateForm> 
-
+    </RadzenTemplateForm>
+}
 
 
 @code {

@@ -11,62 +11,71 @@
 </style>
 
 <h2>Search Flights</h2>
-<form>
-    <div class="row">
-        <div class="col-md-2 align-items-center d-flex">
-            <RadzenLabel Text="Start Date" />
-        </div>
-        <div class="col-md-8">
-            <RadzenDatePicker Name="StartDate" @bind-Value="@StartDate" DateFormat="d-MMM-yyyy" Kind="@DateTimeKind.Local"></RadzenDatePicker><br/>
-            <RadzenRequiredValidator Component="StartDate" Text="Start Date is required" Popup="false" Style="display: block"></RadzenRequiredValidator>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-2 align-items-center d-flex">
-            <RadzenLabel Text="End Date" />
-        </div>
-        <div class="col-md-8">
-            <RadzenDatePicker Name="EndDate" @bind-Value="@EndDate" DateFormat="d-MMM-yyyy" Kind="@DateTimeKind.Local"></RadzenDatePicker>
-            <RadzenRequiredValidator Component="EndDate" Text="End Date is required" Popup="false" Style="display: block"></RadzenRequiredValidator>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-2 align-items-center d-flex">
-            <RadzenLabel Text="Model" />
-        </div>
-        <div class="col-md-8">
-            <RadzenDropDown Name="Model" @bind-Value="@ModelId" AllowClear="true" Data="@models" TextProperty="Name" ValueProperty="Id"></RadzenDropDown>
-            <RadzenRequiredValidator Component="Model" Text="Model is required" DefaultValue="0" Popup="false" Style="display: block"></RadzenRequiredValidator>
-        </div>
-    </div>
 
-    <div class="row justify-content-start">
-        <div class="col-md-2 align-items-top d-flex"/>
-        <div class="col-md-8 d-flex align-items-end justify-content-start">
-            <RadzenButton Icon="search" Text="Search" Click=@Search />
-            <RadzenButton ButtonStyle="ButtonStyle.Light" Icon="cancel" style="display: inline-block; margin-left: 10px;" Text="Clear" Click=@Clear />
+@if (loading)
+{
+    @*<p>Loading...</p>*@
+    <div class="spinner"></div>
+}
+else
+{
+    <form>
+        <div class="row">
+            <div class="col-md-2 align-items-center d-flex">
+                <RadzenLabel Text="Start Date" />
+            </div>
+            <div class="col-md-8">
+                <RadzenDatePicker Name="StartDate" @bind-Value="@StartDate" DateFormat="d-MMM-yyyy" Kind="@DateTimeKind.Local"></RadzenDatePicker><br />
+                <RadzenRequiredValidator Component="StartDate" Text="Start Date is required" Popup="false" Style="display: block"></RadzenRequiredValidator>
+            </div>
         </div>
-    </div>
-</form>
-        <RadzenDataGrid Data="@flights" TItem="FlightDto" AllowSorting="true">
-            <Columns>
-<RadzenDataGridColumn TItem="FlightDto" Property="Date" Filterable="false" Title="Date">
-                    <Template Context="flight">
-                        <div>@flight.Date.ToString("d-MMM-yyyy")</div>
-                    </Template> 
-                </RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="FlightDto" Property="Model.Name" Filterable="false" Title="Model"/>
-                <RadzenDataGridColumn TItem="FlightDto" Property="Field.Name" Filterable="false" Title="Field"/>
-                <RadzenDataGridColumn TItem="FlightDto" Property="Pilot.Name" Filterable="false" Title="Pilot"/>
-                <RadzenDataGridColumn TItem="FlightDto" Property="FlightMinutes" Filterable="false" Title="Minutes"/>
-                <RadzenDataGridColumn TItem="FlightDto" Property="Id" Filterable="false" Sortable="false" Title="">
-                    <Template Context="flight">
-                        <a href="@($"/edit-flight/{flight.Id}")">Edit</a>
-                    </Template> 
-                </RadzenDataGridColumn>
-            </Columns>
+        <div class="row">
+            <div class="col-md-2 align-items-center d-flex">
+                <RadzenLabel Text="End Date" />
+            </div>
+            <div class="col-md-8">
+                <RadzenDatePicker Name="EndDate" @bind-Value="@EndDate" DateFormat="d-MMM-yyyy" Kind="@DateTimeKind.Local"></RadzenDatePicker>
+                <RadzenRequiredValidator Component="EndDate" Text="End Date is required" Popup="false" Style="display: block"></RadzenRequiredValidator>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-2 align-items-center d-flex">
+                <RadzenLabel Text="Model" />
+            </div>
+            <div class="col-md-8">
+                <RadzenDropDown Name="Model" @bind-Value="@ModelId" AllowClear="true" Data="@models" TextProperty="Name" ValueProperty="Id"></RadzenDropDown>
+                <RadzenRequiredValidator Component="Model" Text="Model is required" DefaultValue="0" Popup="false" Style="display: block"></RadzenRequiredValidator>
+            </div>
+        </div>
 
-        </RadzenDataGrid>
+        <div class="row justify-content-start">
+            <div class="col-md-2 align-items-top d-flex" />
+            <div class="col-md-8 d-flex align-items-end justify-content-start">
+                <RadzenButton Icon="search" Text="Search" Click=@Search />
+                <RadzenButton ButtonStyle="ButtonStyle.Light" Icon="cancel" style="display: inline-block; margin-left: 10px;" Text="Clear" Click=@Clear />
+            </div>
+        </div>
+    </form>
+    <RadzenDataGrid Data="@flights" TItem="FlightDto" AllowSorting="true">
+        <Columns>
+            <RadzenDataGridColumn TItem="FlightDto" Property="Date" Filterable="false" Title="Date">
+                <Template Context="flight">
+                    <div>@flight.Date.ToString("d-MMM-yyyy")</div>
+                </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="FlightDto" Property="Model.Name" Filterable="false" Title="Model" />
+            <RadzenDataGridColumn TItem="FlightDto" Property="Field.Name" Filterable="false" Title="Field" />
+            <RadzenDataGridColumn TItem="FlightDto" Property="Pilot.Name" Filterable="false" Title="Pilot" />
+            <RadzenDataGridColumn TItem="FlightDto" Property="FlightMinutes" Filterable="false" Title="Minutes" />
+            <RadzenDataGridColumn TItem="FlightDto" Property="Id" Filterable="false" Sortable="false" Title="">
+                <Template Context="flight">
+                    <a href="@($"/edit-flight/{flight.Id}")">Edit</a>
+                </Template>
+            </RadzenDataGridColumn>
+        </Columns>
+
+    </RadzenDataGrid>
+}
 
 @code {
     private List<FlightDto> flights = new List<FlightDto>();
@@ -78,11 +87,11 @@
     private String accountId = "0";
     [Parameter]
     [SupplyParameterFromQuery(Name = "from")]
-    public DateTime? StartDate {  get;  set; }
+    public DateTime? StartDate { get; set; }
 
     [Parameter]
     [SupplyParameterFromQuery(Name = "to")]
-    public DateTime? EndDate {  get;  set; }
+    public DateTime? EndDate { get; set; }
 
     [Parameter]
     [SupplyParameterFromQuery(Name = "model")]
@@ -121,7 +130,7 @@
             {
                 flights = await GetFlightsByModel(ModelId.Value);
                 return;
-            } 
+            }
 
             if (StartDate.HasValue && EndDate.HasValue)
             {
@@ -134,7 +143,8 @@
             flights = await GetFlightsByModelAndDate(ModelId.Value, startDate, endDate);
             return;
 
-        } else
+        }
+        else
         {
             var startDate = StartDate.HasValue ? StartDate.Value : DateTime.Now.Date.AddYears(-1);
             var endDate = EndDate.HasValue ? StartDate.Value : DateTime.Now.Date.AddDays(1).AddSeconds(-1);
@@ -165,6 +175,6 @@
     protected void Clear()
     {
         // todo Wrap in a try/catch
-        flights = new List<FlightDto>();  
+        flights = new List<FlightDto>();
     }
 }

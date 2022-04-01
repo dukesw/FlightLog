@@ -4,28 +4,36 @@
 @inject IHttpClientFactory ClientFactory
 
 <h2>Models</h2>
- <RadzenDataGrid Data="@models" TItem="ModelDto" AllowSorting="true">
-            <Columns>
-                <RadzenDataGridColumn TItem="ModelDto" Property="Name" Filterable="false" Title="Model"/>
-                <RadzenDataGridColumn TItem="ModelDto" Property="Manufacturer" Filterable="false" Title="Manufacturer"/>
-                <RadzenDataGridColumn TItem="ModelDto" Property="Status.Name" Filterable="false" Title="Active"/>
-                <RadzenDataGridColumn TItem="ModelDto" Property="TotalFlights" Filterable="false" Title="Total Flights"/>
-                <RadzenDataGridColumn TItem="ModelDto" Property="MaidenedOn" Filterable="false" Title="Maidened On">
-                    <Template Context="model">
-                        @if (model.MaidenedOn.HasValue) {
-                            <div>@model.MaidenedOn.Value.ToString("d-MMM-yyyy")</div>
-                        }
-                    </Template> 
-                </RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="ModelDto" Property="Id" Filterable="false" Sortable="false" Title="">
-                    <Template Context="model">
-                        <a href="@($"/edit-model/{model.Id}")">Edit</a>
-                    </Template> 
-                </RadzenDataGridColumn>
-            </Columns>
+@if (loading)
+{
+    @*<p>Loading...</p>*@
+    <div class="spinner"></div>
+}
+else
+{
+    <RadzenDataGrid Data="@models" TItem="ModelDto" AllowSorting="true">
+        <Columns>
+            <RadzenDataGridColumn TItem="ModelDto" Property="Name" Filterable="false" Title="Model" />
+            <RadzenDataGridColumn TItem="ModelDto" Property="Manufacturer" Filterable="false" Title="Manufacturer" />
+            <RadzenDataGridColumn TItem="ModelDto" Property="Status.Name" Filterable="false" Title="Active" />
+            <RadzenDataGridColumn TItem="ModelDto" Property="TotalFlights" Filterable="false" Title="Total Flights" />
+            <RadzenDataGridColumn TItem="ModelDto" Property="MaidenedOn" Filterable="false" Title="Maidened On">
+                <Template Context="model">
+                    @if (model.MaidenedOn.HasValue)
+                    {
+                        <div>@model.MaidenedOn.Value.ToString("d-MMM-yyyy")</div>
+                    }
+                </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="ModelDto" Property="Id" Filterable="false" Sortable="false" Title="">
+                <Template Context="model">
+                    <a href="@($"/edit-model/{model.Id}")">Edit</a>
+                </Template>
+            </RadzenDataGridColumn>
+        </Columns>
 
-        </RadzenDataGrid>
-
+    </RadzenDataGrid>
+}
 
  @code {
     private ModelDto[] models;
