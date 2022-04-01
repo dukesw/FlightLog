@@ -110,7 +110,6 @@ else
             //}
 
             // Second graph :)
-            System.Threading.Thread.Sleep(3000);
             recentFlightsGroupedByWeek = await client.GetFromJsonAsync<List<FlightsGroupedByTimeDto>>($"/api/{accountId}/flights/group/week/from/{startDate.ToString("yyyy-MM-dd")}/to/{endDate.ToString("yyyy-MM-dd")}");
 
 

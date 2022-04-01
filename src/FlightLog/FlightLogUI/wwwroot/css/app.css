@@ -34,12 +34,18 @@ a, .btn-link {
     border: 12px solid silver;
     border-top: 12px solid #337AB7;
     border-radius: 50%;
-    width: 80px; 
-    height: 80px; 
-    animation: spin 700ms linear infinite;
+    width: 80px;
+    height: 80px;
     top: 0%;
     left: 0%;
     position: relative;
+    opacity: 0;
+    animation-name: spin, fadeIn;
+    animation-duration: 700ms, 600ms;
+    animation-timing-function: linear, ease;
+    animation-iteration-count: infinite, 1;
+    animation-delay: 400ms;
+    animation-fill-mode: forwards;
 }
 @keyframes spin {
     0% {
@@ -48,6 +54,16 @@ a, .btn-link {
 
     100% {
         transform: rotate(360deg)
+    }
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
     }
 }
 
