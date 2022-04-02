@@ -182,6 +182,30 @@ namespace WebApi.Controllers
             }
         }
 
+        [HttpGet("group/month/from/{startDate}/to/{endDate}")]
+        [Authorize(Roles = "User, Admin")]
+        public async Task<ActionResult<FlightSummaryDto>> GetGroupedFlightsByMonthForDateRange(int accountId, DateTime startDate, DateTime endDate)
+        {
+            try
+            {
+                Guard.AgainstAccountNumberMismatch(GetAccountIdClaim(), accountId.ToString(), "userClaim.accountId", "accountId");
+                // Date guards
+                Guard.AgainstNull(startDate, "startDate");
+                Guard.AgainstNull(endDate, "endDate");
+
+                var flights = await _flightService.GetGroupedFlightsByMonthForDates(accountId, startDate, endDate);
+                return Ok(flights);
+            }
+            catch (ArgumentNullException)
+            {
+                return NotFound($"Error finding flights for summary");
+            }
+            catch (AccountConflictException)
+            {
+                return Forbid();
+            }
+        }
+
         [HttpGet("group/monthandmodel/from/{startDate}/to/{endDate}")]
         [Authorize(Roles = "User, Admin")]
         public async Task<ActionResult<FlightSummaryDto>> GetGroupedFlightsByMonthAndModelForDateRange(int accountId, DateTime startDate, DateTime endDate)

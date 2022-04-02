@@ -39,23 +39,6 @@ namespace DukeSoftware.FlightLog.Infrastructure.Data
 
         public async Task<IList<FlightsGroupedByTimeDto>> GetGroupedFlightsByWeekForDates(int accountId, DateTime startDate, DateTime endDate)
         {
-            //var query = from f in _dbContext.Set<Flight>()
-            //            where f.Date >= startDate
-            //            where f.Date <= endDate
-            //            let week = GetWeekNumber(f.Date)
-            //            let year = f.Date.Year
-            //            group new { f.Date.Year } by year and by week
-            //            into fg
-            //            //orderby fg.Year //, //Year, fg.Key.week
-            //            select new FlightsGroupedByTimeDto
-            //            {
-            //                PeriodName = $"Week {fg.Key.week} {fg.Key.Year}",
-            //                FlightCount = fg.Count(),
-            //                FightMinutesSum = fg.Sum(x => x.FlightMinutes),
-            //                StartDate = ISOWeek.ToDateTime(fg.Key.Year, fg.Key.week, DayOfWeek.Monday),
-            //                EndDate = ISOWeek.ToDateTime(fg.Key.Year, fg.Key.week, DayOfWeek.Sunday),
-            //            };
-
             // Align the start date to weeks... 
             var weekStartDate = GetStartOfWeekDate(startDate);
             var weekEndDate = GetEndOfWeekDate(endDate);
@@ -86,6 +69,27 @@ namespace DukeSoftware.FlightLog.Infrastructure.Data
             return result;
         }
 
+        public async Task<IList<FlightsGroupedByTimeDto>> GetGroupedFlightsByMonthForDates(int accountId, DateTime startDate, DateTime endDate)
+        {
+            var query = from f in _dbContext.Set<Flight>()
+                        where f.Date >= startDate
+                        where f.Date <= endDate
+                        group f by new { f.Date.Year, f.Date.Month }
+                        into fg
+                        orderby fg.Key.Year, fg.Key.Month
+                        select new FlightsGroupedByTimeDto
+                        {
+                            PeriodName = $"{new DateTime(fg.Key.Year, fg.Key.Month, 1).ToString("MMM")}",
+                            FlightCount = fg.Count(),
+                            FightMinutesSum = fg.Sum(x => x.FlightMinutes),
+                            StartDate = new DateTime(fg.Key.Year, fg.Key.Month, 1),
+                            EndDate = new DateTime(fg.Key.Year, fg.Key.Month, 1).AddMonths(1).AddSeconds(-1),
+                        };
+
+            var result = await query.ToListAsync();
+            return AddEmptyMonthsToGroupedFlights(startDate, endDate, result);
+        }
+
         private static IList<FlightsGroupedByTimeDto> AddEmptyWeeksToGroupedFlights(DateTime startDate, DateTime endDate, IList<FlightsGroupedByTimeDto> result)
         {
             var firstWeekStartDate = ISOWeek.ToDateTime(startDate.Year, ISOWeek.GetWeekOfYear(startDate), DayOfWeek.Monday);
@@ -100,6 +104,29 @@ namespace DukeSoftware.FlightLog.Infrastructure.Data
                         StartDate = indexDate,
                         EndDate = indexDate.AddDays(6),
                         PeriodName = indexDate.ToString("d-MMM"),
+                        FlightCount = 0,
+                        FightMinutesSum = 0
+                    });
+                }
+            }
+
+            return result.OrderBy(x => x.StartDate).ToList();
+        }
+
+        private static IList<FlightsGroupedByTimeDto> AddEmptyMonthsToGroupedFlights(DateTime startDate, DateTime endDate, IList<FlightsGroupedByTimeDto> result)
+        {
+            var firstMonthStartDate = new DateTime(startDate.Year, startDate.Month, 1);
+            var lastMonthStartDate = new DateTime(endDate.Year, endDate.Month, 1);
+
+            for (var indexDate = firstMonthStartDate; indexDate <= lastMonthStartDate; indexDate = indexDate.AddMonths(1))
+            {
+                if (!result.Any(x => x.StartDate == indexDate))
+                {
+                    result.Add(new FlightsGroupedByTimeDto
+                    {
+                        StartDate = indexDate,
+                        EndDate = indexDate.AddMonths(1).AddDays(-1),
+                        PeriodName = indexDate.ToString("MMM"),
                         FlightCount = 0,
                         FightMinutesSum = 0
                     });
