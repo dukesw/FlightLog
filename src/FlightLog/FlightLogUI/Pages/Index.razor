@@ -43,12 +43,13 @@ else
         <RadzenLegend Position=LegendPosition.Bottom />
     </RadzenChart>*@
 
-    <RadzenRadioButtonList @bind-Value=@graphType TValue="int" Change=@((args) => OnGraphTypeChanged(args))>
+    <RadzenSelectBar @bind-Value=@graphType TValue="int" Change=@((args) => OnGraphTypeChanged(args))>
         <Items>
-            <RadzenRadioButtonListItem Text="Weekly" Value="1" />
-            <RadzenRadioButtonListItem Text="Monthly" Value="2" />
+            <RadzenSelectBarItem Text="Weekly" Value="1" />
+            <RadzenSelectBarItem Text="Monthly" Value="2" />
         </Items>
-    </RadzenRadioButtonList>
+    </RadzenSelectBar>
+
 
     if (graphType == 1)
     {
