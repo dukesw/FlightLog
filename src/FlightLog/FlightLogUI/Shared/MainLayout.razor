@@ -10,13 +10,16 @@
 <RadzenHeader>
     <ChildContent>
         <div class="row justify-content-start align-items-center">
-            <div class="col-6 d-flex align-items-center">
+            <div class="col-8 d-flex align-items-center">
                 <RadzenSidebarToggle Click="@(args => { sidebarExpanded = !sidebarExpanded; bodyExpanded = !bodyExpanded; })">
                 </RadzenSidebarToggle>
                 <RadzenLabel Text="Flight Log" />
-                <RadzenImage Path="images/flightlog_logo_sml.png" Style="margin-left: 2rem;" /> 
+                <RadzenImage Path="images/logo.svg" Style="margin-left: 1rem; width: 44px; height: 24px;"  /> 
             </div>
-            <div class="col-6 d-flex align-items-center justify-content-end">
+            @*<div class="col-4 d-flex align-items-center">
+                
+            </div>*@
+            <div class="col-4 d-flex align-items-center justify-content-end">
                 <div class="d-none d-md-inline-flex align-items-center">
                     <LoginDisplay></LoginDisplay>
                 </div>
