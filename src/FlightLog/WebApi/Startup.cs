@@ -66,6 +66,8 @@ namespace Web
             services.AddScoped<IPilotService, PilotService > ();
             services.AddScoped<IModelStatusRepository, ModelStatusRepository>();
             services.AddScoped<IModelStatusService, ModelStatusService>();
+            services.AddScoped<IAccountRepository, AccountRepository>();
+            services.AddScoped<IAccountService, AccountService>();
             services.AddScoped(typeof(IAppLogger<>), typeof(LoggerAdapter<>));
 
             services.AddControllers()
