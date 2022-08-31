@@ -76,6 +76,22 @@ else
         </div>
         <div class="row">
             <div class="col-md-2 align-items-top d-flex">
+                <RadzenLabel Text="Tags" />
+            </div>
+            <div class="col-md-8">
+                <RadzenCheckBoxList @bind-Value=@selectedTags TValue="int" Orientation="Orientation.Vertical" Data="@tagsMaster" TextProperty="Name" ValueProperty="Id" />  
+                @*<RadzenCheckBoxList @bind-Value=@selectedTags TValue="int" Orientation="Orientation.Vertical" Data="@tagsMaster" TextProperty="Name" ValueProperty="Id" />  *@
+                @*<RadzenCheckBoxList @bind-Value=@flight.Tags TValue="FlightTagDto" Orientation="Orientation.Vertical" Data="@tagsMaster" TextProperty="Name" ValueProperty="Id" />  *@
+              
+                @*<RadzenCheckBoxList TValue="int" Orientation="Orientation.Vertical" Data="@tagsMaster" TextProperty="Name" ValueProperty="Id" />  *@
+            
+            </div>
+        </div>
+
+      
+
+        <div class="row">
+            <div class="col-md-2 align-items-top d-flex">
                 <RadzenLabel Text="Details" />
             </div>
             <div class="col-md-8">
@@ -107,6 +123,8 @@ else
     private PilotDto[] pilots;
     private String accountId = "0";
     private string message = "";
+    private FlightTagDto[] tagsMaster;
+    private IEnumerable<int> selectedTags;
 
     [Parameter]
     public int? Id { get; set; }
@@ -134,10 +152,19 @@ else
             models = await client.GetFromJsonAsync<ModelDto[]>($"/api/{accountId}/models/active");
             locations = await client.GetFromJsonAsync<LocationDto[]>($"/api/{accountId}/locations");
             pilots = await client.GetFromJsonAsync<PilotDto[]>($"/api/{accountId}/pilots");
+            tagsMaster = await client.GetFromJsonAsync<FlightTagDto[]>("/api/flighttags");
+            selectedTags = new int[0];
 
             if (Id.HasValue)
             {
                 flight = await client.GetFromJsonAsync<FlightDto>($"/api/{accountId}/flights/{Id.Value}");
+                // Also populate the selected tags
+                //var i = 0;
+                foreach(var tag in flight.Tags)
+                {
+                    selectedTags = selectedTags.Concat(new int[] { tag.Id });
+                }
+
             }
         }
         catch (AccessTokenNotAvailableException exception)
@@ -156,6 +183,15 @@ else
         HttpResponseMessage response;
 
         Console.WriteLine($"Submit(): flight.Date == {flight.Date}");
+
+        // Add tags to Flight
+        foreach (int tagId in selectedTags)
+        {
+            if (tagId > 0)
+            {
+                flight.Tags.Add(tagsMaster.Where(x => x.Id == tagId).Single());
+            }
+        }
 
         // todo Wrap in a try/catch
         var client = ClientFactory.CreateClient("FlightLogAPI");
@@ -209,6 +245,7 @@ else
         flight.AccountId = Int32.Parse(accountId);
         flight.Date = new DateTimeOffset(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0, new TimeSpan(0, 0, 0)).Date;
         message = "Form cleared";
+        selectedTags = new int[0];
         Console.WriteLine($"clearFormData(): flight.Date == {flight.Date}");
     }
 }

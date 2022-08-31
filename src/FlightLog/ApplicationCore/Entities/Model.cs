@@ -22,6 +22,7 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Entities
         public int SortOrder { get; set; }
         public int TotalFlights { get; set; }
         public ICollection<Flight> Flights { get; }
+        public ICollection<MaintenanceLog> MaintenanceLogs { get;  }
 
     }
 }

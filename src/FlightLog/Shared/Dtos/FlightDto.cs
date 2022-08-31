@@ -19,6 +19,9 @@ namespace DukeSoftware.FlightLog.Shared.Dtos
         //public Pilot Pilot { get; set; }  // TODO add a pilot class
         public virtual IList<MediaLinkDto> MediaLinks { get; set; }
 
+        public virtual IList<FlightTagDto> Tags { get; set; }
+
+
         public int AccountId { get; set; }
 
         public FlightDto()
@@ -26,6 +29,8 @@ namespace DukeSoftware.FlightLog.Shared.Dtos
             Field = new FlightLocationDto();
             Model = new FlightModelDto();
             Pilot = new FlightPilotDto();
+            Tags = new List<FlightTagDto>();
+            MediaLinks = new List<MediaLinkDto>();
         }
     }
 

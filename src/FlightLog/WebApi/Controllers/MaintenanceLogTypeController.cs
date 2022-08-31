@@ -15,14 +15,14 @@ namespace WebApi.Controllers
     /// <summary>
     /// The BatteryController has some standard CRUD type methods in a REST style alongside some more "ProcessName" methods
     /// </summary>
-    [Route("/api/modelstatuses")]
-    public class ModelStatusController : BaseApiController
+    [Route("/api/maintenancelogtypes")]
+    public class MaintenanceLogTypeController : BaseApiController
     {
-        private readonly IModelStatusService _modelStatusService;
+        private readonly IMaintenanceLogTypeService _maintenanceLogTypeService;
 
-        public ModelStatusController(IModelStatusService modelStatusService)
+        public MaintenanceLogTypeController(IMaintenanceLogTypeService maintenanceLogTypeService)
         {
-            _modelStatusService = modelStatusService;
+            _maintenanceLogTypeService = maintenanceLogTypeService;
         }
 
         [HttpGet]
@@ -30,20 +30,9 @@ namespace WebApi.Controllers
         // [Authorize]
         public async Task<ActionResult> List()
         {
-            var modelStatuses = await _modelStatusService.GetModelStatusesAsync();
-            return Ok(modelStatuses.ToArray());
+            var maintenanceLogTypes = await _maintenanceLogTypeService.GetMaintenanceLogTypesAsync();
+            return Ok(maintenanceLogTypes.ToArray());
         }
-
-        [HttpGet("active")]
-        [Authorize(Roles = "User, Admin")]
-        // [Authorize]
-        public async Task<ActionResult> ListActive()
-        {
-            var modelStatuses = await _modelStatusService.GetActiveModelStatusesAsync();
-            return Ok(modelStatuses.ToArray());
-            
-        }
-
 
         [HttpGet("{id}")]
         [Authorize(Roles = "User, Admin")]
@@ -51,12 +40,12 @@ namespace WebApi.Controllers
         {
             try
             {
-                var model = await _modelStatusService.GetModelStatusByIdAsync(id);
+                var model = await _maintenanceLogTypeService.GetMaintenanceLogTypeByIdAsync(id);
                 return Ok(model);
             }
             catch (ArgumentNullException)
             {
-                return NotFound($"Error finding model status {id}");
+                return NotFound($"Error finding maintenance log type {id}");
             }
             catch (AccountConflictException)
             {
@@ -65,56 +54,55 @@ namespace WebApi.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "User, Admin")]
-        public async Task<ActionResult<ModelStatusDto>> Post([FromBody] ModelStatusDto newModelStatus)
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<MaintenanceLogTypeDto>> Post([FromBody] MaintenanceLogTypeDto newMaintenanceLogType)
         {
             try
             {
-                var result = await _modelStatusService.AddModelStatusAsync(newModelStatus);
+                var result = await _maintenanceLogTypeService.AddMaintenanceLogTypeAsync(newMaintenanceLogType);
                 return Ok(result);
             }
             catch (Exception)
             {
-                return BadRequest("Error adding model status");
+                return BadRequest("Error adding maintenance log type");
             }
         }
 
         [HttpPut]
-        [Authorize(Roles = "User, Admin")]
-        public async Task<ActionResult<ModelStatusDto>> Put([FromBody] ModelStatusDto modelStatus)
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<MaintenanceLogTypeDto>> Put([FromBody] MaintenanceLogTypeDto maintenanceLogType)
         {
             try
             {
-                var result = await _modelStatusService.UpdateModelStatusAsync(modelStatus);
+                var result = await _maintenanceLogTypeService.UpdateMaintenanceLogTypeAsync(maintenanceLogType);
                 return Ok(result);
             }
             catch (ArgumentNullException)
             {
-                return BadRequest("Error with input model status");
+                return BadRequest("Error with input maintenance log type");
             }
             catch (Exception)
             {
-                return BadRequest("Error updating model status");
+                return BadRequest("Error updating maintenance log type");
             }
         }
 
-        // TODO Fix this method
         [HttpDelete("{id}")]
-        [Authorize(Roles = "User, Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> Delete(int id)
         {
             try
             {
-                await _modelStatusService.DeleteModelStatusAsync(id);
+                await _maintenanceLogTypeService.DeleteMaintenanceLogTypeAsync(id);
                 return Ok();
             }
             catch (ArgumentNullException)
             {
-                return NotFound($"Error finding model status {id} to delete");
+                return NotFound($"Error finding maintenance log type {id} to delete");
             }
             catch (Exception)
             {
-                return Conflict($"Error deleting model status {id}");
+                return Conflict($"Error deleting maintenance log type {id}");
             }
 
         }

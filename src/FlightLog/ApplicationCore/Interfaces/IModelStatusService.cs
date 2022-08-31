@@ -9,7 +9,6 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Interfaces
 {
     public interface IModelStatusService
     {
-        // TODO Work on the ModelService (and interface) next... 
         Task<IList<ModelStatusDto>> GetModelStatusesAsync();
         Task<IList<ModelStatusDto>> GetActiveModelStatusesAsync();
 

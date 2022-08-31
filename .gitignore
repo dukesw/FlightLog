@@ -291,3 +291,4 @@ src/FlightLog/FlightLog/.deployment
 /src/FlightLog/WebApi/bin
 /src/FlightLog/ClassLibrary
 /src/FlightLog/WebApi/app_data/flightlog_prod_20220406.db
+/src/FlightLog/.vs

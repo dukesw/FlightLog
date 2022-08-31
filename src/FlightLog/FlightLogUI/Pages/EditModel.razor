@@ -75,6 +75,14 @@ else
         </div>
         <div class="row">
             <div class="col-md-2 align-items-center d-flex">
+                <RadzenLabel Text="Sold or Disposed Date" />
+            </div>
+            <div class="col-md-8">
+                <RadzenDatePicker Name="DisposalDate" @bind-Value="@model.DisposedOn" DateFormat="d"></RadzenDatePicker>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-2 align-items-center d-flex">
                 <RadzenLabel Text="Powered By" />
             </div>
             <div class="col-md-8">

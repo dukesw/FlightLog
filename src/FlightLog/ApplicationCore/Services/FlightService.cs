@@ -16,12 +16,14 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
     public class FlightService : IFlightService
     {
         private readonly IFlightRepository _flightRepository;
+        private readonly IFlightTagRepository _flightTagRepository;
         private readonly IModelRepository _modelRepository;
         private readonly IAppLogger<FlightService> _logger;
         private readonly IMapper _mapper;
-        public FlightService(IFlightRepository repository, IModelRepository modelRepository, IAppLogger<FlightService> logger, IMapper mapper)
+        public FlightService(IFlightRepository repository, IFlightTagRepository flightTagRepository, IModelRepository modelRepository, IAppLogger<FlightService> logger, IMapper mapper)
         {
             _flightRepository = repository;
+            _flightTagRepository = flightTagRepository;
             _modelRepository = modelRepository;
             _logger = logger;
             _mapper = mapper;
@@ -32,6 +34,17 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
             Guard.AgainstNull(flight, "flight");
             Guard.AgainstAccountNumberMismatch(accountId, flight.AccountId, "accountId", "flight.AccountId");
             var flightEntity = _mapper.Map<FlightDto, Flight>(flight);
+
+            // Attach tags from the DB
+            foreach (FlightTagDto t in flight.Tags)
+            {
+                var tag = _flightTagRepository.GetById(t.Id);
+                if (tag == null)    // Expect this to never happen by design...
+                {
+                    tag = _mapper.Map<FlightTagDto, FlightTag>(t);
+                }
+                flightEntity.Tags.Add(tag);
+            }
 
             try
             {
@@ -59,6 +72,8 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
 
                 await _flightRepository.DeleteAsync(flightToDelete);
                 _logger.LogInformation($"Deleted flight with Id: {id}");
+
+                // TODO Update the flight count for the model of this flight
             }
             catch (Exception ex)
             {
@@ -163,10 +178,32 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
 
         public async Task<FlightDto> UpdateFlightAsync(int accountId, FlightDto flight)
         {
+            // TODO get the current flight, check the model. 
+            // Then get the model from the new flight. If they are different, update both 
+            // flight counts after the update. If they are the same, no need to update flight counts. 
             Guard.AgainstNull(flight, "flight");
             Guard.AgainstAccountNumberMismatch(accountId, flight.AccountId, "accountId", "flight.AccountId");
 
-            var flightEntity = _mapper.Map<FlightDto, Flight>(flight);
+            // First get from the DB
+            var spec = new GetFlightByIdWithIncludes(flight.Id);
+            var flightEntity = (await _flightRepository.GetBySpecAsync(spec)).FirstOrDefault();
+
+            // Update fields (not collections)
+            flightEntity.CopyFrom(flight);
+
+            // Clear collections. Only tags but media links should be added in the same way
+            flightEntity.Tags.Clear();
+
+            // Retrieve and attach tag entities
+            foreach (FlightTagDto t in flight.Tags)
+            {
+                var tag = _flightTagRepository.GetById(t.Id);
+                if (tag == null)    // Expect this to never happen by design...
+                {
+                    tag = _mapper.Map<FlightTagDto, FlightTag>(t);
+                }
+                flightEntity.Tags.Add(tag);
+            }
 
             var result = await _flightRepository.UpdateAsync(flightEntity);
             if (result != null)
@@ -182,8 +219,11 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
 
         private FlightSummaryDto CreateFlightSummary(IList<FlightDto> flights, int accountId)
         {
-            var result = new FlightSummaryDto();
-            result.AccountId = accountId;
+            var result = new FlightSummaryDto
+            {
+                AccountId = accountId
+            };
+
             if (flights.Count > 0)
             {
                 result.TotalFlightTimeMinutes = flights.Sum(x => x.FlightMinutes);

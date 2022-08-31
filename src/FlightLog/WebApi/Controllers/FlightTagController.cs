@@ -15,14 +15,14 @@ namespace WebApi.Controllers
     /// <summary>
     /// The BatteryController has some standard CRUD type methods in a REST style alongside some more "ProcessName" methods
     /// </summary>
-    [Route("/api/modelstatuses")]
-    public class ModelStatusController : BaseApiController
+    [Route("/api/flighttags")]
+    public class FlightTagController : BaseApiController
     {
-        private readonly IModelStatusService _modelStatusService;
+        private readonly IFlightTagService _flightTagService;
 
-        public ModelStatusController(IModelStatusService modelStatusService)
+        public FlightTagController(IFlightTagService flightTagService)
         {
-            _modelStatusService = modelStatusService;
+            _flightTagService = flightTagService;
         }
 
         [HttpGet]
@@ -30,20 +30,9 @@ namespace WebApi.Controllers
         // [Authorize]
         public async Task<ActionResult> List()
         {
-            var modelStatuses = await _modelStatusService.GetModelStatusesAsync();
-            return Ok(modelStatuses.ToArray());
+            var flightTags = await _flightTagService.GetFlightTagsAsync();
+            return Ok(flightTags.ToArray());
         }
-
-        [HttpGet("active")]
-        [Authorize(Roles = "User, Admin")]
-        // [Authorize]
-        public async Task<ActionResult> ListActive()
-        {
-            var modelStatuses = await _modelStatusService.GetActiveModelStatusesAsync();
-            return Ok(modelStatuses.ToArray());
-            
-        }
-
 
         [HttpGet("{id}")]
         [Authorize(Roles = "User, Admin")]
@@ -51,12 +40,12 @@ namespace WebApi.Controllers
         {
             try
             {
-                var model = await _modelStatusService.GetModelStatusByIdAsync(id);
-                return Ok(model);
+                var flightTag = await _flightTagService.GetFlightTagByIdAsync(id);
+                return Ok(flightTag);
             }
             catch (ArgumentNullException)
             {
-                return NotFound($"Error finding model status {id}");
+                return NotFound($"Error finding flight tag {id}");
             }
             catch (AccountConflictException)
             {
@@ -65,56 +54,55 @@ namespace WebApi.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "User, Admin")]
-        public async Task<ActionResult<ModelStatusDto>> Post([FromBody] ModelStatusDto newModelStatus)
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<FlightTagDto>> Post([FromBody] FlightTagDto flightTag)
         {
             try
             {
-                var result = await _modelStatusService.AddModelStatusAsync(newModelStatus);
+                var result = await _flightTagService.AddFlightTagAsync(flightTag);
                 return Ok(result);
             }
             catch (Exception)
             {
-                return BadRequest("Error adding model status");
+                return BadRequest("Error adding flight tag");
             }
         }
 
         [HttpPut]
-        [Authorize(Roles = "User, Admin")]
-        public async Task<ActionResult<ModelStatusDto>> Put([FromBody] ModelStatusDto modelStatus)
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<FlightTagDto>> Put([FromBody] FlightTagDto flightTag)
         {
             try
             {
-                var result = await _modelStatusService.UpdateModelStatusAsync(modelStatus);
+                var result = await _flightTagService.UpdateFlightTagAsync(flightTag);
                 return Ok(result);
             }
             catch (ArgumentNullException)
             {
-                return BadRequest("Error with input model status");
+                return BadRequest("Error with input flight tag");
             }
             catch (Exception)
             {
-                return BadRequest("Error updating model status");
+                return BadRequest("Error updating flight tag");
             }
         }
 
-        // TODO Fix this method
         [HttpDelete("{id}")]
-        [Authorize(Roles = "User, Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> Delete(int id)
         {
             try
             {
-                await _modelStatusService.DeleteModelStatusAsync(id);
+                await _flightTagService.DeleteFlightTagAsync(id);
                 return Ok();
             }
             catch (ArgumentNullException)
             {
-                return NotFound($"Error finding model status {id} to delete");
+                return NotFound($"Error finding flight tag {id} to delete");
             }
             catch (Exception)
             {
-                return Conflict($"Error deleting model status {id}");
+                return Conflict($"Error deleting flight tag {id}");
             }
 
         }

@@ -60,14 +60,21 @@ namespace Web
             services.AddScoped<IModelService, ModelService>();
             services.AddScoped<IFlightRepository, FlightRepository>();
             services.AddScoped<IFlightService, FlightService>();
+            services.AddScoped<IFlightTagRepository, FlightTagRepository>();
+            services.AddScoped<IFlightTagService, FlightTagService>();
             services.AddScoped<ILocationRepository, LocationRepository>();
             services.AddScoped<ILocationService, LocationService>();
             services.AddScoped<IPilotRepository, PilotRepository>();
             services.AddScoped<IPilotService, PilotService > ();
             services.AddScoped<IModelStatusRepository, ModelStatusRepository>();
             services.AddScoped<IModelStatusService, ModelStatusService>();
+            services.AddScoped<IMaintenanceLogRepository, MaintenanceLogRepository>();
+            services.AddScoped<IMaintenanceLogService, MaintenanceLogService>();
+            services.AddScoped<IMaintenanceLogTypeRepository, MaintenanceLogTypeRepository>();
+            services.AddScoped<IMaintenanceLogTypeService, MaintenanceLogTypeService>();
             services.AddScoped<IAccountRepository, AccountRepository>();
             services.AddScoped<IAccountService, AccountService>();
+            
             services.AddScoped(typeof(IAppLogger<>), typeof(LoggerAdapter<>));
 
             services.AddControllers()
