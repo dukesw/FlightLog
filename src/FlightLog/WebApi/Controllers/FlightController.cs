@@ -297,7 +297,7 @@ namespace WebApi.Controllers
             {
                 return Forbid();
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return BadRequest($"Error adding flight");
             }

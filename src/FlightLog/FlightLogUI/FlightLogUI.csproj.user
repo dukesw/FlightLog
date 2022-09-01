@@ -3,6 +3,6 @@
   <PropertyGroup>
     <RazorPage_SelectedScaffolderID>RazorComponentScaffolder</RazorPage_SelectedScaffolderID>
     <RazorPage_SelectedScaffolderCategoryPath>root/Common/RazorComponent</RazorPage_SelectedScaffolderCategoryPath>
-    <NameOfLastUsedPublishProfile>C:\Dev\Duke Software\Repos\FlightLog v2\src\FlightLog\FlightLogUI\Properties\PublishProfiles\flightlogapp - Web Deploy.pubxml</NameOfLastUsedPublishProfile>
+    <NameOfLastUsedPublishProfile>C:\Dev\DukeSoftware\Repos\FlightLogv2\src\FlightLog\FlightLogUI\Properties\PublishProfiles\flightlogapp - Web Deploy.pubxml</NameOfLastUsedPublishProfile>
   </PropertyGroup>
 </Project>

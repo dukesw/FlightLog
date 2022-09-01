@@ -24,9 +24,7 @@ else
 }
 else
 {
-
     <RadzenTemplateForm Data="@flight" TItem="FlightDto" Submit="@Submit" InvalidSubmit="@OnInvalidSubmit">
-        @*" (FlightDto args) => { Submit(args);})">*@
         <div class="row">
             <div class="col-md-2 align-items-center d-flex">
                 <RadzenLabel Text="Date" />
@@ -69,22 +67,15 @@ else
             </div>
             <div class="col-md-8">
                 <RadzenNumeric Name="FlightMinutes" TValue="float" @bind-Value="@flight.FlightMinutes"></RadzenNumeric>
-                @*<RadzenRequiredValidator Component="FlightMinutes" Text="Flight minutes is required" DefaultValue="0.0" Popup="false" Style="position: relative"></RadzenRequiredValidator>*@
-                @*<RadzenCompareValidator Component="FlightMinutes" Text="Flight minutes must be greater than 0" Value="0" Operator="@CompareOperator.GreaterThan" Popup="false" Style="position: relative"></RadzenCompareValidator>*@
-                <RadzenNumericRangeValidator Component="FlightMinutes" Min="0.1" Max="999" Text="Flight minutes must be greated than 0" Style="display: block"></RadzenNumericRangeValidator>
-            </div>
+                <RadzenCompareValidator Component="FlightMinutes" Text="Flight minutes must be greater than 0" Value="0.0f" Operator="@CompareOperator.GreaterThan" Popup="false" Style="display: block"></RadzenCompareValidator>
+      </div>
         </div>
         <div class="row">
             <div class="col-md-2 align-items-top d-flex">
                 <RadzenLabel Text="Tags" />
             </div>
             <div class="col-md-8">
-                <RadzenCheckBoxList @bind-Value=@selectedTags TValue="int" Orientation="Orientation.Vertical" Data="@tagsMaster" TextProperty="Name" ValueProperty="Id" />  
-                @*<RadzenCheckBoxList @bind-Value=@selectedTags TValue="int" Orientation="Orientation.Vertical" Data="@tagsMaster" TextProperty="Name" ValueProperty="Id" />  *@
-                @*<RadzenCheckBoxList @bind-Value=@flight.Tags TValue="FlightTagDto" Orientation="Orientation.Vertical" Data="@tagsMaster" TextProperty="Name" ValueProperty="Id" />  *@
-              
-                @*<RadzenCheckBoxList TValue="int" Orientation="Orientation.Vertical" Data="@tagsMaster" TextProperty="Name" ValueProperty="Id" />  *@
-            
+                <RadzenCheckBoxList @bind-Value=@selectedTags TValue="int" Orientation="Orientation.Vertical" Data="@tagsMaster" TextProperty="Name" ValueProperty="Id"></RadzenCheckBoxList>  
             </div>
         </div>
 
@@ -159,7 +150,6 @@ else
             {
                 flight = await client.GetFromJsonAsync<FlightDto>($"/api/{accountId}/flights/{Id.Value}");
                 // Also populate the selected tags
-                //var i = 0;
                 foreach(var tag in flight.Tags)
                 {
                     selectedTags = selectedTags.Concat(new int[] { tag.Id });
