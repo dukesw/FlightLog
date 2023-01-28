@@ -74,6 +74,13 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
             return _mapper.Map<MaintenanceLog, MaintenanceLogDto>(result.FirstOrDefault());
         }
 
+        public async Task<IList<MaintenanceLogDto>> GetMaintenanceLogsByModelIdAsync(int accountId, int id)
+        {
+            var spec = new GetMaintenanceLogByAccountAndModel(accountId, id);
+            var result = await _maintenanceLogRepository.GetBySpecAsync(spec);
+            return _mapper.Map<IList<MaintenanceLog>, IList<MaintenanceLogDto>>(result.OrderBy(x => x.Date).ToList());
+        }
+
         public async Task<IList<MaintenanceLogDto>> GetMaintenanceLogsAsync(int accountId)
         {
             // TODO - In order to get the result looking nicer add a "WithIncludes" version of the spec. 

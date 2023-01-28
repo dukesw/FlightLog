@@ -2,6 +2,7 @@
 @attribute [Authorize]
 
 @inject IHttpClientFactory ClientFactory
+@inject NavigationManager NavigationManager
 
 <h2>Models</h2>
 @if (loading)
@@ -25,17 +26,23 @@ else
                     }
                 </Template>
             </RadzenDataGridColumn>
-            <RadzenDataGridColumn TItem="ModelDto" Property="Id" Filterable="false" Sortable="false" Title="">
+            <RadzenDataGridColumn TItem="ModelDto" Property="Id" Filterable="false" Title="" Sortable="false" Width="60px">
                 <Template Context="model">
-                    <a href="@($"/edit-model/{model.Id}")">Edit</a>
+                    <RadzenButton Icon="pageview" ButtonStyle="ButtonStyle.Secondary" Size="ButtonSize.Small" Click=@(args => OpenModelViewScreen(model.Id)) @onclick:stopPropagation="true" />
                 </Template>
             </RadzenDataGridColumn>
         </Columns>
-
     </RadzenDataGrid>
+    <p></p>
+    <div class="row justify-content-start">
+        @*<div class="col-md-2 align-items-top d-flex" />*@
+        <div class="col-md-8 d-flex align-items-end justify-content-start">
+            <RadzenButton ButtonType="ButtonType.Submit" Icon="add" Text="Add Model" Click=@OpenAddModelPage />
+        </div>
+    </div>
 }
 
- @code {
+@code {
     private ModelDto[] models;
     [CascadingParameter]
     private Task<AuthenticationState> authenticationState { get; set; }
@@ -59,5 +66,15 @@ else
         {
             loading = false;
         }
+    }
+
+    private void OpenModelViewScreen(int modelId) 
+    {
+        NavigationManager.NavigateTo($"/model-history/{modelId}");
+    }
+
+    private void OpenAddModelPage()
+    {
+        NavigationManager.NavigateTo("/edit-model");
     }
 }

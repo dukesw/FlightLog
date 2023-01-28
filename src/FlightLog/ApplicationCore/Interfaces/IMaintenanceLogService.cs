@@ -8,6 +8,7 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Interfaces
     {
         Task<IList<MaintenanceLogDto>> GetMaintenanceLogsAsync(int accountId);
         Task<MaintenanceLogDto> GetMaintenanceLogByIdAsync(int accountId, int id);
+        Task<IList<MaintenanceLogDto>> GetMaintenanceLogsByModelIdAsync(int accountId, int modelId);
         Task<MaintenanceLogDto> AddMaintenanceLogAsync(int accountId, MaintenanceLogDto maintenanceLog);
         Task<MaintenanceLogDto> UpdateMaintenanceLogAsync(int accountId, MaintenanceLogDto maintenanceLog);
         Task DeleteMaintenanceLogAsync(int accountId, int id);

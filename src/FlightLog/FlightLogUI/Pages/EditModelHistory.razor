@@ -1,0 +1,170 @@
+﻿@page "/edit-model-history/{modelid:int?}/{id:int?}"
+@attribute [Authorize]
+@inject IHttpClientFactory ClientFactory
+@inject IJSRuntime JsRuntime
+@inject Radzen.DialogService dialogService
+
+<style>
+    form .row {
+        margin-bottom: 16px;
+    }
+
+    form .shortrow {
+        margin-bottom: 0px;
+    }
+</style>
+
+@if (loading)
+{
+    @*<p>Loading...</p>*@
+    <div class="spinner"></div>
+}
+else 
+{
+     <RadzenTemplateForm Data="@maintenanceLog" TItem="MaintenanceLogDto" Submit="@Submit" InvalidSubmit="@OnInvalidSubmit">
+         <div class="row">
+            <div class="col-md-2 align-items-center d-flex">
+                <RadzenLabel Text="Date" />
+            </div>
+            <div class="col-md-10">
+                <RadzenDatePicker Name="Date" @bind-Value="@maintenanceLog.Date" DateFormat="d-MMM-yyyy"></RadzenDatePicker>
+                <RadzenRequiredValidator Component="Date" Text="Date is required" Popup="false" Style="display: block"></RadzenRequiredValidator>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-2 align-items-center d-flex">
+                <RadzenLabel Text="Model" />
+            </div>
+            <div class="col-md-10">
+                <RadzenDropDown Name="Model" @bind-Value="@maintenanceLog.Model.Id" AllowClear="false" Data="@models" TextProperty="Name" ValueProperty="Id"></RadzenDropDown>
+                <RadzenRequiredValidator Component="Model" Text="Model is required" DefaultValue="0" Popup="false" Style="display: block"></RadzenRequiredValidator>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-2 align-items-center d-flex">
+                <RadzenLabel Text="Type" />
+            </div>
+            <div class="col-md-10">
+                <RadzenDropDown Name="Type" @bind-Value="@maintenanceLog.Type.Id" AllowClear="false" Data="@maintenanceLogTypes" TextProperty="Name" ValueProperty="Id"></RadzenDropDown>
+                <RadzenRequiredValidator Component="Type" Text="Type is required" DefaultValue="0" Popup="false" Style="display: block"></RadzenRequiredValidator>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-2 align-items-top d-flex">
+                <RadzenLabel Text="Details" />
+            </div>
+            <div class="col-md-10">
+                <RadzenTextArea @bind-Value="@maintenanceLog.Details" Rows=5 style="width: 100%"></RadzenTextArea>
+            </div>
+        </div>
+
+        <div class="row justify-content-start">
+            <div class="col-md-2 align-items-top d-flex" />
+            <div class="col-md-10 d-flex align-items-end justify-content-start">
+                <RadzenButton ButtonType="ButtonType.Submit" Icon="save" Text="Save" />
+                <RadzenButton ButtonStyle="ButtonStyle.Light" Icon="cancel" style="display: inline-block; margin-left: 10px;" Text="Cancel" Click="@Cancel" />
+            </div>
+        </div>
+
+     </RadzenTemplateForm>
+}
+
+
+@code {
+    // Set the selected model Id if received (otherwise it can be changed if needed from the form)
+    // Retrieve the maintenance log entry if it is received.
+    // If no modelid is retrieved, then the maintenance log id likely wont be (indicates new)
+    [Parameter]
+    public int? ModelId { get; set; }
+    [Parameter]
+    public int? Id { get; set; }
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationState { get; set; }
+
+    public bool loading = false;
+    private String accountId = "0";
+    private ModelDto[] models;
+    private MaintenanceLogTypeDto[] maintenanceLogTypes;
+    private MaintenanceLogDto maintenanceLog;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            loading = true;
+
+            var user = (await authenticationState).User;
+            accountId = user.FindFirst("https://flightlog.co.nz/claims/account_id").Value;
+
+            //model.AccountId = Int32.Parse(accountId);
+
+            var client = ClientFactory.CreateClient("FlightLogAPI");
+
+            models = await client.GetFromJsonAsync<ModelDto[]>($"/api/{accountId}/models"); 
+            maintenanceLogTypes = await client.GetFromJsonAsync<MaintenanceLogTypeDto[]>($"/api/maintenancelogtypes");
+            maintenanceLog = new MaintenanceLogDto {
+                    AccountId = Int32.Parse(accountId),
+                    Date = new DateTimeOffset(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0, new TimeSpan(0, 0, 0)).Date
+            };
+
+            if (Id.HasValue) {
+                maintenanceLog = await client.GetFromJsonAsync<MaintenanceLogDto>($"/api/{accountId}/maintenancelogs/{Id.Value}");
+            }
+            else {
+                if (ModelId.HasValue)
+                {
+                    maintenanceLog.Model.Id = ModelId.Value;
+                }
+            }
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+        finally
+        {
+            loading = false;
+        }
+    }
+
+    protected async Task Submit()
+    {
+
+        HttpResponseMessage response;
+
+        // todo Wrap in a try/catch
+        var client = ClientFactory.CreateClient("FlightLogAPI");
+        if (Id.HasValue)
+        {
+            response = await client.PutAsJsonAsync($"/api/{accountId}/maintenancelogs", maintenanceLog);
+        }
+        else
+        {
+            response = await client.PostAsJsonAsync($"/api/{accountId}/maintenancelogs", maintenanceLog);
+        }
+
+        if (response.StatusCode == System.Net.HttpStatusCode.OK)
+        {
+            var savedMaintenanceLog = await response.Content.ReadFromJsonAsync<MaintenanceLogDto>();
+
+            dialogService.Close(true);
+            //clearFormData();
+            //message = $"Saved flight with Id {savedFlight.Id}";
+        }
+        else
+        {
+            //message = $"Failed to save ({response.StatusCode.ToString()})";
+        }
+    }
+
+    void OnInvalidSubmit(FormInvalidSubmitEventArgs args)
+    {
+        // message = "Invalid entry";
+    }
+    
+    void Cancel()
+    {
+        // Clear??
+        dialogService.Close(true);
+    }
+}

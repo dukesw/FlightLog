@@ -12,7 +12,7 @@ namespace DukeSoftware.FlightLog.Shared.Dtos
         public int AccountId { get; set; }
         public DateTime Date { get; set; }
         public string Details { get; set; }
-        public ModelDto Model { get; set; }
-        public MaintenanceLogTypeDto Type { get; set; }
+        public ModelDto Model { get; set; } = new ModelDto();
+        public MaintenanceLogTypeDto Type { get; set; } = new MaintenanceLogTypeDto();
     }
 }

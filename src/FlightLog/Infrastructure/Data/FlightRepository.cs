@@ -50,7 +50,7 @@ namespace DukeSoftware.FlightLog.Infrastructure.Data
             var flights = await query.ToListAsync();
 
             var groupQuery = from f in flights
-                             group f by new { f.Date.Year, Week = ISOWeek.GetWeekOfYear(f.Date) }
+                             group f by new { Year = ISOWeek.GetYear(f.Date), Week = ISOWeek.GetWeekOfYear(f.Date) }
                         into fg
                         orderby fg.Key.Year, fg.Key.Week
                         select new FlightsGroupedByTimeDto
@@ -61,7 +61,7 @@ namespace DukeSoftware.FlightLog.Infrastructure.Data
                             FlightCount = fg.Count(),
                             FightMinutesSum = fg.Sum(x => x.FlightMinutes),
                             StartDate = ISOWeek.ToDateTime(fg.Key.Year, fg.Key.Week, DayOfWeek.Monday),
-                            EndDate = ISOWeek.ToDateTime(fg.Key.Year, fg.Key.Week, DayOfWeek.Sunday),
+                            EndDate = ISOWeek.ToDateTime(fg.Key.Year, fg.Key.Week, DayOfWeek.Sunday).AddDays(1).AddSeconds(-1),
                         };
 
             // Add in missing weeks where there were no flights
@@ -95,14 +95,14 @@ namespace DukeSoftware.FlightLog.Infrastructure.Data
             var firstWeekStartDate = ISOWeek.ToDateTime(startDate.Year, ISOWeek.GetWeekOfYear(startDate), DayOfWeek.Monday);
             var endWeekStartDate = ISOWeek.ToDateTime(endDate.Year, ISOWeek.GetWeekOfYear(endDate), DayOfWeek.Monday);
 
-            for (var indexDate = firstWeekStartDate; indexDate <= endWeekStartDate; indexDate = indexDate.AddDays(7))
+            for (var indexDate = firstWeekStartDate; indexDate < endWeekStartDate; indexDate = indexDate.AddDays(7))
             {
                 if (!result.Any(x => x.StartDate == indexDate))
                 {
                     result.Add(new FlightsGroupedByTimeDto
                     {
                         StartDate = indexDate,
-                        EndDate = indexDate.AddDays(6),
+                        EndDate = indexDate.AddDays(7).AddSeconds(-1),
                         PeriodName = indexDate.ToString("d-MMM"),
                         FlightCount = 0,
                         FightMinutesSum = 0

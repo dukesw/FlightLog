@@ -53,6 +53,25 @@ namespace WebApi.Controllers
             }
         }
 
+        [HttpGet("model/{modelId}")]
+        [Authorize(Roles = "User, Admin")]
+        public async Task<ActionResult> GetByModelId(int accountId, int modelId)
+        {
+            try
+            {
+                var model = await _maintenanceLogService.GetMaintenanceLogsByModelIdAsync(accountId, modelId);
+                return Ok(model);
+            }
+            catch (ArgumentNullException)
+            {
+                return NotFound($"Error finding maintenance logs for model id {modelId}");
+            }
+            catch (AccountConflictException)
+            {
+                return Forbid();
+            }
+        }
+
         [HttpPost]
         [Authorize(Roles = "User, Admin")]
         public async Task<ActionResult<MaintenanceLogDto>> Post(int accountId, [FromBody] MaintenanceLogDto newMaintenanceLog)
