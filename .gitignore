@@ -295,3 +295,4 @@ src/FlightLog/FlightLog/.deployment
 /src/FlightLog/WebApi/app_data/flightlog_dev_latest.db
 /src/FlightLog/WebApi/app_data/flightlog_prod_20220831.db
 /src/FlightLog/WebApi/app_data/flightlog_prod_20230128.db
+/src/FlightLog/ApplicationCoreUnitTests/bin/Debug/net9.0
