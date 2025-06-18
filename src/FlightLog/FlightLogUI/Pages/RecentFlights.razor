@@ -20,9 +20,9 @@ else
     }
     else
     {
-        <RadzenDataGrid Data="@recentFlights" TItem="FlightDto" AllowSorting="true">
+       @*  <RadzenDataGrid Data="@recentFlights" TItem="FlightDto" AllowSorting="true">
             <Columns>
-                @*<RadzenDataGridColumn TItem="FlightDto" Property="Id" Filterable="false" Title="Id" Frozen="true" Width="50px" />*@
+                @*<RadzenDataGridColumn TItem="FlightDto" Property="Id" Filterable="false" Title="Id" Frozen="true" Width="50px" />
                 <RadzenDataGridColumn TItem="FlightDto" Property="Date" Filterable="false" Title="Date">
                     <Template Context="flight">
                         <div>@flight.Date.ToString("d-MMM-yyyy")</div>
@@ -39,10 +39,10 @@ else
                 </RadzenDataGridColumn>
               
 
-                @*TODO add an edit link*@
+                @*TODO add an edit link
             </Columns>
 
-        </RadzenDataGrid>
+        </RadzenDataGrid> *@
 
     }
 }

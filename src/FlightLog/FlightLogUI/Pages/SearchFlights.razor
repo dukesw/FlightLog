@@ -19,10 +19,10 @@
 }
 else
 {
-    <form>
+    @* <form>
         <div class="row">
             <div class="col-md-2 align-items-center d-flex">
-                <RadzenLabel Text="Start Date" />
+                 <RadzenLabel Text="Start Date" /> 
             </div>
             <div class="col-md-8">
                 <RadzenDatePicker Name="StartDate" @bind-Value="@StartDate" DateFormat="d-MMM-yyyy" Kind="@DateTimeKind.Local"></RadzenDatePicker><br />
@@ -55,8 +55,8 @@ else
                 <RadzenButton ButtonStyle="ButtonStyle.Light" Icon="cancel" style="display: inline-block; margin-left: 10px;" Text="Clear" Click=@Clear />
             </div>
         </div>
-    </form>
-    <RadzenDataGrid Data="@flights" TItem="FlightDto" AllowSorting="true">
+    </form> *@
+@*     <RadzenDataGrid Data="@flights" TItem="FlightDto" AllowSorting="true">
         <Columns>
             <RadzenDataGridColumn TItem="FlightDto" Property="Date" Filterable="false" Title="Date">
                 <Template Context="flight">
@@ -74,7 +74,7 @@ else
             </RadzenDataGridColumn>
         </Columns>
 
-    </RadzenDataGrid>
+    </RadzenDataGrid> *@
 }
 
 @code {

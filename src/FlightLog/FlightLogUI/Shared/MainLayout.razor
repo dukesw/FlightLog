@@ -6,8 +6,16 @@
 @inject IJSRuntime JsRuntime;
 
 
+<FluentLayout>
+    <FluentHeader>
+        <FluentLabel Text="Flight Log" />
+        <img src="images/logo.svg" />
+        <FluentSpacer />
+        <LoginDisplay></LoginDisplay>
+    </FluentHeader>
 
-<RadzenHeader>
+
+@* <RadzenHeader> 
     <ChildContent>
         <div class="row justify-content-start align-items-center">
             <div class="col-8 d-flex align-items-center">
@@ -18,7 +26,7 @@
             </div>
             @*<div class="col-4 d-flex align-items-center">
                 
-            </div>*@
+            </div>
             <div class="col-4 d-flex align-items-center justify-content-end">
                 <div class="d-none d-md-inline-flex align-items-center">
                     <LoginDisplay></LoginDisplay>
@@ -26,7 +34,26 @@
             </div>
         </div>
     </ChildContent>
-</RadzenHeader>
+</RadzenHeader> *@
+
+<FluentStack Orientation="Orientation.Horizontal">
+    <FluentNavMenu>
+        <FluentNavGroup Href="/" Title="Flights">
+            <FluentNavLink Href="/recent-flights">Recent Flights</FluentNavLink>
+            <FluentNavLink HRef="/edit-flight">Add Flight</FluentNavLink>
+            <FluentNavLink Href="/search-flights">Search Flights</FluentNavLink>
+        </FluentNavGroup>
+        <FluentNavGroup Href="/models" Title="Models">
+            <FluentNavLink Href="/edit-model">Add Model</FluentNavLink>    
+        </FluentNavGroup>
+    </FluentNavMenu>
+    <FluentBodyContent>
+        Main here... 
+    </FluentBodyContent>
+
+</FluentStack>
+</FluentLayout>
+@* 
 <div style="width:100%">
     <RadzenBody @ref="@body0" @bind-Expanded="@bodyExpanded">
         <ChildContent>
@@ -55,11 +82,13 @@
         </RadzenPanelMenu>
     </ChildContent>
 </RadzenSidebar>
+ *@
 
-<RadzenDialog />
-<RadzenNotification />
-<RadzenContextMenu />
-<RadzenTooltip />
+<FluentToastProvider />
+<FluentDialogProvider />
+<FluentTooltipProvider />
+<FluentMessageBarProvider />
+<FluentMenuProvider />
 
 @*<RadzenHeader>
   <ChildContent>
@@ -98,8 +127,8 @@
 </RadzenFooter>*@
 
 @code {
-    RadzenSidebar sidebar0;
-    RadzenBody body0;
+    // RadzenSidebar sidebar0;
+    // RadzenBody body0;
     bool sidebarExpanded = true;
     bool bodyExpanded = false;
     string userAgent;

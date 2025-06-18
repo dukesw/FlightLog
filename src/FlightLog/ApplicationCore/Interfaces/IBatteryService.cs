@@ -17,7 +17,5 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Interfaces
         Task<BatteryType> UpdateBatteryTypeAsync(int accountId, BatteryType batteryType);
         Task DeleteBatteryAsync(int accountId, int id);
         Task DeleteBatteryTypeAsync(int accountId, int id);
-        Task<Battery> EnterChargeDataAsync(int accountId, Battery battery, DateTime chargeDate, ChargeType chargeType, int mahUsed);
-
     }
 }

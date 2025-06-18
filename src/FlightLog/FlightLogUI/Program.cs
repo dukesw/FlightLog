@@ -11,7 +11,8 @@ using System.Text;
 using System.Threading.Tasks;
 using DukeSoftware.FlightLog.FlightLogUI.Authorisation;
 using Microsoft.AspNetCore.Http;
-using Radzen;
+using Microsoft.FluentUI.AspNetCore.Components;
+//using Microsoft.AspNetCore.Mvc; // Trying to fix an error... 
 
 namespace DukeSoftware.FlightLog.FlightLogUI
 {
@@ -26,7 +27,7 @@ namespace DukeSoftware.FlightLog.FlightLogUI
             builder.Services.AddScoped<FlightLogAuthorisationMessageHandler>();
 
 
-           // builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            // builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddScoped<HttpContextAccessor>();
 
@@ -37,11 +38,8 @@ namespace DukeSoftware.FlightLog.FlightLogUI
 
             //builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>()
             //    .CreateClient("WebApi"));
+            builder.Services.AddFluentUIComponents();
 
-            builder.Services.AddScoped<DialogService>();
-            builder.Services.AddScoped<NotificationService>();
-            builder.Services.AddScoped<TooltipService>();
-            builder.Services.AddScoped<ContextMenuService>();
 
             builder.Services.AddOidcAuthentication(options =>
             {

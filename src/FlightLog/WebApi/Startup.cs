@@ -45,16 +45,16 @@ namespace Web
         {
             // Database
             services.AddDbContext<FlightLogContext>(options =>
-                //options.UseSqlServer(Configuration.GetConnectionString("FlightLog")));
-                options.UseSqlite(
-                    Configuration.GetConnectionString("FlightLogSqlite"),
-                    x => x.MigrationsAssembly("DukeSoftware.FlightLog.Infrastructure"))
-                );
+                options.UseSqlServer(Configuration.GetConnectionString("FlightLog"), x => x.EnableRetryOnFailure()));
+                //options.UseSqlite(
+                //    Configuration.GetConnectionString("FlightLogSqlite"),
+                //    x => x.MigrationsAssembly("DukeSoftware.FlightLog.Infrastructure"))
+                //);
             // Services and repositories
             services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
             services.AddScoped<IBatteryRepository, BatteryRepository>();
             services.AddScoped<IBatteryTypeRepository, BatteryTypeRepository>();
-            services.AddScoped<IBatteryChargeRepository, BatteryChargeRepository>();
+           // services.AddScoped<IBatteryChargeRepository, BatteryChargeRepository>();
             services.AddScoped<IBatteryService, BatteryService>();
             services.AddScoped<IModelRepository, ModelRepository>();
             services.AddScoped<IModelService, ModelService>();

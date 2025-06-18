@@ -2,7 +2,7 @@
 @attribute [Authorize]
 @inject IHttpClientFactory ClientFactory
 @inject IJSRuntime JsRuntime
-@inject Radzen.DialogService dialogService
+@* @inject Radzen.DialogService dialogService *@
 
 <style>
     form .row {
@@ -21,7 +21,7 @@
 }
 else 
 {
-     <RadzenTemplateForm Data="@maintenanceLog" TItem="MaintenanceLogDto" Submit="@Submit" InvalidSubmit="@OnInvalidSubmit">
+     @* <RadzenTemplateForm Data="@maintenanceLog" TItem="MaintenanceLogDto" Submit="@Submit" InvalidSubmit="@OnInvalidSubmit">
          <div class="row">
             <div class="col-md-2 align-items-center d-flex">
                 <RadzenLabel Text="Date" />
@@ -66,7 +66,7 @@ else
             </div>
         </div>
 
-     </RadzenTemplateForm>
+     </RadzenTemplateForm> *@
 }
 
 
@@ -147,7 +147,7 @@ else
         {
             var savedMaintenanceLog = await response.Content.ReadFromJsonAsync<MaintenanceLogDto>();
 
-            dialogService.Close(true);
+            // dialogService.Close(true);
             //clearFormData();
             //message = $"Saved flight with Id {savedFlight.Id}";
         }
@@ -157,14 +157,14 @@ else
         }
     }
 
-    void OnInvalidSubmit(FormInvalidSubmitEventArgs args)
-    {
-        // message = "Invalid entry";
-    }
+    // void OnInvalidSubmit(FormInvalidSubmitEventArgs args)
+    // {
+    //     // message = "Invalid entry";
+    // }
     
     void Cancel()
     {
         // Clear??
-        dialogService.Close(true);
+        // dialogService.Close(true);
     }
 }

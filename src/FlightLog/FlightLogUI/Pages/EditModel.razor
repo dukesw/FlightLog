@@ -22,7 +22,7 @@
 }
 else
 {
-    <RadzenTemplateForm Data="@model" TItem="ModelDto" Submit="@Submit" InvalidSubmit="@OnInvalidSubmit">
+    @* <RadzenTemplateForm Data="@model" TItem="ModelDto" Submit="@Submit" InvalidSubmit="@OnInvalidSubmit">
         <div class="row">
             <div class="col-md-2 align-items-center d-flex">
                 <RadzenLabel Text="Name" />
@@ -112,7 +112,7 @@ else
                 <RadzenButton ButtonStyle="ButtonStyle.Light" Icon="cancel" style="display: inline-block; margin-left: 10px;" Text="Cancel" Click="@Cancel" />
             </div>
         </div>
-    </RadzenTemplateForm>
+    </RadzenTemplateForm> *@
 }
 
 
@@ -186,11 +186,11 @@ else
         }
     }
 
-    void OnInvalidSubmit(FormInvalidSubmitEventArgs args)
-    {
+    // void OnInvalidSubmit(FormInvalidSubmitEventArgs args)
+    // {
        
         
-    }
+    // }
 
     void Cancel()
     {

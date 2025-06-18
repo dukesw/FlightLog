@@ -24,7 +24,7 @@ else
 }
 else
 {
-    <RadzenTemplateForm Data="@flight" TItem="FlightDto" Submit="@Submit" InvalidSubmit="@OnInvalidSubmit">
+    @* <RadzenTemplateForm Data="@flight" TItem="FlightDto" Submit="@Submit" InvalidSubmit="@OnInvalidSubmit">
         <div class="row">
             <div class="col-md-2 align-items-center d-flex">
                 <RadzenLabel Text="Date" />
@@ -103,7 +103,7 @@ else
                 <RadzenLabel Text="@message"></RadzenLabel>
             </div>
         </div>
-    </RadzenTemplateForm>
+    </RadzenTemplateForm> *@
 }
 
 
@@ -206,11 +206,11 @@ else
         }
     }
 
-    void OnInvalidSubmit(FormInvalidSubmitEventArgs args)
-    {
-        message = "Invalid entry";
+    // void OnInvalidSubmit(FormInvalidSubmitEventArgs args)
+    // {
+    //     message = "Invalid entry";
 
-    }
+    // }
 
     void OnDateChanged(DateTime? value)
     {

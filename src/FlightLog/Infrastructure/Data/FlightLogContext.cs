@@ -14,7 +14,6 @@ namespace DukeSoftware.FlightLog.Infrastructure.Data
 
         public DbSet<BatteryType> BatteryTypes { get; set; }
         public DbSet<Battery> Batteries { get; set; }
-        public DbSet<BatteryCharge> BatteryCharges { get; set; }
         public DbSet<Location> Locations { get; set; }
         public DbSet<PowerPlant> PowerPlants { get; set; }
         public DbSet<Model> Models { get; set; }
@@ -24,6 +23,7 @@ namespace DukeSoftware.FlightLog.Infrastructure.Data
         public DbSet<Flight> Flights { get; set; }
         public DbSet<FlightTag> FlightTags {get; set;}
         public DbSet<MediaLink> MediaLinks { get; set; }
+        public DbSet<Transmitter> Transmitters { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -34,7 +34,7 @@ namespace DukeSoftware.FlightLog.Infrastructure.Data
         {
             builder.Entity<BatteryType>(ConfigureBatteryType);
             builder.Entity<Battery>(ConfigureBattery);
-            builder.Entity<BatteryCharge>(ConfigureBatteryCharges);
+            //builder.Entity<BatteryCharge>(ConfigureBatteryCharges);
             builder.Entity<Location>(ConfigureLocation);
             builder.Entity<PowerPlant>(ConfigurePowerPlant);
             builder.Entity<Model>(ConfigureModel);
@@ -45,8 +45,17 @@ namespace DukeSoftware.FlightLog.Infrastructure.Data
             builder.Entity<Pilot>(ConfigurePilot);
             builder.Entity<MaintenanceLog>(ConfigureMaintenanceLog);
             builder.Entity<MaintenanceLogType>(ConfigureMaintenanceLogType);
+            builder.Entity<Transmitter>(ConfigureTransmitter);
+
         }
 
+        private void ConfigureTransmitter(EntityTypeBuilder<Transmitter> builder)
+        {
+            builder.ToTable("Transmitter")
+                .HasOne<Account>(x => x.Account)
+                .WithMany(x => x.Transmitters);
+
+        }
         private void ConfigureMediaLinks(EntityTypeBuilder<MediaLink> builder)
         {
             builder.ToTable("MediaLink")
@@ -69,13 +78,6 @@ namespace DukeSoftware.FlightLog.Infrastructure.Data
 
         }
 
-        private void ConfigureBatteryCharges(EntityTypeBuilder<BatteryCharge> builder)
-        {
-            builder.ToTable("BatteryCharge")
-                .HasOne<Account>(x => x.Account)
-                .WithMany(x => x.BatteryCharges);
-            
-        }
 
         private void ConfigureBatteryType(EntityTypeBuilder<BatteryType> builder)
         {
@@ -160,7 +162,8 @@ namespace DukeSoftware.FlightLog.Infrastructure.Data
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasOne<Location>(x => x.Field)
-                .WithMany(x => x.Flights);
+                .WithMany(x => x.Flights)
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasOne<Pilot>(x => x.Pilot)
                 .WithMany(x => x.Flights);
@@ -170,7 +173,10 @@ namespace DukeSoftware.FlightLog.Infrastructure.Data
 
             builder.HasMany<FlightTag>(x => x.Tags)
                 .WithMany(x => x.Flights);// (""); // Testing - trying to get DB wired
-             //   .UsingEntity(x => x.ToTable("FlightToFlightTag"));
+                                          //   .UsingEntity(x => x.ToTable("FlightToFlightTag"));
+
+            builder.HasOne<Transmitter>(x => x.Transmitter)
+                .WithMany(x => x.Flights);
 
             builder.Navigation(x => x.Tags)
                 .UsePropertyAccessMode(PropertyAccessMode.Property);
@@ -195,6 +201,13 @@ namespace DukeSoftware.FlightLog.Infrastructure.Data
 
             builder.HasOne<Account>(x => x.Account)
                 .WithMany(x => x.Pilots);
+
+            builder.HasMany(x => x.Transmitters)
+                .WithOne(x => x.Pilot)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Ignore(x => x.DefaultTransmitter);
+            //    .WithOne(x => x.Pilot);
 
         }
     }

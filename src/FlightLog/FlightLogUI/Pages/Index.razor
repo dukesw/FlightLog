@@ -43,17 +43,17 @@ else
         <RadzenLegend Position=LegendPosition.Bottom />
     </RadzenChart>*@
 
-    <RadzenSelectBar @bind-Value=@graphType TValue="int" Change=@((args) => OnGraphTypeChanged(args))>
+@*     <RadzenSelectBar @bind-Value=@graphType TValue="int" Change=@((args) => OnGraphTypeChanged(args))>
         <Items>
             <RadzenSelectBarItem Text="Weekly" Value="1" />
             <RadzenSelectBarItem Text="Monthly" Value="2" />
         </Items>
-    </RadzenSelectBar>
+    </RadzenSelectBar> *@
 
 
     if (graphType == 1)
     {
-        <RadzenChart>
+        @* <RadzenChart>
             <RadzenColumnSeries Title="Week Starting" Data="@recentFlightsGroupedByWeek" CategoryProperty="PeriodName" LineType="LineType.Dashed" ValueProperty="FlightCount" />
         <RadzenColumnOptions Radius="2" Margin="2" />
         <RadzenValueAxis>
@@ -61,12 +61,12 @@ else
             <RadzenAxisTitle Text="Flights" />
         </RadzenValueAxis>
         <RadzenLegend Position=LegendPosition.Bottom />
-        </RadzenChart>
+        </RadzenChart> *@
     }
 
     if (graphType == 2)
     {
-        <RadzenChart>
+       @*  <RadzenChart>
             <RadzenColumnSeries Title="Month" Data="@recentFlightsGroupedByMonth" CategoryProperty="PeriodName" LineType="LineType.Dashed" ValueProperty="FlightCount" />
         <RadzenColumnOptions Radius="2" Margin="2" />
         <RadzenValueAxis>
@@ -74,7 +74,7 @@ else
             <RadzenAxisTitle Text="Flights" />
         </RadzenValueAxis>
         <RadzenLegend Position=LegendPosition.Bottom />
-        </RadzenChart>
+        </RadzenChart> *@
     }
 
 }

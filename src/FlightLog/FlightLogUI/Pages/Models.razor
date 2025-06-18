@@ -12,7 +12,7 @@
 }
 else
 {
-    <RadzenDataGrid Data="@models" TItem="ModelDto" AllowSorting="true">
+    @* <RadzenDataGrid Data="@models" TItem="ModelDto" AllowSorting="true">
         <Columns>
             <RadzenDataGridColumn TItem="ModelDto" Property="Name" Filterable="false" Title="Model" />
             <RadzenDataGridColumn TItem="ModelDto" Property="Manufacturer" Filterable="false" Title="Manufacturer" />
@@ -32,12 +32,12 @@ else
                 </Template>
             </RadzenDataGridColumn>
         </Columns>
-    </RadzenDataGrid>
+    </RadzenDataGrid> *@
     <p></p>
     <div class="row justify-content-start">
         @*<div class="col-md-2 align-items-top d-flex" />*@
         <div class="col-md-8 d-flex align-items-end justify-content-start">
-            <RadzenButton ButtonType="ButtonType.Submit" Icon="add" Text="Add Model" Click=@OpenAddModelPage />
+           @*  <FluentIcon ButtonType="ButtonType.Submit" Icon=" Text="Add Model" Click=@OpenAddModelPage /> *@
         </div>
     </div>
 }

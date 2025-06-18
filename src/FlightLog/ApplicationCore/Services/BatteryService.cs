@@ -17,23 +17,19 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
     {
         private readonly IBatteryRepository _batteryRepository;
         private readonly IBatteryTypeRepository _batteryTypeRepository;
-        private readonly IBatteryChargeRepository _batteryChargeRepository;
         private readonly IAppLogger<BatteryService> _logger;
 
         public BatteryService(
             IBatteryRepository batteryRepository,
             IBatteryTypeRepository batteryTypeRepository,
-            IBatteryChargeRepository batteryChargeRepository,
             IAppLogger<BatteryService> logger)
         {
             Guard.AgainstNull(batteryRepository, "batteryRepository");
             Guard.AgainstNull(batteryTypeRepository, "batteryTypeRepository");
-            Guard.AgainstNull(batteryChargeRepository, "batteryChargeRepository");
             Guard.AgainstNull(logger, "logger");
 
             _batteryRepository = batteryRepository;
             _batteryTypeRepository = batteryTypeRepository;
-            _batteryChargeRepository = batteryChargeRepository;
             _logger = logger;
         }
 
@@ -79,7 +75,6 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
             }
             try
             {
-                //battery.BatteryType = await _batteryTypeRepository.GetByIdAsync(battery.BatteryTypeId);    // Ensures the battery type is attached
                 battery = await _batteryRepository.AddAsync(battery);
                 _logger.LogInformation($"Added battery, new Id = {battery.Id}");
                 return battery;
@@ -157,36 +152,6 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
             Guard.AgainstBatteryTypeNotFound(batteryTypeToDelete, id, "batteryTypeToDelete");
             Guard.AgainstAccountNumberMismatch(accountId, batteryTypeToDelete.AccountId, "accountId", "batteryTypeToDelete.AccountId");
             await _batteryTypeRepository.DeleteAsync(batteryTypeToDelete);
-        }
-
-        public async Task<Battery> EnterChargeDataAsync(int accountId, Battery battery, DateTime chargeDate, ChargeType chargeType, int mahUsed)
-        {
-            // Seems like we need a "discharge" object or event...
-            // Perhaps this could be charge data... ??? not discharge. Then idea is that when you charge it, you know how much was added. Although if you put into storage mode that will not work... 
-            // Think about this based on the process used... 
-            // Charge, discharge, storage, repeat... 
-
-            Guard.AgainstNull(battery, "battery");
-            Guard.AgainstNull(chargeDate, "chargeDate");
-
-
-            // Make sure the battery exists
-            var repoBattery = await _batteryRepository.GetByIdAsync(battery.Id);
-            Guard.AgainstNull(repoBattery, "repoBattery");
-            Guard.AgainstAccountNumberMismatch(accountId, repoBattery.AccountId, "accountId", "repoBattery.AccountId");
-
-            var batteryCharge = new BatteryCharge
-            {
-                ChargedOn = chargeDate,
-                Type = chargeType,
-                Mah = mahUsed,
-                Battery = battery
-            };
-
-            await _batteryChargeRepository.AddAsync(batteryCharge);
-            _logger.LogInformation($"Battery charge data saved, new Id = {batteryCharge.Id}");
-
-            return await _batteryRepository.GetByIdAsync(battery.Id);
         }
     }
 }
