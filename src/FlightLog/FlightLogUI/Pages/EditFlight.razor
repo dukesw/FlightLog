@@ -1,136 +1,107 @@
 ﻿@page "/edit-flight/{id:int?}"
+@using System.Globalization
+
 @attribute [Authorize]
 @inject IHttpClientFactory ClientFactory
-@inject IJSRuntime JsRuntime
 
-<style>
-    form .row {
-        margin-bottom: 16px;
-    }
-</style>
 @if (Id != null)
 {
-    <h2>Edit Flight</h2>
+    <h3>Edit Flight</h3>
 }
 else
 {
-    <h2>Add Flight</h2>
+    <h3>Add Flight</h3>
 }
 
 @if (loading)
 {
     @*<p>Loading...</p>*@
-    <div class="spinner"></div>
+    @* <div class="spinner"></div> *@
+    <p>Loading...</p>
+
 }
 else
 {
-    @* <RadzenTemplateForm Data="@flight" TItem="FlightDto" Submit="@Submit" InvalidSubmit="@OnInvalidSubmit">
-        <div class="row">
-            <div class="col-md-2 align-items-center d-flex">
-                <RadzenLabel Text="Date" />
+    <EditForm Model="@flight" OnValidSubmit="@HandleSubmit" FormName="flight_entry" novalidate>
+        <DataAnnotationsValidator />
+    @*     <FluentValidationSummary /> *@
+        <FluentStack Orientation="Orientation.Vertical">
+            <div>
+                <FluentDatePicker @bind-Value="@flight.Date" @bind-Value:format="yyyy/MM/dd" Culture="@(new CultureInfo("en-NZ"))" Label="Date" Required /> @* Culture="@(new CultureInfo("en-NZ"))" *@ @* @bind:Format="d-MMM-yyyy" *@
+                <FluentValidationMessage For="@(() => flight.Date)" />
             </div>
-            <div class="col-md-8">
-                <RadzenDatePicker Name="Date" @bind-Value="@flight.Date" DateFormat="d-MMM-yyyy" Change="@(args => OnDateChanged(args))"></RadzenDatePicker>
-                <RadzenRequiredValidator Component="Date" Text="Date is required" Popup="false" Style="display: block"></RadzenRequiredValidator>
+            @* <div>
+                <FluentCombobox Items=@models Placeholder="Choose Model..." Label="Model" TOption="FlightModelDto" OptionText="@(i => i.Name)" OptionValue="@(i => i.Id.ToString())" OptionSelected="@(i => i.Id == flight.Model.Id)" @bind-SelectedOption="@flight.Model" Required />
+                <FluentValidationMessage For="@(() => flight.Model)" />
+            </div> *@
+            <div>
+                <FluentSelect Items=@models Placeholder="Choose Model..." Label="Model" TOption="FlightModelDto" OptionText="@(i => i.Name)" OptionValue="@(i => i.Id.ToString())" @bind-SelectedOption="@flight.Model" @bind-Value="@selectedModelId" Required />
+                <FluentValidationMessage For="@(() => flight.Model)" />
             </div>
-        </div>
-        <div class="row">
-            <div class="col-md-2 align-items-center d-flex">
-                <RadzenLabel Text="Model" />
+            <div>
+                <FluentSelect Items=@pilots Placeholder="Choose Pilot..." Label="Pilot" TOption="FlightPilotDto" OptionText="@(i => i.Name)" OptionValue="@(i => i.Id.ToString())" @bind-SelectedOption="@flight.Pilot" @bind-value="@selectedPilotId" Required /> @* @flight.Pilot.Id    @bind-value:event="oninput" *@
+                <FluentValidationMessage For="@(() => flight.Pilot)" />
             </div>
-            <div class="col-md-8">
-                <RadzenDropDown Name="Model" @bind-Value="@flight.Model.Id" AllowClear="false" Data="@models" TextProperty="Name" ValueProperty="Id"></RadzenDropDown>
-                <RadzenRequiredValidator Component="Model" Text="Model is required" DefaultValue="0" Popup="false" Style="display: block"></RadzenRequiredValidator>
+            <div>
+                <FluentSelect Items=@locations Placeholder="Choose Field..." Label="Field" TOption="FlightLocationDto" OptionText="@(i => i.Name)" OptionValue="@(i => i.Id.ToString())" @bind-SelectedOption="@flight.Field" @bind-Value="@selectedLocationId" Required />
+                <FluentValidationMessage For="@(() => flight.Field)" />
             </div>
-        </div>
-        <div class="row">
-            <div class="col-md-2 align-items-center d-flex">
-                <RadzenLabel Text="Field" />
+            <div>
+                <FluentNumberField Name="minutes" @bind-Value="flight.FlightMinutes" Label="Flight time" Required Size="3" />
+                <FluentValidationMessage For="@(() => flight.FlightMinutes)" />
             </div>
-            <div class="col-md-8">
-                <RadzenDropDown Name="Field" @bind-Value="@flight.Field.Id" AllowClear="false" Data="@locations" TextProperty="Name" ValueProperty="Id"></RadzenDropDown>
-                <RadzenRequiredValidator Component="Field" Text="Field is required" DefaultValue="0" Popup="false" Style="display: block"></RadzenRequiredValidator>
+            <div>
+                <FluentTextArea Name="description" @bind-Value="flight.Details" Label="Description" Resize=TextAreaResize.Both Cols=80 Spellcheck="true" />
             </div>
-        </div>
-        <div class="row">
-            <div class="col-md-2 align-items-center d-flex">
-                <RadzenLabel Text="Pilot" />
+    @*         <div>
+                @foreach (var tag in tagsMaster)
+                {
+                    <FluentCheckbox Label="@tag.Name" />
+                }
+            </div> *@
+            <div>
+                <FluentSelect Label="Tags" Items=@tagsMaster TOption="FlightTagDto" Multiple=true OptionText="@(i => i.Name)" OptionValue="@(i => i.Id.ToString())" @bind-SelectedOptions="@selectedTags" />
             </div>
-            <div class="col-md-8">
-                <RadzenDropDown Name="Pilot" @bind-Value="@flight.Pilot.Id" AllowClear="false" Data="@pilots" TextProperty="Name" ValueProperty="Id"></RadzenDropDown>
-                <RadzenRequiredValidator Component="Pilot" Text="Pilot is required" DefaultValue="0" Popup="false" Style="display: block"></RadzenRequiredValidator>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-2 align-items-center d-flex">
-                <RadzenLabel Text="Flight Minutes" />
-            </div>
-            <div class="col-md-8">
-                <RadzenNumeric Name="FlightMinutes" TValue="float" @bind-Value="@flight.FlightMinutes"></RadzenNumeric>
-                <RadzenCompareValidator Component="FlightMinutes" Text="Flight minutes must be greater than 0" Value="0.0f" Operator="@CompareOperator.GreaterThan" Popup="false" Style="display: block"></RadzenCompareValidator>
-      </div>
-        </div>
-        <div class="row">
-            <div class="col-md-2 align-items-top d-flex">
-                <RadzenLabel Text="Tags" />
-            </div>
-            <div class="col-md-8">
-                <RadzenCheckBoxList @bind-Value=@selectedTags TValue="int" Orientation="Orientation.Vertical" Data="@tagsMaster" TextProperty="Name" ValueProperty="Id"></RadzenCheckBoxList>  
-            </div>
-        </div>
+            <div>
+                <FluentButton Type="ButtonType.Submit" Appearance="Appearance.Accent">Submit</FluentButton>
+                <FluentButton Type="ButtonType.Reset" Appearance="Appearance.Neutral" OnClick="@HandleCancel">Cancel</FluentButton>
 
-      
+            </div>
+        </FluentStack>
+    </EditForm>
 
-        <div class="row">
-            <div class="col-md-2 align-items-top d-flex">
-                <RadzenLabel Text="Details" />
-            </div>
-            <div class="col-md-8">
-                <RadzenTextArea @bind-Value="@flight.Details" Rows=5 style="width: 100%"></RadzenTextArea>
-            </div>
-        </div>
-
-        <div class="row justify-content-start">
-            <div class="col-md-2 align-items-top d-flex" />
-            <div class="col-md-8 d-flex align-items-end justify-content-start">
-                <RadzenButton ButtonType="ButtonType.Submit" Icon="save" Text="Save" />
-                <RadzenButton ButtonStyle="ButtonStyle.Light" Icon="cancel" style="display: inline-block; margin-left: 10px;" Text="Cancel" Click="@Cancel" />
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-2 align-items-top d-flex" />
-            <div class="col-md-8">
-                <RadzenLabel Text="@message"></RadzenLabel>
-            </div>
-        </div>
-    </RadzenTemplateForm> *@
 }
 
-
 @code {
-    private FlightDto flight = new FlightDto();
-    private ModelDto[] models;
-    private LocationDto[] locations;
-    private PilotDto[] pilots;
+        [SupplyParameterFromForm]
+        private FlightDto flight { get; set; } = new();
+
+    private List<FlightModelDto> models = new List<FlightModelDto>();
+    private List<FlightLocationDto> locations = new List<FlightLocationDto>();
+    private List<FlightPilotDto> pilots = new List<FlightPilotDto>();
     private String accountId = "0";
     private string message = "";
-    private FlightTagDto[] tagsMaster;
-    private IEnumerable<int> selectedTags;
+    private IEnumerable<FlightTagDto> tagsMaster;
+    private IEnumerable<FlightTagDto> selectedTags;
+    private string selectedModelId = string.Empty;
+    private string selectedPilotId = string.Empty;
+    private string selectedLocationId = string.Empty;
+    // private DateTime? selectedDate = null;
 
     [Parameter]
     public int? Id { get; set; }
 
     [CascadingParameter]
     private Task<AuthenticationState> authenticationState { get; set; }
-    public bool loading = false;
 
+    public bool loading = false;
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
             loading = true;
-
+            flight ??= new FlightDto();
             var user = (await authenticationState).User;
             accountId = user.FindFirst("https://flightlog.co.nz/claims/account_id").Value;
 
@@ -140,21 +111,29 @@ else
             flight.AccountId = Int32.Parse(accountId);
 
             var client = ClientFactory.CreateClient("FlightLogAPI");
-            models = await client.GetFromJsonAsync<ModelDto[]>($"/api/{accountId}/models/active");
-            locations = await client.GetFromJsonAsync<LocationDto[]>($"/api/{accountId}/locations");
-            pilots = await client.GetFromJsonAsync<PilotDto[]>($"/api/{accountId}/pilots");
+            models = await client.GetFromJsonAsync<List<FlightModelDto>>($"/api/{accountId}/models/active");
+            //models.Add(new FlightModelDto { Id = 1, Name = "Test model" });
+            //models.Add(new FlightModelDto { Id = 2, Name = "TopFlite P47 Razorback" });
+
+            locations = await client.GetFromJsonAsync<List<FlightLocationDto>>($"/api/{accountId}/locations");
+            pilots = await client.GetFromJsonAsync<List<FlightPilotDto>>($"/api/{accountId}/pilots");
             tagsMaster = await client.GetFromJsonAsync<FlightTagDto[]>("/api/flighttags");
-            selectedTags = new int[0];
+            selectedTags = new List<FlightTagDto>();
 
             if (Id.HasValue)
             {
                 flight = await client.GetFromJsonAsync<FlightDto>($"/api/{accountId}/flights/{Id.Value}");
-                // Also populate the selected tags
-                foreach(var tag in flight.Tags)
+                if (flight != null)
                 {
-                    selectedTags = selectedTags.Concat(new int[] { tag.Id });
+                    selectedModelId = flight.Model.Id.ToString();
+                    selectedPilotId = flight.Pilot.Id.ToString();
+                    selectedLocationId = flight.Field.Id.ToString();
+                    // Also populate the selected tags
+                    foreach (var tag in flight.Tags)
+                    {
+                        selectedTags = selectedTags.Append(tag);
+                    }
                 }
-
             }
         }
         catch (AccessTokenNotAvailableException exception)
@@ -167,20 +146,22 @@ else
         }
     }
 
-    protected async Task Submit()
+    protected async Task HandleSubmit()
     {
         message = "Saving...";
         HttpResponseMessage response;
 
         Console.WriteLine($"Submit(): flight.Date == {flight.Date}");
+        //TODO // Add selected elements
+        //flight.Model = selectedModel;
 
         // Add tags to Flight
-        foreach (int tagId in selectedTags)
+        foreach (FlightTagDto tag in selectedTags)
         {
-            if (tagId > 0)
-            {
-                flight.Tags.Add(tagsMaster.Where(x => x.Id == tagId).Single());
-            }
+            //if (tagId > 0)
+            //{
+            flight.Tags.Add(tag);
+            //}
         }
 
         // todo Wrap in a try/catch
@@ -206,27 +187,10 @@ else
         }
     }
 
-    // void OnInvalidSubmit(FormInvalidSubmitEventArgs args)
-    // {
-    //     message = "Invalid entry";
-
-    // }
-
-    void OnDateChanged(DateTime? value)
+    protected async Task HandleCancel()
     {
-        //if (value.HasValue)
-        //{
-        //    flight.Date = value.Value.Date;
-        //    Console.WriteLine($"OnDateChanged(): flight.Date == {flight.Date}");
-
-        //}
-    }
-
-    void Cancel()
-    {
-        //clearFormData();
-        // JSRuntime.InvokeAsync. window.back();
-        JsRuntime.InvokeVoidAsync("history.go", -1);
+        clearFormData();
+        // redirect back???
     }
 
     void clearFormData()
@@ -235,7 +199,11 @@ else
         flight.AccountId = Int32.Parse(accountId);
         flight.Date = new DateTimeOffset(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0, new TimeSpan(0, 0, 0)).Date;
         message = "Form cleared";
-        selectedTags = new int[0];
+        selectedTags = new List<FlightTagDto>();
+        selectedModelId = string.Empty;
+        selectedPilotId = string.Empty;
+        selectedLocationId = string.Empty;
+
         Console.WriteLine($"clearFormData(): flight.Date == {flight.Date}");
     }
 }

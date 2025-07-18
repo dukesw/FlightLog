@@ -1,0 +1,19 @@
+meta {
+  name: Add Model
+  type: http
+  seq: 3
+}
+
+post {
+  url: https://localhost:5001/api/models
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+  	"Name" : "P51", 
+  	"Manufacturer":"Hangar 9", 
+  	"PurchasedOn":"2019-06-02"
+  }
+}

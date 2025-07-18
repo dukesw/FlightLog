@@ -1,0 +1,29 @@
+meta {
+  name: Battery Update
+  type: http
+  seq: 4
+}
+
+put {
+  url: https://localhost:5001/api/batteries
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+      "batteryNumber": 10,
+      "batteryType": {
+          "capacityMah": 2200,
+          "cells": 3,
+          "type": "Turnigy Nano Tech",
+          "weightInGrams": 100,
+          "batteries": [],
+          "id": 3
+      },
+      "isActive": true,
+      "notes": "Testing - Updated Note",
+      "purchaseDate": "2020-03-09T08:11:13.8100367",
+      "id": 2
+  }
+}

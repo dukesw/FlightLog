@@ -110,35 +110,35 @@ namespace Web
             string domain = $"https://{Configuration["Auth0:Domain"]}/";
 
             services.AddAuthorization(); //(options => {
-            //    options.AddPolicy("flightlog-api.admin", policy => policy.Requirements.Add(new HasScopeRequirement("flightlog-api.admin", domain)));
-            //    options.AddPolicy("flightlog-api.read", policy => policy.Requirements.Add(new HasScopeRequirement("flightlog-api.read", domain)));
-            //    options.AddPolicy("flightlog-api.write", policy => policy.Requirements.Add(new HasScopeRequirement("flightlog-api.write", domain)));
+        //    options.AddPolicy("flightlog-api.admin", policy => policy.Requirements.Add(new HasScopeRequirement("flightlog-api.admin", domain)));
+        //    options.AddPolicy("flightlog-api.read", policy => policy.Requirements.Add(new HasScopeRequirement("flightlog-api.read", domain)));
+        //    options.AddPolicy("flightlog-api.write", policy => policy.Requirements.Add(new HasScopeRequirement("flightlog-api.write", domain)));
 
-            //});
-            
+        //});
+
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
-                    options.Authority = domain; 
+                    options.Authority = domain;
                     options.Audience = Configuration["Auth0:Audience"];
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
-                        NameClaimType = ClaimTypes.NameIdentifier, 
+                        NameClaimType = ClaimTypes.NameIdentifier,
                         RoleClaimType = "https://flightlog.co.nz/roles"
                     };
                 });
-          
 
-//            services.AddSingleton<IAuthorizationHandler, HasScopeHandler>();
-                //.AddIdentityServerAuthentication(options =>
-                //{
-                //    //options.Authority = "https://localhost:5001";
-                //    options.Authority = Configuration.GetValue<string>("Authority"); // "https://flightlogis.azurewebsites.net";
-                //    //options.RequireHttpsMetadata = false;
-                //    options.ApiName = "flightlog-api";
-                //}
-                //);
-                
+
+            //            services.AddSingleton<IAuthorizationHandler, HasScopeHandler>();
+            //.AddIdentityServerAuthentication(options =>
+            //{
+            //    //options.Authority = "https://localhost:5001";
+            //    options.Authority = Configuration.GetValue<string>("Authority"); // "https://flightlogis.azurewebsites.net";
+            //    //options.RequireHttpsMetadata = false;
+            //    options.ApiName = "flightlog-api";
+            //}
+            //);
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -153,6 +153,7 @@ namespace Web
             app.UseRouting();
             app.UseCors(MyAllowSpecificOrigins);
             app.UseHttpsRedirection();
+
             app.UseAuthentication();
             app.UseAuthorization();
 

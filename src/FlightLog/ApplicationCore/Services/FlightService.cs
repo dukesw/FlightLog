@@ -229,8 +229,8 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
                 result.TotalFlightTimeMinutes = flights.Sum(x => x.FlightMinutes);
                 result.TotalNumberOfFlights = flights.Count;
                 result.AverageFlightTimeMinutes = flights.Average(x => x.FlightMinutes);
-                result.FirstFlight = flights.Min(x => x.Date);
-                result.LastFlight = flights.Max(x => x.Date);
+                result.FirstFlight = flights.Min(x => x.Date.Value);
+                result.LastFlight = flights.Max(x => x.Date.Value);
             };
 
             return result;

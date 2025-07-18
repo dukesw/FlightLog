@@ -1,54 +1,27 @@
 ﻿@page "/recent-flights"
-
 @attribute [Authorize]
 
 @inject IHttpClientFactory ClientFactory
 
-<h2>Recent Flights</h2>
+<h3>RecentFlights</h3>
 <p>These are flights from the last month.</p>
 
-@if (loading)
-{
-    <div class="spinner"></div>
-}
-else
-{
-
-    @if (recentFlights == null)
-    {
-        <p>No flights recently.</p>
-    }
-    else
-    {
-       @*  <RadzenDataGrid Data="@recentFlights" TItem="FlightDto" AllowSorting="true">
-            <Columns>
-                @*<RadzenDataGridColumn TItem="FlightDto" Property="Id" Filterable="false" Title="Id" Frozen="true" Width="50px" />
-                <RadzenDataGridColumn TItem="FlightDto" Property="Date" Filterable="false" Title="Date">
-                    <Template Context="flight">
-                        <div>@flight.Date.ToString("d-MMM-yyyy")</div>
-                    </Template> 
-                </RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="FlightDto" Property="Model.Name" Filterable="false" Title="Model"/>
-                <RadzenDataGridColumn TItem="FlightDto" Property="Field.Name" Filterable="false" Title="Field"/>
-                <RadzenDataGridColumn TItem="FlightDto" Property="Pilot.Name" Filterable="false" Title="Pilot"/>
-                <RadzenDataGridColumn TItem="FlightDto" Property="FlightMinutes" Filterable="false" Title="Minutes"/>
-                <RadzenDataGridColumn TItem="FlightDto" Property="Id" Filterable="false" Sortable="false" Title="">
-                    <Template Context="flight">
-                        <a href="@($"/edit-flight/{flight.Id}")">Edit</a>
-                    </Template> 
-                </RadzenDataGridColumn>
-              
-
-                @*TODO add an edit link
-            </Columns>
-
-        </RadzenDataGrid> *@
-
-    }
-}
+<FluentDataGrid Items="@recentFlights" AutoFit="true" Style="width: 100%;" ShowHover="true">
+    @* Pagination="@pagination"> *@
+    <PropertyColumn Property="@(p => p.Id)" Sortable="true" />
+    <PropertyColumn Property="@(p => p.Date)" Format="d/M/yyyy" Sortable="true" />
+    <PropertyColumn Property="@(p => p.Model.Name)" Sortable="true" />
+    <PropertyColumn Property="@(p => p.Pilot.Name)" Sortable="true" />
+    <PropertyColumn Property="@(p => p.Field.Name)" Sortable="true" />
+    <PropertyColumn Property="@(p => p.FlightMinutes)" Sortable="true" />
+    <TemplateColumn Title="Edit">
+        <a href="/edit-flight/@context.Id">Edit</a>
+    </TemplateColumn>
+</FluentDataGrid>
 
 @code {
-    private FlightDto[] recentFlights;
+    private IQueryable<FlightDto> recentFlights;
+    private FlightDto[] recentFlightsResult;
     [CascadingParameter]
     private Task<AuthenticationState> authenticationState { get; set; }
     private bool loading = false;
@@ -61,7 +34,8 @@ else
             var user = (await authenticationState).User;
             var accountId = user.FindFirst("https://flightlog.co.nz/claims/account_id").Value;
             var client = ClientFactory.CreateClient("FlightLogAPI");
-            recentFlights = await client.GetFromJsonAsync<FlightDto[]>($"/api/{accountId}/flights/recent");
+            recentFlightsResult = await client.GetFromJsonAsync<FlightDto[]>($"/api/{accountId}/flights/recent");
+            recentFlights = recentFlightsResult.AsQueryable();
         }
         catch (AccessTokenNotAvailableException exception)
         {
@@ -72,5 +46,4 @@ else
             loading = false;
         }
     }
-
 }

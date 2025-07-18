@@ -34,7 +34,7 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Entities
             {
                 // Copies the non-virtual properties to this entity, and related ids
                 this.AccountId = flightDto.AccountId;
-                this.Date = flightDto.Date;
+                this.Date = flightDto.Date.Value;
                 this.ModelFlightNumber = flightDto.ModelFlightNumber;
                 if (flightDto.Field is not null) { this.FieldId = flightDto.Field.Id; }
                 if (flightDto.Model is not null) { this.ModelId = flightDto.Model.Id; }

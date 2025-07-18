@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "743aff4f-24e2-46b9-8717-610fadb74aa1",
+		"_postman_id": "fda65c43-2c11-49cd-b44e-bf6125d0bca4",
 		"name": "Flight Log",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -14,12 +14,10 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://localhost:5001/api/batterytypes",
-							"protocol": "https",
+							"raw": "{{hostandport}}/api/batterytypes",
 							"host": [
-								"localhost"
+								"{{hostandport}}"
 							],
-							"port": "5001",
 							"path": [
 								"api",
 								"batterytypes"
@@ -34,7 +32,15 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": ""
+							"raw": "{{hostandport}}/api/batterytypes/3",
+							"host": [
+								"{{hostandport}}"
+							],
+							"path": [
+								"api",
+								"batterytypes",
+								"3"
+							]
 						}
 					},
 					"response": []
@@ -61,12 +67,10 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:5001/api/batterytypes",
-							"protocol": "https",
+							"raw": "{{hostandport}}/api/batterytypes",
 							"host": [
-								"localhost"
+								"{{hostandport}}"
 							],
-							"port": "5001",
 							"path": [
 								"api",
 								"batterytypes"
@@ -97,12 +101,10 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:5001/api/batterytypes",
-							"protocol": "https",
+							"raw": "{{hostandport}}/api/batterytypes",
 							"host": [
-								"localhost"
+								"{{hostandport}}"
 							],
-							"port": "5001",
 							"path": [
 								"api",
 								"batterytypes"
@@ -132,8 +134,7 @@
 					},
 					"response": []
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
 		},
 		{
 			"name": "Batteries",
@@ -144,16 +145,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://localhost:5001/api/batterytypes/1",
-							"protocol": "https",
+							"raw": "{{hostandport}}/api/batteries/2",
 							"host": [
-								"localhost"
+								"{{hostandport}}"
 							],
-							"port": "5001",
 							"path": [
 								"api",
-								"batterytypes",
-								"1"
+								"batteries",
+								"2"
 							]
 						}
 					},
@@ -165,7 +164,15 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": ""
+							"raw": "{{hostandport}}/api/batteries/2",
+							"host": [
+								"{{hostandport}}"
+							],
+							"path": [
+								"api",
+								"batteries",
+								"2"
+							]
 						}
 					},
 					"response": []
@@ -192,12 +199,10 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:5001/api/batteries",
-							"protocol": "https",
+							"raw": "{{hostandport}}/api/batteries",
 							"host": [
-								"localhost"
+								"{{hostandport}}"
 							],
-							"port": "5001",
 							"path": [
 								"api",
 								"batteries"
@@ -221,12 +226,10 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:5001/api/batteries",
-							"protocol": "https",
+							"raw": "{{hostandport}}/api/batteries",
 							"host": [
-								"localhost"
+								"{{hostandport}}"
 							],
-							"port": "5001",
 							"path": [
 								"api",
 								"batteries"
@@ -241,12 +244,10 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "https://localhost:5001/api/batteries/1",
-							"protocol": "https",
+							"raw": "{{hostandport}}/api/batteries/1",
 							"host": [
-								"localhost"
+								"{{hostandport}}"
 							],
-							"port": "5001",
 							"path": [
 								"api",
 								"batteries",
@@ -256,8 +257,7 @@
 					},
 					"response": []
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
 		},
 		{
 			"name": "Models",
@@ -281,12 +281,52 @@
 					"response": []
 				},
 				{
+					"name": "Get All Models PROD",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjUxNzNBM0I1RUMzMUE0M0NDQjdBQTk1RERBMTU0NDNGIiwidHlwIjoiYXQrand0In0.eyJuYmYiOjE1OTgxMzg0NTgsImV4cCI6MTU5ODE0MjA1OCwiaXNzIjoiaHR0cHM6Ly9mbGlnaHRsb2dpcy5henVyZXdlYnNpdGVzLm5ldCIsImF1ZCI6ImZsaWdodGxvZy1hcGkiLCJjbGllbnRfaWQiOiJmbGlnaHRsb2ctYXBwIiwic3ViIjoiMWMzNzQyYjQtMWNlMy00MmYzLThkOWMtYzczZmY2ZTkwMWZhIiwiYXV0aF90aW1lIjoxNTk4MTM4NDU2LCJpZHAiOiJsb2NhbCIsInJvbGUiOlsiZmxpZ2h0bG9nLWFwaS5yZWFkIiwiZmxpZ2h0bG9nLWFwaS53cml0ZSIsImZsaWdodGxvZy1hcGkuYWRtaW4iXSwiYWNjb3VudGlkIjoiMSIsImp0aSI6IjlFMkJCNkRFMDdDQUY0Q0E5OEE1OTZFRDczRTg5MzBDIiwic2lkIjoiNDM3NTQ4RDI4MkY1QTJDQUM5OEYzQTQxRDRCMjhBQTAiLCJpYXQiOjE1OTgxMzg0NTgsInNjb3BlIjpbIm9wZW5pZCIsInByb2ZpbGUiLCJlbWFpbCIsImZsaWdodGxvZy1hcGkucmVhZCIsImZsaWdodGxvZy1hcGkud3JpdGUiXSwiYW1yIjpbInB3ZCJdfQ.YnoBlTYOFhxYUn3EKNoTJGSslmiB-8PMxF9QllD3_zJjgOUI239ffvTtmFrY1TscT0AC-9vuhcPFg4geBcZa6KCs6dMKIPAMVPb3r8uPi4SaAmWl5t2JKdK-Ql2yL2pJYviScxcB62_CrosfCUiMpBPAuza4pdbm4QOPnsbqHkyLs3AoqnxXNtF52wZKtH0V392TkCeoZYjv-hZW6rlIUPoTbmHfwFHajP4pPhH9cJwlAmNQFtkG1PCs_XhsEjHEJMSTnWFAhPI1vUJ5cS1pLAAT-Murle62Mq88hY3hiEXekcrHyFqhiQolDqSgMecbzJZmu-6WTPPQk3fW7v6Eog",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://flightlogapi.azurewebsites.net/api/1/models",
+							"protocol": "https",
+							"host": [
+								"flightlogapi",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"api",
+								"1",
+								"models"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Get Model By Id",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": ""
+							"raw": "{{hostandport}}/api/models/1",
+							"host": [
+								"{{hostandport}}"
+							],
+							"path": [
+								"api",
+								"models",
+								"1"
+							]
 						}
 					},
 					"response": []
@@ -306,12 +346,10 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:5001/api/models",
-							"protocol": "https",
+							"raw": "{{hostandport}}/api/models",
 							"host": [
-								"localhost"
+								"{{hostandport}}"
 							],
-							"port": "5001",
 							"path": [
 								"api",
 								"models"
@@ -325,13 +363,20 @@
 					"request": {
 						"method": "PUT",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "https://localhost:5001/api/models",
-							"protocol": "https",
+							"raw": "{{hostandport}}/api/models",
 							"host": [
-								"localhost"
+								"{{hostandport}}"
 							],
-							"port": "5001",
 							"path": [
 								"api",
 								"models"
@@ -359,14 +404,53 @@
 					},
 					"response": []
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
 		},
 		{
 			"name": "Flights",
 			"item": [
 				{
-					"name": "Add Flight",
+					"name": "Get All Flights",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{hostandport}}/api/1/flights",
+							"host": [
+								"{{hostandport}}"
+							],
+							"path": [
+								"api",
+								"1",
+								"flights"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Recent Flights",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{hostandport}}/api/1/flights/recent",
+							"host": [
+								"{{hostandport}}"
+							],
+							"path": [
+								"api",
+								"1",
+								"flights",
+								"recent"
+							]
+						},
+						"description": "Recent flights would be the last month of flying"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Flight By Id",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -377,19 +461,865 @@
 					"response": []
 				},
 				{
-					"name": "Get All Flights",
+					"name": "Get Flights By Model ID",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": ""
+							"raw": "{{hostandport}}/api/1/flights/model/1",
+							"host": [
+								"{{hostandport}}"
+							],
+							"path": [
+								"api",
+								"1",
+								"flights",
+								"model",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Flights By Model ID And Date Range",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{hostandport}}/api/1/flights/model/1/from/2021-04-01/to/2021-08-01",
+							"host": [
+								"{{hostandport}}"
+							],
+							"path": [
+								"api",
+								"1",
+								"flights",
+								"model",
+								"1",
+								"from",
+								"2021-04-01",
+								"to",
+								"2021-08-01"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Flight Summary By Model ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{hostandport}}/api/1/flights/summary/1",
+							"host": [
+								"{{hostandport}}"
+							],
+							"path": [
+								"api",
+								"1",
+								"flights",
+								"summary",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Flight Summary By Model ID and Date Range",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{hostandport}}/api/1/flights/summary/1/from/2021-01-01/to/2021-08-01",
+							"host": [
+								"{{hostandport}}"
+							],
+							"path": [
+								"api",
+								"1",
+								"flights",
+								"summary",
+								"1",
+								"from",
+								"2021-01-01",
+								"to",
+								"2021-08-01"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Flight",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Date\": \"2021-11-01T00:00:00Z\",\r\n    \"ModelFlightNumber\": 0,\r\n    \"Field\": {\r\n        \"Id\": 1,\r\n        \"Name\": \"HAM\"\r\n    },\r\n    \"Model\": {\r\n        \"Id\": 1,\r\n        \"Name\": \"MSX Heavy Metal\"\r\n    },\r\n    \"BatteryId\": null,\r\n    \"Pilot\": {\r\n        \"Id\": 1,\r\n        \"Name\": \"Rhys\"\r\n    },\r\n    \"Details\": \"More testing. Thats all\",\r\n    \"FlightMinutes\": 10.0,\r\n    \"MediaLinks\": [],\r\n    \"AccountId\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostandport}}/api/1/flights",
+							"host": [
+								"{{hostandport}}"
+							],
+							"path": [
+								"api",
+								"1",
+								"flights"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Flight",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Id\": 30,\r\n    \"Date\": \"2021-11-02T13:00:00Z\",\r\n    \"ModelFlightNumber\": 0,\r\n    \"Field\": {\r\n        \"Id\": 1,\r\n        \"Name\": \"HAM\"\r\n    },\r\n    \"Model\": {\r\n        \"Id\": 1,\r\n        \"Name\": \"MSX Heavy Metal\"\r\n    },\r\n    \"BatteryId\": null,\r\n    \"Pilot\": {\r\n        \"Id\": 1,\r\n        \"Name\": \"Rhys\"\r\n    },\r\n    \"Details\": \"More testing. Thats all\",\r\n    \"FlightMinutes\": 10.0,\r\n    \"MediaLinks\": [],\r\n    \"AccountId\": 1, \r\n    \"Tags\": { \r\n         \r\n        \"Id\": 2,\r\n        \"Name\": \"Crash\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostandport}}/api/1/flights",
+							"host": [
+								"{{hostandport}}"
+							],
+							"path": [
+								"api",
+								"1",
+								"flights"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Flight",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{hostandport}}/api/flights/6",
+							"host": [
+								"{{hostandport}}"
+							],
+							"path": [
+								"api",
+								"flights",
+								"6"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Grouped Flights By Month for Date Range",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{hostandport}}/api/1/flights/group/monthandmodel/from/2021-01-01/to/2021-12-31",
+							"host": [
+								"{{hostandport}}"
+							],
+							"path": [
+								"api",
+								"1",
+								"flights",
+								"group",
+								"monthandmodel",
+								"from",
+								"2021-01-01",
+								"to",
+								"2021-12-31"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Grouped Flights By Week",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Flight Tags",
+			"item": [
+				{
+					"name": "Get All Flight Tags",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{hostandport}}/api/flighttags",
+							"host": [
+								"{{hostandport}}"
+							],
+							"path": [
+								"api",
+								"flighttags"
+							]
 						}
 					},
 					"response": []
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
+		},
+		{
+			"name": "Model Statuses",
+			"item": [
+				{
+					"name": "Get All Model Statuses",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{hostandport}}/api/modelstatuses",
+							"host": [
+								"{{hostandport}}"
+							],
+							"path": [
+								"api",
+								"modelstatuses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Active Model Statuses",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Locations",
+			"item": [
+				{
+					"name": "Get Locations",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://flightlogapi.azurewebsites.net/api/1/locations",
+							"protocol": "https",
+							"host": [
+								"flightlogapi",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"api",
+								"1",
+								"locations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Location",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": " {\r\n        \"AccountId\": 1,\r\n        \"Account\": null,\r\n        \"Name\": \"Farm\",\r\n        \"Lattitude\": null,\r\n        \"Longitude\": null,\r\n        \"Notes\": null,\r\n        \"WeatherStationLink\": null\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://flightlogapi.azurewebsites.net/api/1/locations",
+							"protocol": "https",
+							"host": [
+								"flightlogapi",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"api",
+								"1",
+								"locations"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Accounts",
+			"item": [
+				{
+					"name": "Get All Accounts",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{hostandport}}/api/accounts",
+							"host": [
+								"{{hostandport}}"
+							],
+							"path": [
+								"api",
+								"accounts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Account By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{hostandport}}/api/accounts",
+							"host": [
+								"{{hostandport}}"
+							],
+							"path": [
+								"api",
+								"accounts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Account",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{hostandport}}/api/accounts/2",
+							"host": [
+								"{{hostandport}}"
+							],
+							"path": [
+								"api",
+								"accounts",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Account",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "    {\r\n        \"Name\": \"Test Account\",\r\n        \"OwnerId\": \"oauth|1\",\r\n        \"OwnerEmail\": \"rhys.jones@yahoo.co.nz\",\r\n        \"OpenedOn\": \"2022-05-09T00:00:00\",\r\n        \"ClosedOn\": null\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostandport}}/api/accounts",
+							"host": [
+								"{{hostandport}}"
+							],
+							"path": [
+								"api",
+								"accounts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Account",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "    {\r\n        \"Id\": 2,\r\n        \"Name\": \"Test Account New Name\",\r\n        \"OwnerId\": \"oauth|1\",\r\n        \"OwnerEmail\": \"rhys.jones@yahoo.com\",\r\n        \"OpenedOn\": \"2022-05-09T00:00:00\",\r\n        \"ClosedOn\": null\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostandport}}/api/accounts",
+							"host": [
+								"{{hostandport}}"
+							],
+							"path": [
+								"api",
+								"accounts"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Maintenance Log",
+			"item": [
+				{
+					"name": "Get All Maintenance Logs",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{hostandport}}/api/1/maintenancelogs",
+							"host": [
+								"{{hostandport}}"
+							],
+							"path": [
+								"api",
+								"1",
+								"maintenancelogs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Maintenance Log By ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{hostandport}}/api/1/maintenancelog/2",
+							"host": [
+								"{{hostandport}}"
+							],
+							"path": [
+								"api",
+								"1",
+								"maintenancelog",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Maintenance Log By Model",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{hostandport}}/api/1/maintenancelogs/model/2",
+							"host": [
+								"{{hostandport}}"
+							],
+							"path": [
+								"api",
+								"1",
+								"maintenancelogs",
+								"model",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Maintenance Log",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"AccountId\": 1,\r\n    \"Date\": \"16-May-2022\", \r\n    \"Details\": \"Some maintenance done on the canopy which was wearting.\", \r\n    \"Model\": {\r\n        \"Id\": 1, \r\n        \"Name\": \"MSX Heavy Metal\"\r\n    },\"Type\": {\r\n        \"Id\": 2, \r\n        \"Name\": \"Maintenance\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostandport}}/api/1/maintenancelogs/",
+							"host": [
+								"{{hostandport}}"
+							],
+							"path": [
+								"api",
+								"1",
+								"maintenancelogs",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Maintenance Log",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Id\": 1,\r\n    \"AccountId\": 1,\r\n    \"Date\": \"2022-05-16T00:00:00\",\r\n    \"Details\": \"A repair actually... \",\r\n    \"Model\": {\r\n        \"Id\": 1,\r\n        \"Name\": \"MSX Heavy Metal\"\r\n    },\r\n    \"Type\": {\r\n        \"Id\": 3,\r\n        \"Name\": \"Repair\",\r\n        \"SortOrder\": 2\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostandport}}/api/1/maintenancelogs/",
+							"host": [
+								"{{hostandport}}"
+							],
+							"path": [
+								"api",
+								"1",
+								"maintenancelogs",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Maintenance Log",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Id\": 1, \r\n    \"AccountId\": 1,\r\n    \"Date\": \"16-May-2022\", \r\n    \"Details\": \"This is new test event that has been updated\", \r\n    \"EventType\": {\r\n        \"Id\": 1\r\n    },\r\n    \"Model\": {\r\n        \"Id\": 11\r\n    }, \r\n    \"Flight\": {\r\n        \"Id\": 1\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostandport}}/api/1/maintenancelogs/1",
+							"host": [
+								"{{hostandport}}"
+							],
+							"path": [
+								"api",
+								"1",
+								"maintenancelogs",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Maintenance Log Types",
+			"item": [
+				{
+					"name": "Get All Maintenance Log Types",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{hostandport}}/api/maintenancelogtypes",
+							"host": [
+								"{{hostandport}}"
+							],
+							"path": [
+								"api",
+								"maintenancelogtypes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Maintenance Log Type",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Name\": \"Fix after crash\",\r\n    \"SortOrder\" : 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostandport}}/api/maintenancelogtypes",
+							"host": [
+								"{{hostandport}}"
+							],
+							"path": [
+								"api",
+								"maintenancelogtypes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Maintenance Log Type",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Id\": 1,\r\n    \"Name\": \"Fix after crash\",\r\n    \"SortOrder\": 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostandport}}/api/maintenancelogtypes",
+							"host": [
+								"{{hostandport}}"
+							],
+							"path": [
+								"api",
+								"maintenancelogtypes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Maintenance Log Type",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Id\": 1, \r\n    \"AccountId\": 1,\r\n    \"Date\": \"16-May-2022\", \r\n    \"Details\": \"This is new test event that has been updated\", \r\n    \"EventType\": {\r\n        \"Id\": 1\r\n    },\r\n    \"Model\": {\r\n        \"Id\": 11\r\n    }, \r\n    \"Flight\": {\r\n        \"Id\": 1\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostandport}}/api/maintenancelogtypes/1",
+							"host": [
+								"{{hostandport}}"
+							],
+							"path": [
+								"api",
+								"maintenancelogtypes",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Get Access Token",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": ""
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Open ID Configuration",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": ""
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get User Info",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": ""
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "New Request",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImV3WGZVaFBoU2dBR3VGMnhMVW9KciJ9.eyJpc3MiOiJodHRwczovL2Rldi1mbGlnaHRsb2cuYXUuYXV0aDAuY29tLyIsInN1YiI6ImF1dGgwfDYxMmRjZjJhNTcxOTU4MDA2ODY0NjM3YyIsImF1ZCI6WyJodHRwczovL2Rldi1mbGlnaHRsb2ctYXBpLmZsaWdodGxvZy5jby5ueiIsImh0dHBzOi8vZGV2LWZsaWdodGxvZy5hdS5hdXRoMC5jb20vdXNlcmluZm8iXSwiaWF0IjoxNjMzMTQ1NzkzLCJleHAiOjE2MzMyMzIxOTMsImF6cCI6Iks0eXZQS0JsVEN6dmhtVlNzalBpWkNFSUdCR2JEcjhuIiwic2NvcGUiOiJvcGVuaWQgcHJvZmlsZSBlbWFpbCBmbGlnaHRsb2ctYXBpLnJlYWQgZmxpZ2h0bG9nLWFwaS53cml0ZSIsInBlcm1pc3Npb25zIjpbImZsaWdodGxvZy1hcGkucmVhZCIsImZsaWdodGxvZy1hcGkud3JpdGUiXX0.h9tVn0HKlzfGImKraKKDRXND7cq30jTOq13zqMH5cdtfXtziTrbgNyKoqhdGqpM2l5oYEKscTFAD86N_cbMntZ-HwCnuisLc0hWIPz1wmsweFOqQDDm9ZzXCuLH_6JwZMnak1KFtPM2KSWW-UjCfM_ttI9_ByaGXdjey9uehhVflv1rFX31I8LDHIWKtCC3mCr2DHpADmRk3P_IVeprWHqOaiuB1jGr5FwktRHFDUTUhd_JwjN2aPWrseFsAUmPRdeN5W0I1-ucog4kcSIfoaysznQ75k5izHB8r9bTanEOY0NUnUJn8JjkBT71kPEncI7pw4WO6huCXwVRkrXGe_w",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://dev-flightlog.au.auth0.com/userinfo",
+					"protocol": "https",
+					"host": [
+						"dev-flightlog",
+						"au",
+						"auth0",
+						"com"
+					],
+					"path": [
+						"userinfo"
+					]
+				}
+			},
+			"response": []
 		}
 	],
-	"protocolProfileBehavior": {}
+	"auth": {
+		"type": "oauth2",
+		"oauth2": [
+			{
+				"key": "tokenType",
+				"value": "Bearer",
+				"type": "string"
+			},
+			{
+				"key": "accessToken",
+				"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImV3WGZVaFBoU2dBR3VGMnhMVW9KciJ9.eyJodHRwczovL2ZsaWdodGxvZy5jby5uei9jbGFpbXMvYWNjb3VudF9pZCI6MSwiaHR0cHM6Ly9mbGlnaHRsb2cuY28ubnovcm9sZXMiOlsiQWRtaW4iLCJVc2VyIl0sImlzcyI6Imh0dHBzOi8vZGV2LWZsaWdodGxvZy5hdS5hdXRoMC5jb20vIiwic3ViIjoiYXV0aDB8NjEyZGNmMmE1NzE5NTgwMDY4NjQ2MzdjIiwiYXVkIjpbImh0dHBzOi8vZGV2LWZsaWdodGxvZy1hcGkuZmxpZ2h0bG9nLmNvLm56IiwiaHR0cHM6Ly9kZXYtZmxpZ2h0bG9nLmF1LmF1dGgwLmNvbS91c2VyaW5mbyJdLCJpYXQiOjE2NTE5NTcwOTMsImV4cCI6MTY1MjA0MzQ5MywiYXpwIjoiSzR5dlBLQmxUQ3p2aG1WU3NqUGlaQ0VJR0JHYkRyOG4iLCJzY29wZSI6Im9wZW5pZCBwcm9maWxlIGVtYWlsIG9mZmxpbmVfYWNjZXNzIn0.SqaOYmDJhP3M_UragHkZ7fnO-tm_3dAOdNWXTghm0OXW2NLXfcfVENdnqq8v4nLgpGS1jhmzcnCZb_gh0NtLD4Wroyw-em0WkRyn8LE8gyUTzY4xlXh7NSYSE0i7QAJlg53dskYP7_LIEaRzJcr_b6zx9FjeijUgQqhfMVxbQJjCF5YocInLuh-8DUJZ_C0nwc9ZbYUK-pjfbP8WRqIpUcnG8iAnQioWUXHN0AMGUStrAXSS6gzLnelAmW_VQiu-u2da0UXOLhRcaXjVaCRwNRi88lWjX_z7Y7tx4vEo_Evru2BNaBqRKt7MxhJ14X-eb5bZsLou4FYuQVsShS30MA",
+				"type": "string"
+			},
+			{
+				"key": "grant_type",
+				"value": "authorization_code",
+				"type": "string"
+			},
+			{
+				"key": "authUrl",
+				"value": "https://dev-flightlog.au.auth0.com/authorize",
+				"type": "string"
+			},
+			{
+				"key": "useBrowser",
+				"value": true,
+				"type": "boolean"
+			},
+			{
+				"key": "accessTokenUrl",
+				"value": "https://dev-flightlog.au.auth0.com/oauth/token",
+				"type": "string"
+			},
+			{
+				"key": "scope",
+				"value": "openid profile email offline_access",
+				"type": "string"
+			},
+			{
+				"key": "audience",
+				"value": {
+					"c64720b3-d515-4f2e-89c8-509191381ff3": "https://dev-flightlog-api.flightlog.co.nz"
+				},
+				"type": "any"
+			},
+			{
+				"key": "clientSecret",
+				"value": "68J8LtiQ2DujAh5tUOWUq7tky25jiQ_5oaiH_gjz71s-g1j-2ofZGITY20MJZQjB",
+				"type": "string"
+			},
+			{
+				"key": "clientId",
+				"value": "K4yvPKBlTCzvhmVSsjPiZCEIGBGbDr8n",
+				"type": "string"
+			},
+			{
+				"key": "redirect_uri",
+				"value": "https://oauth.pstmn.io/v1/callback",
+				"type": "string"
+			},
+			{
+				"key": "tokenName",
+				"value": "FlightLogApp Token",
+				"type": "string"
+			},
+			{
+				"key": "challengeAlgorithm",
+				"value": "S256",
+				"type": "string"
+			},
+			{
+				"key": "username",
+				"value": "rhys.jones@yahoo.co.nz",
+				"type": "string"
+			},
+			{
+				"key": "password",
+				"value": "Password1!",
+				"type": "string"
+			},
+			{
+				"key": "addTokenTo",
+				"value": "header",
+				"type": "string"
+			},
+			{
+				"key": "client_authentication",
+				"value": "header",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
 }

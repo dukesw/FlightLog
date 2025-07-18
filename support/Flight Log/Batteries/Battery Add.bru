@@ -1,0 +1,32 @@
+meta {
+  name: Battery Add
+  type: http
+  seq: 3
+}
+
+post {
+  url: https://localhost:5001/api/batteries
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+      "BatteryNumber": 10,
+      "BatteryType": {
+          "capacityMah": 2200,
+          "cells": 3,
+          "type": "Turnigy Nano Tech",
+          "weightInGrams": 100,
+          "batteries": null
+      },
+      "BatteryTypeId": 2,
+      "IsActive": true,
+      "Notes": "Testing - Postmans",
+      "PurchaseDate": "2020-03-09T08:11:13.8100367"
+  }
+}

@@ -1,0 +1,25 @@
+meta {
+  name: Battery Type Update
+  type: http
+  seq: 4
+}
+
+put {
+  url: https://localhost:5001/api/batterytypes
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+      {
+          "CapacityMah": 2100,
+          "Cells": 3,
+          "Type": "Type Added",
+          "WeightInGrams": 200,
+          "Id": 1
+      }
+}

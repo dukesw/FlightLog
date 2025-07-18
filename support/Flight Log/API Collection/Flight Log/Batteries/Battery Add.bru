@@ -1,0 +1,51 @@
+meta {
+  name: Battery Add
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{hostandport}}/api/batteries
+  body: json
+  auth: oauth2
+}
+
+headers {
+  Content-Type: application/json
+}
+
+auth:oauth2 {
+  grant_type: authorization_code
+  callback_url: https://oauth.pstmn.io/v1/callback
+  authorization_url: https://dev-flightlog.au.auth0.com/authorize
+  access_token_url: https://dev-flightlog.au.auth0.com/oauth/token
+  refresh_token_url: 
+  client_id: K4yvPKBlTCzvhmVSsjPiZCEIGBGbDr8n
+  client_secret: 68J8LtiQ2DujAh5tUOWUq7tky25jiQ_5oaiH_gjz71s-g1j-2ofZGITY20MJZQjB
+  scope: openid profile email offline_access
+  state: 
+  pkce: false
+  credentials_placement: basic_auth_header
+  credentials_id: 
+  token_placement: header
+  token_header_prefix: 
+  auto_fetch_token: true
+  auto_refresh_token: false
+}
+
+body:json {
+  {
+      "BatteryNumber": 10,
+      "BatteryType": {
+          "capacityMah": 2200,
+          "cells": 3,
+          "type": "Turnigy Nano Tech",
+          "weightInGrams": 100,
+          "batteries": null
+      },
+      "BatteryTypeId": 2,
+      "IsActive": true,
+      "Notes": "Testing - Postmans",
+      "PurchaseDate": "2020-03-09T08:11:13.8100367"
+  }
+}

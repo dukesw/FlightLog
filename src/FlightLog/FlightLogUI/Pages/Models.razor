@@ -1,80 +1,8 @@
 ﻿@page "/models"
 @attribute [Authorize]
 
-@inject IHttpClientFactory ClientFactory
-@inject NavigationManager NavigationManager
-
-<h2>Models</h2>
-@if (loading)
-{
-    @*<p>Loading...</p>*@
-    <div class="spinner"></div>
-}
-else
-{
-    @* <RadzenDataGrid Data="@models" TItem="ModelDto" AllowSorting="true">
-        <Columns>
-            <RadzenDataGridColumn TItem="ModelDto" Property="Name" Filterable="false" Title="Model" />
-            <RadzenDataGridColumn TItem="ModelDto" Property="Manufacturer" Filterable="false" Title="Manufacturer" />
-            <RadzenDataGridColumn TItem="ModelDto" Property="Status.Name" Filterable="false" Title="Active" />
-            <RadzenDataGridColumn TItem="ModelDto" Property="TotalFlights" Filterable="false" Title="Total Flights" />
-            <RadzenDataGridColumn TItem="ModelDto" Property="MaidenedOn" Filterable="false" Title="Maidened On">
-                <Template Context="model">
-                    @if (model.MaidenedOn.HasValue)
-                    {
-                        <div>@model.MaidenedOn.Value.ToString("d-MMM-yyyy")</div>
-                    }
-                </Template>
-            </RadzenDataGridColumn>
-            <RadzenDataGridColumn TItem="ModelDto" Property="Id" Filterable="false" Title="" Sortable="false" Width="60px">
-                <Template Context="model">
-                    <RadzenButton Icon="pageview" ButtonStyle="ButtonStyle.Secondary" Size="ButtonSize.Small" Click=@(args => OpenModelViewScreen(model.Id)) @onclick:stopPropagation="true" />
-                </Template>
-            </RadzenDataGridColumn>
-        </Columns>
-    </RadzenDataGrid> *@
-    <p></p>
-    <div class="row justify-content-start">
-        @*<div class="col-md-2 align-items-top d-flex" />*@
-        <div class="col-md-8 d-flex align-items-end justify-content-start">
-           @*  <FluentIcon ButtonType="ButtonType.Submit" Icon=" Text="Add Model" Click=@OpenAddModelPage /> *@
-        </div>
-    </div>
-}
+<h3>Models</h3>
 
 @code {
-    private ModelDto[] models;
-    [CascadingParameter]
-    private Task<AuthenticationState> authenticationState { get; set; }
-    private bool loading = false;
 
-    protected override async Task OnInitializedAsync()
-    {
-        try
-        {
-            loading = true;
-            var user = (await authenticationState).User;
-            var accountId = user.FindFirst("https://flightlog.co.nz/claims/account_id").Value;
-            var client = ClientFactory.CreateClient("FlightLogAPI");
-            models = await client.GetFromJsonAsync<ModelDto[]>($"/api/{accountId}/models");
-        }
-        catch (AccessTokenNotAvailableException exception)
-        {
-            exception.Redirect();
-        }
-        finally
-        {
-            loading = false;
-        }
-    }
-
-    private void OpenModelViewScreen(int modelId) 
-    {
-        NavigationManager.NavigateTo($"/model-history/{modelId}");
-    }
-
-    private void OpenAddModelPage()
-    {
-        NavigationManager.NavigateTo("/edit-model");
-    }
 }

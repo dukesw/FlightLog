@@ -97,7 +97,6 @@ namespace WebApi.Controllers
             }
         }
 
-
         [HttpGet("model/{modelId}")]
         [Authorize(Roles = "User, Admin")]
         public async Task<ActionResult<List<FlightDto>>> GetByModelId(int accountId, int modelId)

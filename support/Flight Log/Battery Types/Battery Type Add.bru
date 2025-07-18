@@ -1,0 +1,24 @@
+meta {
+  name: Battery Type Add
+  type: http
+  seq: 3
+}
+
+post {
+  url: https://localhost:5001/api/batterytypes
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+      "CapacityMah": 2200,
+      "Cells": 3,
+      "Type": "Turnigy Nano Tech",
+      "WeightInGrams": 0
+  }
+}

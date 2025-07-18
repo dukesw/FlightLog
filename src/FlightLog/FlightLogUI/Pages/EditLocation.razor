@@ -1,0 +1,16 @@
+﻿@page "/edit-location/{id:int?}"
+@attribute [Authorize]
+
+@if (Id != null)
+{
+    <h3>Edit Location</h3>
+}
+else
+{
+    <h3>Add Location</h3>
+}
+
+@code {
+    [Parameter]
+    public int? Id { get; set; }
+}

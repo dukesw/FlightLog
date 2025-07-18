@@ -1,0 +1,16 @@
+﻿@page "/edit-pilot/{id:int?}"
+@attribute [Authorize]
+
+@if (Id != null)
+{
+    <h3>Edit Pilot</h3>
+}
+else
+{
+    <h3>Add Pilot</h3>
+}
+
+@code {
+    [Parameter]
+    public int? Id { get; set; }
+}
