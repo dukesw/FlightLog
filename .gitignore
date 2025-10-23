@@ -300,3 +300,10 @@ src/FlightLog/FlightLog/.deployment
 /src/FlightLog/FlightLogUI/wwwroot/appsettings.Development.json
 /src/FlightLog/WebApi/appsettings.json
 /src/FlightLog/FlightLogUI - Copy
+/src/FlightLog/FlightLogUI/wwwroot/appsettings.json
+/src/FlightLog/FlightLogUI/wwwroot/appsettings.Development.json
+/src/FlightLog/ApplicationCore/bin/Release/net9.0
+/src/FlightLog/FlightLogUI/bin/Release/net9.0
+/src/FlightLog/FlightLogUI - Copy (2)
+/src/FlightLog/Infrastructure/bin/Release/net9.0
+/src/FlightLog/Shared/bin/Release/net9.0
