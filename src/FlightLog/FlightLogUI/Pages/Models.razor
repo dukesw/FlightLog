@@ -1,8 +1,106 @@
 ﻿@page "/models"
+
 @attribute [Authorize]
+@inject IHttpClientFactory ClientFactory
+@inject NavigationManager NavigationManager
 
 <h3>Models</h3>
+@if (loading)
+{
+    <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+}
+else
+{
+    <MudDataGrid T="ModelDto" ServerData="ServerReload" ColumnResizeMode="ResizeMode.Column" Filterable=false LoadingProgressColor="Color.Primary">
+        <Columns>
+            <PropertyColumn Property="x => x.Name" Title="Model" />
+            <PropertyColumn Property="x => x.Status.Name" Title="Status" />
+            <PropertyColumn Property="x => x.TotalFlights" Title="Flights" />
+            <PropertyColumn Property="x => x.UnloggedFlights" Title="UnloggedFlights" />
+
+            <MudBlazor.TemplateColumn Context="model">
+                <CellTemplate>
+                    <MudLink Href="@($"/edit-model/{model.Item.Id}")">Edit</MudLink>
+                </CellTemplate>
+            </MudBlazor.TemplateColumn>
+        </Columns>
+        <PagerContent>
+            <MudDataGridPager T="ModelDto" />
+        </PagerContent>
+    </MudDataGrid>
+}
 
 @code {
+    private IList<ModelDto> models = new List<ModelDto>();
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationState { get; set; }
+    private int modelCount = 0;
+    private bool loading = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            loading = true;
+            var user = (await authenticationState).User;
+            var accountId = user.FindFirst("https://flightlog.co.nz/claims/account_id").Value;
+            var client = ClientFactory.CreateClient("FlightLogAPI");
+            modelCount = await client.GetFromJsonAsync<int>($"/api/{accountId}/models/count");
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+        finally
+        {
+            loading = false;
+        }
+    }
+
+    private async Task<GridData<ModelDto>> ServerReload(GridState<ModelDto> state)
+    {
+        try
+        {
+            var user = (await authenticationState).User;
+            var accountId = user.FindFirst("https://flightlog.co.nz/claims/account_id").Value;
+            var client = ClientFactory.CreateClient("FlightLogAPI");
+
+            var sortDefinition = state.SortDefinitions.FirstOrDefault();
+            if (sortDefinition != null)
+            {
+                models = await client.GetFromJsonAsync<List<ModelDto>>($"/api/{accountId}/models/sortby/{sortDefinition.SortBy}/desc/{sortDefinition.Descending}/skip/{state.Page * state.PageSize}/take/{state.PageSize}");
+
+                Console.WriteLine($"Sorting by {sortDefinition.SortBy} {(sortDefinition.Descending ? "DESC" : "ASC")}");
+            }
+            else
+            {
+                models = await client.GetFromJsonAsync<List<ModelDto>>($"/api/{accountId}/models/skip/{state.Page * state.PageSize}/take/{state.PageSize}");
+                Console.WriteLine("No sorting applied");
+            }
+            
+            
+           
+            
+            return new GridData<ModelDto>() { Items = models, TotalItems = modelCount };
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+        return new GridData<ModelDto>();    // Just ensursing all paths return a value
+    }
+    
+    
+    
+    // Check if these two methods are still needed in the latest version 
+    private void OpenModelViewScreen(int modelId)
+    {
+        NavigationManager.NavigateTo($"/model-details/{modelId}");
+    }
+
+    private void OpenAddModelPage()
+    {
+        NavigationManager.NavigateTo("/edit-model");
+    }
 
 }

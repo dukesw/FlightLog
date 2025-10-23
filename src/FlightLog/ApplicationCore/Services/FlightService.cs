@@ -36,12 +36,12 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
             var flightEntity = _mapper.Map<FlightDto, Flight>(flight);
 
             // Attach tags from the DB
-            foreach (FlightTagDto t in flight.Tags)
+            foreach (int i in flight.TagIds)
             {
-                var tag = _flightTagRepository.GetById(t.Id);
+                var tag = _flightTagRepository.GetById(i);
                 if (tag == null)    // Expect this to never happen by design...
                 {
-                    tag = _mapper.Map<FlightTagDto, FlightTag>(t);
+                    tag = _mapper.Map<int, FlightTag>(i);
                 }
                 flightEntity.Tags.Add(tag);
             }
@@ -110,6 +110,26 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
             return _mapper.Map<IList<Flight>, IList<FlightDto>>(result);
         }
 
+        public async Task<IList<FlightDto>> GetRecentFlightsByPageAsync(int accountId, int skip, int take)
+        {
+            // Defining recent flights as all of those within the last month, based on the date of the request
+            var dateFrom = DateTime.Now.Date.AddMonths(-1);
+            // TODO update this to get flights SINCE a date. Will need a new spec. Hacked to get around timezones on server (as not passed from client)
+            var spec = new GetFlightsByAccountAndDateRangeByPage(accountId, dateFrom, DateTime.Now.Date.AddDays(2).AddSeconds(-1), skip, take);
+            var result = await _flightRepository.GetBySpecAsync(spec);
+            return _mapper.Map<IList<Flight>, IList<FlightDto>>(result);
+        }
+
+        public async Task<int> GetRecentFlightCountAsync(int accountId)
+        {
+            // Defining recent flights as all of those within the last month, based on the date of the request
+            var dateFrom = DateTime.Now.Date.AddMonths(-1);
+            // TODO update this to get flights SINCE a date. Will need a new spec. Hacked to get around timezones on server (as not passed from client)
+            var spec = new GetFlightsByAccountAndDateRange(accountId, dateFrom, DateTime.Now.Date.AddDays(2).AddSeconds(-1));
+            var result = await _flightRepository.GetCountBySpecAsync(spec);
+            return result;
+        }
+
         public async Task<IList<FlightDto>> GetFlightsByModelAsync(int accountId, int modelId)
         {
             var spec = new GetFlightsByAccountAndModel(accountId, modelId);
@@ -117,9 +137,16 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
             return _mapper.Map<IList<Flight>, IList<FlightDto>>(result);
         }
 
+        public async Task<IList<FlightDto>> GetFlightsByModelPagedAsync(int accountId, int modelId, int skip, int take)
+        {
+            var spec = new GetFlightsByAccountAndModelPaged(accountId, modelId, skip, take);
+            var result = await _flightRepository.GetBySpecAsync(spec);
+            return _mapper.Map<IList<Flight>, IList<FlightDto>>(result);
+        }
+
         public async Task<int> GetFlightCountByModelAsync(int accountId, int modelId)
         {
-            var spec = new GetFlightCountsByAccountAndModel(accountId, modelId);
+            var spec = new GetFlightsByAccountAndModel(accountId, modelId);
             var result = await _flightRepository.GetCountBySpecAsync(spec);
             return result;
         }
@@ -195,12 +222,12 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
             flightEntity.Tags.Clear();
 
             // Retrieve and attach tag entities
-            foreach (FlightTagDto t in flight.Tags)
+            foreach (int i in flight.TagIds)
             {
-                var tag = _flightTagRepository.GetById(t.Id);
+                var tag = _flightTagRepository.GetById(i);
                 if (tag == null)    // Expect this to never happen by design...
                 {
-                    tag = _mapper.Map<FlightTagDto, FlightTag>(t);
+                    tag = _mapper.Map<int, FlightTag>(i);
                 }
                 flightEntity.Tags.Add(tag);
             }
@@ -226,9 +253,9 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
 
             if (flights.Count > 0)
             {
-                result.TotalFlightTimeMinutes = flights.Sum(x => x.FlightMinutes);
+                result.TotalFlightTimeMinutes = (float)flights.Sum(x => x.FlightMinutes);
                 result.TotalNumberOfFlights = flights.Count;
-                result.AverageFlightTimeMinutes = flights.Average(x => x.FlightMinutes);
+                result.AverageFlightTimeMinutes = (float)flights.Average(x => x.FlightMinutes);
                 result.FirstFlight = flights.Min(x => x.Date.Value);
                 result.LastFlight = flights.Max(x => x.Date.Value);
             };
@@ -240,7 +267,8 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
         {
             // Updating the total flights for a model
             var model = await _modelRepository.GetByIdAsync(modelId);
-            model.TotalFlights = await GetFlightCountByModelAsync(accountId, modelId);
+            model.LoggedFlights = await GetFlightCountByModelAsync(accountId, modelId);  // Gets the logged flights
+            model.TotalFlights = model.LoggedFlights + model.UnloggedFlights;
             var modelResult = await _modelRepository.UpdateAsync(model);
         }
 

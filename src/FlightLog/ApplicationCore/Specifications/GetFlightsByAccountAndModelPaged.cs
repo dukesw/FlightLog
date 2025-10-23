@@ -6,11 +6,11 @@ using System.Text;
 
 namespace DukeSoftware.FlightLog.ApplicationCore.Specifications
 {
-    public class GetFlightCountsByAccountAndModel : BaseSpecification<Flight>
+    public class GetFlightsByAccountAndModelPaged : GetFlightsByAccountAndModel
     {
-        public GetFlightCountsByAccountAndModel(int accountId, int modelId) : base(x => x.AccountId == accountId && x.ModelId == modelId)
+        public GetFlightsByAccountAndModelPaged(int accountId, int modelId, int skip, int take) : base(accountId, modelId)
         {
-
+            ApplyPaging(skip, take);
         }
     }
 }

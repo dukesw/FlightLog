@@ -1,100 +1,105 @@
 ﻿@page "/edit-flight/{id:int?}"
-@using System.Globalization
 
 @attribute [Authorize]
 @inject IHttpClientFactory ClientFactory
+@inject ISnackbar SnackbarService
 
-@if (Id != null)
+@if (Id == null)
 {
-    <h3>Edit Flight</h3>
+    <h3>Add Flight</h3>
 }
 else
 {
-    <h3>Add Flight</h3>
+    <h3>Edit Flight</h3>
 }
 
 @if (loading)
 {
-    @*<p>Loading...</p>*@
-    @* <div class="spinner"></div> *@
-    <p>Loading...</p>
-
+    <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
 }
 else
 {
-    <EditForm Model="@flight" OnValidSubmit="@HandleSubmit" FormName="flight_entry" novalidate>
-        <DataAnnotationsValidator />
-    @*     <FluentValidationSummary /> *@
-        <FluentStack Orientation="Orientation.Vertical">
-            <div>
-                <FluentDatePicker @bind-Value="@flight.Date" @bind-Value:format="yyyy/MM/dd" Culture="@(new CultureInfo("en-NZ"))" Label="Date" Required /> @* Culture="@(new CultureInfo("en-NZ"))" *@ @* @bind:Format="d-MMM-yyyy" *@
-                <FluentValidationMessage For="@(() => flight.Date)" />
-            </div>
-            @* <div>
-                <FluentCombobox Items=@models Placeholder="Choose Model..." Label="Model" TOption="FlightModelDto" OptionText="@(i => i.Name)" OptionValue="@(i => i.Id.ToString())" OptionSelected="@(i => i.Id == flight.Model.Id)" @bind-SelectedOption="@flight.Model" Required />
-                <FluentValidationMessage For="@(() => flight.Model)" />
-            </div> *@
-            <div>
-                <FluentSelect Items=@models Placeholder="Choose Model..." Label="Model" TOption="FlightModelDto" OptionText="@(i => i.Name)" OptionValue="@(i => i.Id.ToString())" @bind-SelectedOption="@flight.Model" @bind-Value="@selectedModelId" Required />
-                <FluentValidationMessage For="@(() => flight.Model)" />
-            </div>
-            <div>
-                <FluentSelect Items=@pilots Placeholder="Choose Pilot..." Label="Pilot" TOption="FlightPilotDto" OptionText="@(i => i.Name)" OptionValue="@(i => i.Id.ToString())" @bind-SelectedOption="@flight.Pilot" @bind-value="@selectedPilotId" Required /> @* @flight.Pilot.Id    @bind-value:event="oninput" *@
-                <FluentValidationMessage For="@(() => flight.Pilot)" />
-            </div>
-            <div>
-                <FluentSelect Items=@locations Placeholder="Choose Field..." Label="Field" TOption="FlightLocationDto" OptionText="@(i => i.Name)" OptionValue="@(i => i.Id.ToString())" @bind-SelectedOption="@flight.Field" @bind-Value="@selectedLocationId" Required />
-                <FluentValidationMessage For="@(() => flight.Field)" />
-            </div>
-            <div>
-                <FluentNumberField Name="minutes" @bind-Value="flight.FlightMinutes" Label="Flight time" Required Size="3" />
-                <FluentValidationMessage For="@(() => flight.FlightMinutes)" />
-            </div>
-            <div>
-                <FluentTextArea Name="description" @bind-Value="flight.Details" Label="Description" Resize=TextAreaResize.Both Cols=80 Spellcheck="true" />
-            </div>
-    @*         <div>
-                @foreach (var tag in tagsMaster)
-                {
-                    <FluentCheckbox Label="@tag.Name" />
-                }
-            </div> *@
-            <div>
-                <FluentSelect Label="Tags" Items=@tagsMaster TOption="FlightTagDto" Multiple=true OptionText="@(i => i.Name)" OptionValue="@(i => i.Id.ToString())" @bind-SelectedOptions="@selectedTags" />
-            </div>
-            <div>
-                <FluentButton Type="ButtonType.Submit" Appearance="Appearance.Accent">Submit</FluentButton>
-                <FluentButton Type="ButtonType.Reset" Appearance="Appearance.Neutral" OnClick="@HandleCancel">Cancel</FluentButton>
+    <MudGrid Spacing="6" Class="pt-8">
+        <MudForm @ref="form" @bind-IsValid="@isValid" Class="mud-width-full px-4">
+            <MudItem xs="12" sm="6">
+                <MudDatePicker @bind-Date="flight.Date" Label="Date" Variant="Variant.Outlined" Required="true" RequiredError="Date is required" ShowToolbar=false OpenTo="OpenTo.Date" DateFormat="d-MMM-yyyy" />
+            </MudItem>
+            <MudItem xs="12" sm="6">
+                <MudSelect @bind-Value="flight.Model" Label="Model" Variant="Variant.Outlined" Clearable=true Required="true" OnlyValidateIfDirty="true" RequiredError="Model is required">
+                    @foreach (var model in models)
+                    {
+                        <MudSelectItem Value="model">@model.Name</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudItem>
+            <MudItem xs="12" sm="6">
+                <MudSelect @bind-Value="flight.Pilot" Label="Pilot" Variant="Variant.Outlined" Clearable=true Required="true" OnlyValidateIfDirty="true" RequiredError="Pilot is required">
+                    @foreach (var pilot in pilots)
+                    {
+                        <MudSelectItem Value="pilot">@pilot.Name</MudSelectItem>
 
-            </div>
-        </FluentStack>
-    </EditForm>
+                    }
+                </MudSelect>
+            </MudItem>
+            <MudItem xs="12" sm="6">
+                <MudSelect @bind-Value="flight.Field" Label="Field" Variant="Variant.Outlined" Clearable=true Required="true" OnlyValidateIfDirty="true" RequiredError="Field is required">
+                    @foreach (var location in locations)
+                    {
+                        <MudSelectItem Value="location">@location.Name</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudItem>
+            <MudItem xs="6" sm="4">
+                <MudNumericField @bind-Value="flight.FlightMinutes" Label="Flight Minutes" Variant="Variant.Outlined" Required="true" RequiredError="Flight time is required" Validation="@(new Func<float?, string>(FlightMinutesValid))" />
+            </MudItem>
+            <MudItem xs="12">
+                <MudTextField @bind-Value="flight.Details" Label="Notes" Variant="Variant.Outlined" AutoGrow Lines="3" Clearable=true />
+            </MudItem>
+            <MudItem xs="12">
+                <MudToggleGroup T="int" @bind-Values="flight.TagIds" SelectionMode="SelectionMode.MultiSelection" Label="Tags" CheckMark>
+                    @foreach (var tag in tagsMaster)
+                    {
+                        <MudToggleItem Value="@(tag.Id)" Text="@tag.Name" UnselectedIcon="@Icons.Material.Filled.CheckBoxOutlineBlank" SelectedIcon="@Icons.Material.Filled.CheckBox" />
+                    }
+                </MudToggleGroup>
+            </MudItem>
+        </MudForm>
+        <MudItem xs="12">
+            <MudButton Variant="Variant.Filled" OnClick="@HandleClear">Clear</MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@HandleSubmit" Disabled="@(!isValid)">Save</MudButton>
+        </MudItem>
+    </MudGrid>
 
+    <div class="d-flex mud-width-full align-center mt-8">
+        <MudText Typo="Typo.subtitle1" Class="mr-2">Selected model: </MudText>
+        <MudChip T="string">@(flight.Model != null ? flight.Model.Name : "Select model")</MudChip>
+        <MudChip T="string">@(flight.Pilot != null ? flight.Pilot.Name : "Select pilot")</MudChip>
+        <MudChip T="string">@(flight.Field != null ? flight.Field.Name : "Select field")</MudChip>
+
+    </div>
+    
 }
-
 @code {
-        [SupplyParameterFromForm]
-        private FlightDto flight { get; set; } = new();
+    public bool loading = false;
 
-    private List<FlightModelDto> models = new List<FlightModelDto>();
-    private List<FlightLocationDto> locations = new List<FlightLocationDto>();
-    private List<FlightPilotDto> pilots = new List<FlightPilotDto>();
+    [SupplyParameterFromForm]
+    private FlightDto flight { get; set; } = new();
+
+    private MudForm form;
+    private bool isValid = false;
+
+    private IList<FlightModelDto> models = new List<FlightModelDto>();
+    private IList<FlightLocationDto> locations = new List<FlightLocationDto>();
+    private IList<FlightPilotDto> pilots = new List<FlightPilotDto>();
     private String accountId = "0";
     private string message = "";
-    private IEnumerable<FlightTagDto> tagsMaster;
-    private IEnumerable<FlightTagDto> selectedTags;
-    private string selectedModelId = string.Empty;
-    private string selectedPilotId = string.Empty;
-    private string selectedLocationId = string.Empty;
-    // private DateTime? selectedDate = null;
+    private IList<FlightTagDto> tagsMaster;
 
     [Parameter]
     public int? Id { get; set; }
 
     [CascadingParameter]
     private Task<AuthenticationState> authenticationState { get; set; }
-
-    public bool loading = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -112,28 +117,13 @@ else
 
             var client = ClientFactory.CreateClient("FlightLogAPI");
             models = await client.GetFromJsonAsync<List<FlightModelDto>>($"/api/{accountId}/models/active");
-            //models.Add(new FlightModelDto { Id = 1, Name = "Test model" });
-            //models.Add(new FlightModelDto { Id = 2, Name = "TopFlite P47 Razorback" });
-
             locations = await client.GetFromJsonAsync<List<FlightLocationDto>>($"/api/{accountId}/locations");
             pilots = await client.GetFromJsonAsync<List<FlightPilotDto>>($"/api/{accountId}/pilots");
             tagsMaster = await client.GetFromJsonAsync<FlightTagDto[]>("/api/flighttags");
-            selectedTags = new List<FlightTagDto>();
 
             if (Id.HasValue)
             {
                 flight = await client.GetFromJsonAsync<FlightDto>($"/api/{accountId}/flights/{Id.Value}");
-                if (flight != null)
-                {
-                    selectedModelId = flight.Model.Id.ToString();
-                    selectedPilotId = flight.Pilot.Id.ToString();
-                    selectedLocationId = flight.Field.Id.ToString();
-                    // Also populate the selected tags
-                    foreach (var tag in flight.Tags)
-                    {
-                        selectedTags = selectedTags.Append(tag);
-                    }
-                }
             }
         }
         catch (AccessTokenNotAvailableException exception)
@@ -144,66 +134,92 @@ else
         {
             loading = false;
         }
+
     }
 
     protected async Task HandleSubmit()
     {
         message = "Saving...";
-        HttpResponseMessage response;
 
-        Console.WriteLine($"Submit(): flight.Date == {flight.Date}");
-        //TODO // Add selected elements
-        //flight.Model = selectedModel;
+        form.Validate();
+        if (form.IsValid)
+        {
+            HttpResponseMessage response;
 
-        // Add tags to Flight
-        foreach (FlightTagDto tag in selectedTags)
-        {
-            //if (tagId > 0)
-            //{
-            flight.Tags.Add(tag);
-            //}
-        }
+            var client = ClientFactory.CreateClient("FlightLogAPI");
+            if (Id.HasValue)
+            {
+                response = await client.PutAsJsonAsync($"/api/{accountId}/flights", flight);
+            }
+            else
+            {
+                response = await client.PostAsJsonAsync($"/api/{accountId}/flights", flight);
+            }
 
-        // todo Wrap in a try/catch
-        var client = ClientFactory.CreateClient("FlightLogAPI");
-        if (Id.HasValue)
-        {
-            response = await client.PutAsJsonAsync($"/api/{accountId}/flights", flight);
-        }
-        else
-        {
-            response = await client.PostAsJsonAsync($"/api/{accountId}/flights", flight);
-        }
-
-        if (response.StatusCode == System.Net.HttpStatusCode.OK)
-        {
-            var savedFlight = await response.Content.ReadFromJsonAsync<FlightDto>();
-            clearFormData();
-            message = $"Saved flight with Id {savedFlight.Id}";
-        }
-        else
-        {
-            message = $"Failed to save ({response.StatusCode.ToString()})";
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                var savedFlight = await response.Content.ReadFromJsonAsync<FlightDto>();
+                clearFormData();
+                message = $"Saved flight with Id {savedFlight.Id}";
+                SnackbarService.Add($"Flight saved with Id {savedFlight.Id}", Severity.Info);
+            }
+            else
+            {
+                message = $"Failed to save ({response.StatusCode.ToString()})";
+                SnackbarService.Add($"Failed to save ({response.StatusCode.ToString()})", Severity.Error);
+            }
         }
     }
 
-    protected async Task HandleCancel()
+    protected void HandleClear()
     {
         clearFormData();
-        // redirect back???
+        isValid = false;
+        form.ResetValidation();
+       
     }
 
-    void clearFormData()
+    protected override void OnAfterRender(bool firstRender)
+    {
+        // if (firstRender == true)
+        // {
+        //     if (Id.HasValue)
+        //     {
+        //         if (flight != null)
+        //         {
+        //             selectedModel = flight.Model;
+        //             selectedPilot = flight.Pilot;
+        //             selectedField = flight.Field;
+        //             // Also populate the selected tags
+        //             foreach (var tag in flight.Tags)
+        //             {
+        //                 selectedTags = selectedTags.Append(tag);
+        //             }
+        //         }
+        //     }
+        // }
+    }
+
+    private string FlightMinutesValid(float? arg)
+    {
+        if (arg == null)
+        {
+            return "Flight time is required";
+        }
+
+        if (arg <= 0)
+        {
+            isValid = false;
+            return "Flight time must be greater than 0";
+        }
+        return null;
+    }
+
+    private void clearFormData()
     {
         flight = new FlightDto();
-        flight.AccountId = Int32.Parse(accountId);
         flight.Date = new DateTimeOffset(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0, new TimeSpan(0, 0, 0)).Date;
-        message = "Form cleared";
-        selectedTags = new List<FlightTagDto>();
-        selectedModelId = string.Empty;
-        selectedPilotId = string.Empty;
-        selectedLocationId = string.Empty;
-
-        Console.WriteLine($"clearFormData(): flight.Date == {flight.Date}");
+        //selectedTags = new List<FlightTagDto>();
     }
+
 }

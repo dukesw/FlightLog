@@ -72,6 +72,44 @@ namespace WebApi.Controllers
             }
         }
 
+        [HttpGet("model/{modelId}/count")]
+        [Authorize(Roles = "User, Admin")]
+        public async Task<ActionResult> GetCountByModelId(int accountId, int modelId)
+        {
+            try
+            {
+                var count = await _maintenanceLogService.GetMaintenanceLogCountByModelIdAsync(accountId, modelId);
+                return Ok(count);
+            }
+            catch (ArgumentNullException)
+            {
+                return NotFound($"Error finding number of maintenance logs for model id {modelId}");
+            }
+            catch (AccountConflictException)
+            {
+                return Forbid();
+            }
+        }
+
+        [HttpGet("model/{modelId}/skip/{skip}/take/{take}")]
+        [Authorize(Roles = "User, Admin")]
+        public async Task<ActionResult> GetByModelIdPaged(int accountId, int modelId, int skip, int take)
+        {
+            try
+            {
+                var model = await _maintenanceLogService.GetMaintenanceLogsByModelIdPagedAsync(accountId, modelId, skip, take);
+                return Ok(model);
+            }
+            catch (ArgumentNullException)
+            {
+                return NotFound($"Error finding maintenance logs for model id {modelId}");
+            }
+            catch (AccountConflictException)
+            {
+                return Forbid();
+            }
+        }
+
         [HttpPost]
         [Authorize(Roles = "User, Admin")]
         public async Task<ActionResult<MaintenanceLogDto>> Post(int accountId, [FromBody] MaintenanceLogDto newMaintenanceLog)

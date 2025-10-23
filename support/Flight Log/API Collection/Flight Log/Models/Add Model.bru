@@ -1,7 +1,7 @@
 meta {
   name: Add Model
   type: http
-  seq: 4
+  seq: 5
 }
 
 post {
@@ -22,17 +22,17 @@ auth:oauth2 {
   state: 
   pkce: false
   credentials_placement: basic_auth_header
-  credentials_id: 
+  credentials_id: credentials
   token_placement: header
-  token_header_prefix: 
+  token_header_prefix: Bearer
   auto_fetch_token: true
   auto_refresh_token: false
 }
 
 body:json {
   {
-  	"Name" : "P51", 
-  	"Manufacturer":"Hangar 9", 
-  	"PurchasedOn":"2019-06-02"
+    "Name" : "P51", 
+    "Manufacturer":"Hangar 9", 
+    "PurchasedOn":"2019-06-02"
   }
 }

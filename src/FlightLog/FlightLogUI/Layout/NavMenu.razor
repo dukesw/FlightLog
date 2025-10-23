@@ -1,27 +1,12 @@
-﻿<div class="navmenu">
-    <input type="checkbox" title="Menu expand/collapse toggle" id="navmenu-toggle" class="navmenu-icon" />
-    <label for="navmenu-toggle" class="navmenu-icon"><FluentIcon Value="@(new Icons.Regular.Size20.Navigation())" Color="Color.Fill" /></label>
-    <nav class="sitenav" aria-labelledby="main-menu">
-        <FluentNavMenu Id="main-menu" Width="250" Collapsible="true" Title="Navigation menu" @bind-Expanded="expanded" CustomToggle="true">
-            <FluentNavGroup Href="/" Match="NavLinkMatch.All" Title="Flights" Icon="@(new Icons.Regular.Size20.AirplaneTakeOff())" IconColor="Color.Accent">
-                <FluentNavLink Href="/recent-flights">Recent Flights</FluentNavLink>
-                <FluentNavLink Href="/edit-flight">Add Flight</FluentNavLink>
-                <FluentNavLink Href="/search-flights">Search Flights</FluentNavLink>
-            </FluentNavGroup>
-            <FluentNavGroup Href="/models" Title="Models" Icon="@(new Icons.Regular.Size20.Airplane())" IconColor="Color.Accent">
-                <FluentNavLink Href="/edit-model">Add Model</FluentNavLink>
-            </FluentNavGroup>
-            <FluentNavGroup Href="/pilots" Title="Pilots" Icon="@(new Icons.Regular.Size20.Person())" IconColor="Color.Accent">
-                <FluentNavLink Href="/edit-pilot">Add Pilot</FluentNavLink>
-            </FluentNavGroup>
-            <FluentNavGroup Href="/locations" Title="Fields" Icon="@(new Icons.Regular.Size20.GlobeLocation())" IconColor="Color.Accent">
-                <FluentNavLink Href="/edit-location">Add Field</FluentNavLink>
-            </FluentNavGroup>
-            <FluentNavLink Href="/account-settings" Icon="@(new Icons.Regular.Size20.Settings())" IconColor="Color.Accent">Settings</FluentNavLink>
-        </FluentNavMenu>
-    </nav>
-</div>
-
-@code {
-    private bool expanded = true;
-}
+﻿<MudNavMenu>
+    <MudNavLink Href="/" Match="NavLinkMatch.Prefix">Home</MudNavLink>
+    <MudNavGroup Title="Flights" Expanded=true>
+        <MudNavLink Href="/recent-flights" Match="NavLinkMatch.Prefix">Recent Flights</MudNavLink>
+        <MudNavLink Href="/edit-flight" Match="NavLinkMatch.Prefix">Add Flight</MudNavLink>
+        <MudNavLink Href="/search-flights" Match="NavLinkMatch.Prefix">Search Flights</MudNavLink>
+    </MudNavGroup>
+    <MudNavGroup Title="Models" Expanded=true>
+        <MudNavLink Href="/models" Match="NavLinkMatch.Prefix">Model List</MudNavLink>
+        <MudNavLink Href="/edit-model" Match="NavLinkMatch.Prefix">Add Model</MudNavLink>
+    </MudNavGroup>
+</MudNavMenu>

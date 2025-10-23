@@ -4,6 +4,7 @@ using DukeSoftware.FlightLog.ApplicationCore.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 
 namespace DukeSoftware.FlightLog.ApplicationCore.Mapper
 {
@@ -25,7 +26,12 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Mapper
             CreateMap<Pilot, FlightPilotDto>();
             CreateMap<FlightPilotDto, Pilot>(MemberList.None);
 
-            CreateMap<Flight, FlightDto>();
+            CreateMap<Flight, FlightDto>()
+
+                .ForMember(dest => dest.TagIds, opt => opt.MapFrom(src => src.Tags));
+            
+            
+            
             // .ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.Date.ToString("yyyy-MM-ddTHH:mm:ssZ")));
             //.IncludeMembers(s => s.Field, s => s.Model, s => s.Pilot, s => s.Battery);
             //      .Include<Model, ModelDto>();
@@ -38,12 +44,19 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Mapper
                 .ForMember(dest => dest.Field, opt => opt.Ignore())
                 .ForMember(dest => dest.FieldId, opt => opt.MapFrom(src => src.Field.Id))
                 .ForMember(dest => dest.Pilot, opt => opt.Ignore())
-                .ForMember(dest => dest.PilotId, opt => opt.MapFrom(src => src.Pilot.Id))
-                .ForMember(dest => dest.Tags, opt => opt.Ignore());
+                .ForMember(dest => dest.PilotId, opt => opt.MapFrom(src => src.Pilot.Id));
+                //.ForMember(dest => dest.Tags, opt => opt.Ignore());
+                
                 
 
             CreateMap<FlightTag, FlightTagDto>();
             CreateMap<FlightTagDto, FlightTag>();
+
+            CreateMap<FlightTag, int>()
+                .ConvertUsing(src => src.Id);
+            //    .ForMember(dest => dest, opt => opt.MapFrom(src => src.Id));
+            //CreateMap<int, FlightTag>()
+            //    .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src));
 
             CreateMap<Location, LocationDto>();
 

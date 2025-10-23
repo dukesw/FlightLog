@@ -3,14 +3,14 @@
     "Name": "API and UI",
     "Projects": [
       {
-        "Path": "FlightLogUI\\FlightLogUI.csproj",
-        "Action": "Start",
-        "DebugTarget": "https"
-      },
-      {
         "Path": "WebApi\\WebApi.csproj",
         "Action": "Start",
         "DebugTarget": "Web"
+      },
+      {
+        "Path": "FlightLogUI\\FlightLogUI.csproj",
+        "Action": "Start",
+        "DebugTarget": "https"
       }
     ]
   }

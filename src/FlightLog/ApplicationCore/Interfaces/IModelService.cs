@@ -10,6 +10,9 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Interfaces
     public interface IModelService
     {
         Task<IList<ModelDto>> GetModelsAsync(int accountId);
+        Task<int> GetModelsCountsAsync(int accountId);
+        Task<IList<ModelDto>> GetModelsByPageAsync(int accountId, int skip, int take);
+        Task<IList<ModelDto>> GetModelsByPageSortedAsync(int accountId, string sortBy, bool isDescending, int skip, int take); 
         Task<IList<ModelDto>> GetModelsByIsActiveAsync(int accountId, bool isActive);
         Task<ModelDto> GetModelByIdAsync(int accountId, int id);
         Task<ModelDto> AddModelAsync(int accountId, ModelDto model);

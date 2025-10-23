@@ -98,7 +98,7 @@ namespace Web
                                   });
             });
 
-            services.AddAutoMapper(typeof(FlightProfile));
+            services.AddAutoMapper(cfg => { }, typeof(FlightProfile));
             //services.AddAutoMapper(Assembly.LoadFrom("DukeSoftware.FlightLog.ApplicationCore"));
 
             // TODO How to add .AddNewtonsoftJson(options => options.SerializerSettings.TypeNameHandling.)

@@ -22,11 +22,37 @@ namespace DukeSoftware.FlightLog.Shared.Dtos
         // public PowerPlant FlyingOn { get; set; } // add later. Will allow tracking of the hours per engine. v2
         [Required(ErrorMessage = "Flight time is required")]
         [Range(1, int.MaxValue, ErrorMessage ="Flight time must be greater than 0 minutes")]
-        public float FlightMinutes { get; set; }
+        public float? FlightMinutes { get; set; }
         //public Pilot Pilot { get; set; }  // TODO add a pilot class
         public virtual IList<MediaLinkDto> MediaLinks { get; set; }
 
-        public virtual IList<FlightTagDto> Tags { get; set; }
+       // public virtual IList<FlightTagDto> Tags { get; set; }
+
+        public virtual IEnumerable<int> TagIds
+        {
+            get;
+            //{
+            //    if (Tags != null)
+            //    {
+            //        foreach (var tag in Tags)
+            //        {
+            //            yield return tag.Id;
+            //        }
+            //    }
+            //}
+            set;
+            //{
+                //Tags = new List<FlightTagDto>();
+                //if (value != null)
+                //{
+                //    foreach (var id in value)
+                //    {
+                //        Tags.Add(new FlightTagDto { Id = id });
+                //    }
+                //}
+            //}
+        }
+
 
 
         public int AccountId { get; set; }
@@ -36,7 +62,8 @@ namespace DukeSoftware.FlightLog.Shared.Dtos
             Field = new FlightLocationDto();
             Model = new FlightModelDto();
             Pilot = new FlightPilotDto();
-            Tags = new List<FlightTagDto>();
+       //     Tags = new List<FlightTagDto>();
+            TagIds = new List<int>(); ;
             MediaLinks = new List<MediaLinkDto>();
         }
     }
@@ -45,17 +72,29 @@ namespace DukeSoftware.FlightLog.Shared.Dtos
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 
     public class FlightModelDto
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 
     public class FlightLocationDto
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 }

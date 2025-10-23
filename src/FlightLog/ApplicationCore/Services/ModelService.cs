@@ -33,6 +33,7 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
             Guard.AgainstNull(model, "model");
             Guard.AgainstAccountNumberMismatch(accountId, model.AccountId, "accountId", "model.AccountId");
             var modelEntity = _mapper.Map<ModelDto, Model>(model);
+            modelEntity.TotalFlights = modelEntity.LoggedFlights + modelEntity.UnloggedFlights;
 
             try
             {
@@ -80,6 +81,27 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
             return _mapper.Map<IList<Model>, IList<ModelDto>>(result);
         }
 
+        public async Task<int> GetModelsCountsAsync(int accountId)
+        {
+            var spec = new GetModelsByAccountId(accountId);
+            var result = await _modelRepository.GetCountBySpecAsync(spec);
+            return result;
+        }
+
+        public async Task<IList<ModelDto>> GetModelsByPageAsync(int accountId, int skip, int take)
+        {
+            var spec = new GetModelsByAccountIdByPage(accountId, skip, take);
+            var result = await _modelRepository.GetBySpecAsync(spec);
+            return _mapper.Map<IList<Model>, IList<ModelDto>>(result);
+        }
+        public async Task<IList<ModelDto>> GetModelsByPageSortedAsync(int accountId, string sortBy, bool isDescending, int skip, int take)
+        {
+            var spec = new GetModelsByAccountIdByPage(accountId, skip, take, sortBy, isDescending);
+            var result = await _modelRepository.GetBySpecAsync(spec);
+            return _mapper.Map<IList<Model>, IList<ModelDto>>(result);
+        }
+        
+
         public async Task<IList<ModelDto>> GetModelsByIsActiveAsync(int accountId, bool isActive)
         {
             var spec = new GetModelsByAccountIdAndIsActive(accountId, isActive);
@@ -93,6 +115,7 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
             Guard.AgainstAccountNumberMismatch(accountId, model.AccountId, "accountId", "model.AccountId");
 
             var modelEntity = _mapper.Map<ModelDto, Model>(model);
+            modelEntity.TotalFlights = modelEntity.LoggedFlights + modelEntity.UnloggedFlights;
 
             var result = await _modelRepository.UpdateAsync(modelEntity);
             if (result != null)

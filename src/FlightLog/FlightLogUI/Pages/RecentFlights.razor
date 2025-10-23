@@ -1,29 +1,43 @@
 ﻿@page "/recent-flights"
-@attribute [Authorize]
 
+@attribute [Authorize]
 @inject IHttpClientFactory ClientFactory
 
-<h3>RecentFlights</h3>
-<p>These are flights from the last month.</p>
 
-<FluentDataGrid Items="@recentFlights" AutoFit="true" Style="width: 100%;" ShowHover="true">
-    @* Pagination="@pagination"> *@
-    <PropertyColumn Property="@(p => p.Id)" Sortable="true" />
-    <PropertyColumn Property="@(p => p.Date)" Format="d/M/yyyy" Sortable="true" />
-    <PropertyColumn Property="@(p => p.Model.Name)" Sortable="true" />
-    <PropertyColumn Property="@(p => p.Pilot.Name)" Sortable="true" />
-    <PropertyColumn Property="@(p => p.Field.Name)" Sortable="true" />
-    <PropertyColumn Property="@(p => p.FlightMinutes)" Sortable="true" />
-    <TemplateColumn Title="Edit">
-        <a href="/edit-flight/@context.Id">Edit</a>
-    </TemplateColumn>
-</FluentDataGrid>
+<h3>Recent Flights</h3>
+
+@if (loading)
+{
+    @*<p>Loading...</p>*@
+    @* <div class="spinner"></div> *@
+    <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+
+}
+else
+{
+    <MudDataGrid T="FlightDto" ServerData="ServerReload" ColumnResizeMode="ResizeMode.Column" Filterable=false LoadingProgressColor="Color.Primary">
+        <Columns>
+            <PropertyColumn Property="x => x.Date" Format="d-MMM-yyyy"/>
+            <PropertyColumn Property="x => x.Model.Name" Title="Model" />
+            <PropertyColumn Property="x => x.FlightMinutes" Title="Minutes" />
+            <PropertyColumn Property="x => x.Field.Name" Title="Field" />
+            <MudBlazor.TemplateColumn Context="flight">
+                <CellTemplate>
+                    <MudLink Href="@($"/edit-flight/{flight.Item.Id}")">Edit</MudLink>
+                </CellTemplate>
+            </MudBlazor.TemplateColumn>
+        </Columns>
+        <PagerContent>
+            <MudDataGridPager T="FlightDto" />
+        </PagerContent>
+    </MudDataGrid>
+}
 
 @code {
-    private IQueryable<FlightDto> recentFlights;
-    private FlightDto[] recentFlightsResult;
+    private IList<FlightDto> recentFlights = new List<FlightDto>();
     [CascadingParameter]
     private Task<AuthenticationState> authenticationState { get; set; }
+    private int recentFlightCount = 0;
     private bool loading = false;
 
     protected override async Task OnInitializedAsync()
@@ -34,8 +48,7 @@
             var user = (await authenticationState).User;
             var accountId = user.FindFirst("https://flightlog.co.nz/claims/account_id").Value;
             var client = ClientFactory.CreateClient("FlightLogAPI");
-            recentFlightsResult = await client.GetFromJsonAsync<FlightDto[]>($"/api/{accountId}/flights/recent");
-            recentFlights = recentFlightsResult.AsQueryable();
+            recentFlightCount = await client.GetFromJsonAsync<int>($"/api/{accountId}/flights/recent/count");
         }
         catch (AccessTokenNotAvailableException exception)
         {
@@ -45,5 +58,24 @@
         {
             loading = false;
         }
+    }
+
+    private async Task<GridData<FlightDto>> ServerReload(GridState<FlightDto> state)
+    {
+        try
+        {
+            loading = true;
+            var user = (await authenticationState).User;
+            var accountId = user.FindFirst("https://flightlog.co.nz/claims/account_id").Value;
+            var client = ClientFactory.CreateClient("FlightLogAPI");
+            recentFlights = await client.GetFromJsonAsync<FlightDto[]>($"/api/{accountId}/flights/recent/skip/{state.Page * state.PageSize}/take/{state.PageSize}");
+
+            return new GridData<FlightDto>() { Items = recentFlights, TotalItems = recentFlightCount };
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+        return new GridData<FlightDto>();    // Just ensursing all paths return a value
     }
 }

@@ -1,14 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using DukeSoftware.FlightLog.ApplicationCore.Entities;
+﻿using DukeSoftware.FlightLog.ApplicationCore.Entities;
 using DukeSoftware.FlightLog.ApplicationCore.Exceptions;
 using DukeSoftware.FlightLog.ApplicationCore.Interfaces;
+using DukeSoftware.FlightLog.ApplicationCore.Services;
 using DukeSoftware.FlightLog.Shared.Dtos;
 using DukeSoftware.GuardClauses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace WebApi.Controllers
 {
@@ -35,6 +36,59 @@ namespace WebApi.Controllers
                 Guard.AgainstAccountNumberMismatch(GetAccountIdClaim(), accountId.ToString(), "userClaim.accountId", "accountId");
                 var models = await _modelService.GetModelsAsync(accountId);
                 return Ok(models.ToArray());
+            }
+            catch (AccountConflictException)
+            {
+                return Forbid();
+            }
+        }
+
+        [HttpGet("count")]
+        [Authorize(Roles = "User, Admin")]
+        public async Task<ActionResult> GetCount(int accountId)
+        {
+            try
+            {
+                Guard.AgainstAccountNumberMismatch(GetAccountIdClaim(), accountId.ToString(), "userClaim.accountId", "accountId");
+                var modelCount = await _modelService.GetModelsCountsAsync(accountId);
+                return Ok(modelCount);
+            }
+            catch (AccountConflictException)
+            {
+                return Forbid();
+            }
+            catch (Exception ex)
+            {
+                Console.Write(ex.ToString());
+                return BadRequest("Error getting model count: " + ex.ToString());
+            }
+        }
+
+        [HttpGet("skip/{skip}/take/{take}")]
+        [Authorize(Roles = "User, Admin")]
+        public async Task<ActionResult> GetByPage(int accountId, int skip, int take)
+        {
+            try
+            {
+                Guard.AgainstAccountNumberMismatch(GetAccountIdClaim(), accountId.ToString(), "userClaim.accountId", "accountId");
+                var models = await _modelService.GetModelsByPageAsync(accountId, skip, take);
+                return Ok(models);
+            }
+            catch (AccountConflictException)
+            {
+                return Forbid();
+            }
+        }
+
+        [HttpGet("sortby/{sortBy}/desc/{isDescending}/skip/{skip}/take/{take}")]
+        [Authorize(Roles = "User, Admin")]
+        public async Task<ActionResult> GetByPageSorted(int accountId, string sortBy, bool isDescending, int skip, int take)
+        {
+            try
+            {
+                Guard.AgainstAccountNumberMismatch(GetAccountIdClaim(), accountId.ToString(), "userClaim.accountId", "accountId");
+                var models = await _modelService.GetModelsByPageSortedAsync(accountId, sortBy, isDescending, skip, take);
+                return Ok(models);
             }
             catch (AccountConflictException)
             {

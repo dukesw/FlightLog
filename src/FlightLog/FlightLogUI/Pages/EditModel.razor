@@ -1,5 +1,7 @@
 ﻿@page "/edit-model/{id:int?}"
 @attribute [Authorize]
+@inject IHttpClientFactory ClientFactory
+@inject ISnackbar SnackbarService
 
 @if (Id != null)
 {
@@ -9,8 +11,229 @@ else
 {
     <h3>Add Model</h3>
 }
+@if (loading)
+{
+    <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+}
+else
+{
+    <MudGrid Spacing="6" Class="pt-8">
+        <MudForm @ref="form" Class="mud-width-full px-4">
+            <MudItem xs="12" sm="6">
+                <MudTextField @bind-Value="model.Name" Label="Name" Variant="Variant.Outlined" Required="true" RequiredError="Name is required" />
+            </MudItem>
+            <MudItem xs="12" sm="6">
+                <MudTextField @bind-Value="model.Manufacturer" Label="Manufacturer" Variant="Variant.Outlined" Class="mud-width-full" />
+            </MudItem>
+            <MudItem xs="12" sm="6">
+                <MudSelect @bind-Value="model.Status" Label="Status" Variant="Variant.Outlined" Clearable=true Required="true" OnlyValidateIfDirty="false" RequiredError="Status is required">
+                    @foreach (var status in modelStatuses)
+                    {
+                        <MudSelectItem Value="status">@status.Name</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudItem>
+            <MudItem xs="6" sm="4" lg="2">
+                <MudNumericField @bind-Value="model.TotalFlights" Label="Total Flights" Variant="Variant.Outlined" ReadOnly="true" />
+            </MudItem>
+            <MudItem xs="6" sm="4" lg="2">
+                <MudNumericField @bind-Value="model.UnloggedFlights" Label="Unlogged Flights" Variant="Variant.Outlined" Required="true" RequiredError="Name is required" Validation="@(new Func<int, string>(UnloggedFlightsValid))" />
+            </MudItem>
+            <MudItem xs="12" sm="6">
+                <MudDatePicker @bind-Date="model.PurchasedOn" Label="Purchase Date" Variant="Variant.Outlined" Required="true" RequiredError="Purchase date is required" ShowToolbar=false OpenTo="OpenTo.Date" DateFormat="d-MMM-yyyy" Clearable="true" />
+            </MudItem>
+            <MudItem xs="12" sm="6">
+                <MudDatePicker @bind-Date="model.MaidenedOn" Label="Maidened On" Variant="Variant.Outlined" ShowToolbar=false OpenTo="OpenTo.Date" DateFormat="d-MMM-yyyy" Clearable="true" />
+            </MudItem>
+            <MudItem xs="12" sm="6">
+                <MudDatePicker @bind-Date="model.DisposedOn" Label="Disposed Date" Variant="Variant.Outlined" ShowToolbar=false OpenTo="OpenTo.Date" DateFormat="d-MMM-yyyy" Clearable="true" />
+            </MudItem>
+            <MudItem xs="12" sm="6">
+                <MudTextField @bind-Value="model.PowerPlant" Label="Powered By" Variant="Variant.Outlined" />
+            </MudItem>
+            <MudItem xs="6" sm="4" lg="2">
+                <MudNumericField @bind-Value="model.SortOrder" Label="Sort Order" Variant="Variant.Outlined" Required="true" RequiredError="Sort order is required" />
+            </MudItem>
+            <MudItem xs="12">
+                <MudTextField @bind-Value="model.Notes" Label="Notes" Variant="Variant.Outlined" AutoGrow Lines="3" Clearable=true />
+            </MudItem>
+        </MudForm>
+       
+        <MudItem xs="12">
+            <MudButton Variant="Variant.Filled" OnClick="@HandleClear">Clear</MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@HandleSubmit" Disabled="@(!form.IsValid)">Save</MudButton>
+        </MudItem>
+
+        <MudDataGrid T="MaintenanceLogDto" ServerData="ServerReload" ColumnResizeMode="ResizeMode.Column" Filterable=false LoadingProgressColor="Color.Primary">
+            <Columns>
+                <PropertyColumn Property="x => x.Date" Title="Date" />
+                <PropertyColumn Property="x => x.Type.Name" Title="Type" />
+                <PropertyColumn Property="x => x.Details.Substring(0, int.Min(x.Details.Length, 100))" Title="Details" />
+
+
+                <MudBlazor.TemplateColumn Context="maintenanceLog">
+                    <CellTemplate>
+                        <MudLink Href="@($"/edit-maintenancelog/{maintenanceLog.Item.Id}")">Edit</MudLink>
+                    </CellTemplate>
+                </MudBlazor.TemplateColumn>
+            </Columns>
+            <PagerContent>
+                <MudDataGridPager T="MaintenanceLogDto" />
+            </PagerContent>
+        </MudDataGrid>
+        <MudItem xs="12">
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@HandleAddLog" Disabled="@(!form.IsValid)">Add</MudButton>
+        </MudItem>
+
+    </MudGrid>
+}
+
 
 @code {
+
+    private String accountId = "0";
+
+    [SupplyParameterFromForm]
+    private ModelDto model { get; set; } = new ();
+    private IList<ModelStatusDto> modelStatuses = new List<ModelStatusDto>();
+    private MudForm form = new();
+
+    //private bool isValid = false;
+
     [Parameter]
     public int? Id { get; set; }
+
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationState { get; set; }
+    public bool loading = false;
+    private int maintenanceLogCount = 0;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            loading = true;
+            model ??= new ModelDto();
+            var user = (await authenticationState).User;
+            accountId = user.FindFirst("https://flightlog.co.nz/claims/account_id").Value;
+
+            model.AccountId = Int32.Parse(accountId);
+
+            var client = ClientFactory.CreateClient("FlightLogAPI");
+
+            modelStatuses = await client.GetFromJsonAsync<List<ModelStatusDto>>($"/api/modelstatuses");
+
+            if (Id.HasValue)
+            {
+                model = await client.GetFromJsonAsync<ModelDto>($"/api/{accountId}/models/{Id.Value}");
+                maintenanceLogCount = await client.GetFromJsonAsync<int>($"/api/{accountId}/maintenancelogs/model/{model.Id}/count");
+            }
+            else
+            {
+                form.IsValid = false;    // Will set IsValid to false on init for a new model 
+                maintenanceLogCount = 0;
+            }
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+        finally
+        {
+            loading = false;
+        }
+    }
+
+    protected async Task HandleSubmit()
+    {
+        await form.Validate();
+        if (form.IsValid)
+        {
+            HttpResponseMessage response;
+
+            // todo Wrap in a try/catch
+            var client = ClientFactory.CreateClient("FlightLogAPI");
+            if (Id.HasValue)
+            {
+                response = await client.PutAsJsonAsync($"/api/{accountId}/models", model);
+            }
+            else
+            {
+                response = await client.PostAsJsonAsync($"/api/{accountId}/models", model);
+            }
+
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                var savedModel = await response.Content.ReadFromJsonAsync<ModelDto>();
+                SnackbarService.Add($"Model saved with Id {savedModel.Id}", Severity.Info);
+                clearFormData();
+            }
+            else
+            {
+                SnackbarService.Add($"Failed to save ({response.StatusCode.ToString()})", Severity.Error);
+            }
+        }
+    }
+
+    protected async Task HandleAddLog()
+    {
+        var client = ClientFactory.CreateClient("FlightLogAPI");
+        maintenanceLogCount = await client.GetFromJsonAsync<int>($"/api/{accountId}/maintenancelogs/model/{model.Id}/count");
+
+        // finish me :)
+    }
+
+    private async Task<GridData<MaintenanceLogDto>> ServerReload(GridState<MaintenanceLogDto> state)
+    {
+        try
+        {
+            if (model.Id > 0)
+            { 
+                var user = (await authenticationState).User;
+                var accountId = user.FindFirst("https://flightlog.co.nz/claims/account_id").Value;
+              
+                
+                
+                var client = ClientFactory.CreateClient("FlightLogAPI");
+                var maintenanceLogs = await client.GetFromJsonAsync<List<MaintenanceLogDto>>($"/api/{accountId}/maintenancelogs/model/{model.Id}/skip/{state.Page * state.PageSize}/take/{state.PageSize}");
+               
+                return new GridData<MaintenanceLogDto>() { Items = maintenanceLogs ?? new List<MaintenanceLogDto>(), TotalItems = maintenanceLogCount };
+            }
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+        return new GridData<MaintenanceLogDto>() { Items = new List<MaintenanceLogDto>(), TotalItems = 0 };    // Just ensursing all paths return a value
+    }
+
+    private string UnloggedFlightsValid(int arg)
+    {
+        if (arg < 0)
+        {
+            //isValid = false;
+            return "Unlogged flights cannot be negative";
+        }
+        return null;
+    }
+
+    void HandleClear()
+    {
+        clearFormData();
+        //isValid = false;
+        form.ResetValidation();
+        form.ResetAsync();
+        form.IsValid = false;
+
+        //isValid = false;
+
+    }
+
+    void clearFormData()
+    {
+        model = new ModelDto();
+        model.AccountId = Int32.Parse(accountId);
+
+    }
 }

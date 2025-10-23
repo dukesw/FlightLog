@@ -56,6 +56,38 @@ namespace WebApi.Controllers
             }
         }
 
+        [HttpGet("recent/count")]
+        [Authorize(Roles = "User, Admin")]
+        public async Task<ActionResult> GetRecentCount(int accountId)
+        {
+            try
+            {
+                Guard.AgainstAccountNumberMismatch(GetAccountIdClaim(), accountId.ToString(), "userClaim.accountId", "accountId");
+                var count = await _flightService.GetRecentFlightCountAsync(accountId);
+                return Ok(count);
+            }
+            catch (AccountConflictException)
+            {
+                return Forbid();
+            }
+        }
+
+        [HttpGet("recent/skip/{skip}/take/{take}")]
+        [Authorize(Roles = "User, Admin")]
+        public async Task<ActionResult> GetRecentByPage(int accountId, int skip, int take)
+        {
+            try
+            {
+                Guard.AgainstAccountNumberMismatch(GetAccountIdClaim(), accountId.ToString(), "userClaim.accountId", "accountId");
+                var flights = await _flightService.GetRecentFlightsByPageAsync(accountId, skip, take);
+                return Ok(flights);
+            }
+            catch (AccountConflictException)
+            {
+                return Forbid();
+            }
+        }
+
         [HttpGet("{id}")]
         [Authorize(Roles = "User, Admin")]
         public async Task<ActionResult<FlightDto>> GetById(int accountId, int id)
@@ -116,6 +148,47 @@ namespace WebApi.Controllers
                 return Forbid();
             }
         }
+
+        [HttpGet("model/{modelId}/count")]
+        [Authorize(Roles = "User, Admin")]
+        public async Task<ActionResult<List<FlightDto>>> GetCountByModelId(int accountId, int modelId)
+        {
+            try
+            {
+                Guard.AgainstAccountNumberMismatch(GetAccountIdClaim(), accountId.ToString(), "userClaim.accountId", "accountId");
+                var flights = await _flightService.GetFlightCountByModelAsync(accountId, modelId);
+                return Ok(flights);
+            }
+            catch (ArgumentNullException)
+            {
+                return NotFound($"Error finding flights for model {modelId}");
+            }
+            catch (AccountConflictException)
+            {
+                return Forbid();
+            }
+        }
+
+        [HttpGet("model/{modelId}/skip/{skip}/take/{take}")]
+        [Authorize(Roles = "User, Admin")]
+        public async Task<ActionResult<List<FlightDto>>> GetByModelIdPaged(int accountId, int modelId, int skip, int take)
+        {
+            try
+            {
+                Guard.AgainstAccountNumberMismatch(GetAccountIdClaim(), accountId.ToString(), "userClaim.accountId", "accountId");
+                var flights = await _flightService.GetFlightsByModelPagedAsync(accountId, modelId, skip, take);
+                return Ok(flights);
+            }
+            catch (ArgumentNullException)
+            {
+                return NotFound($"Error finding flights for model {modelId}");
+            }
+            catch (AccountConflictException)
+            {
+                return Forbid();
+            }
+        }
+
 
         [HttpGet("model/{modelId}/from/{startDate}/to/{endDate}")]
         [Authorize(Roles = "User, Admin")]

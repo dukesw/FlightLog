@@ -16,6 +16,12 @@ Apply a migration to the database:
 Remove a migration, once this has been unapplied from the database by running `update-database` with a lower migration version.  
 `remove-migration -StartupProject Infrastructure -Project Infrastructure`
 
+## Production Migrations
+Use a SQL script is the preferred way. The following will create an imdepotent SQL script that can be run 
+against the production instance.
+
+`Script-Migration -Idempotent`
+
 ## Identity Server Setup
 
 Identity Server uses two different DbContexts to store data. Set this up using the following commands:  

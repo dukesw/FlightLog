@@ -1,8 +1,198 @@
-﻿@page "/search-flights"
+﻿@page "/search-flights/"
+
 @attribute [Authorize]
+@inject IHttpClientFactory ClientFactory
+@inject ISnackbar SnackbarService
 
 <h3>Search Flights</h3>
 
+@if (loading)
+{
+    <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+}
+else
+{
+    <MudGrid Spacing="6" Class="pt-8">
+        <MudForm @ref="form" Class="mud-width-full px-4">
+            <MudItem xs="12" sm="6">
+                <MudDatePicker @bind-Date="flightSearch.fromDate" Label="From Date" Variant="Variant.Outlined" ShowToolbar=false OpenTo="OpenTo.Date" DateFormat="d-MMM-yyyy" />
+            </MudItem>
+            <MudItem xs="12" sm="6">
+                <MudDatePicker @bind-Date="flightSearch.toDate" Label="To Date" Variant="Variant.Outlined" ShowToolbar=false OpenTo="OpenTo.Date" DateFormat="d-MMM-yyyy" />
+            </MudItem>
+            <MudItem xs="12" sm="6">
+                <MudSelect @bind-Value="flightSearch.model" Label="Model" Variant="Variant.Outlined" Clearable=true>
+                    @foreach (var model in models)
+                    {
+                        <MudSelectItem Value="model">@model.Name</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudItem>
+        </MudForm>
+        <MudItem xs="12">
+            <MudButton Variant="Variant.Filled" OnClick="@HandleClear">Clear</MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@HandleSubmit">Search</MudButton>
+        </MudItem>
+    </MudGrid>
+    <MudDataGrid @ref="searchResultsGrid" T="FlightDto" ServerData="SearchFlightsLoad" ColumnResizeMode="ResizeMode.Column" Filterable=false LoadingProgressColor="Color.Primary">
+        <Columns>
+            <PropertyColumn Property="x => x.Date" Format="d-MMM-yyyy" />
+            <PropertyColumn Property="x => x.Model.Name" Title="Model" />
+            <PropertyColumn Property="x => x.FlightMinutes" Title="Minutes" />
+            <PropertyColumn Property="x => x.Field.Name" Title="Field" />
+            <MudBlazor.TemplateColumn Context="flight">
+                <CellTemplate>
+                    <MudLink Href="@($"/edit-flight/{flight.Item.Id}")">Edit</MudLink>
+                </CellTemplate>
+            </MudBlazor.TemplateColumn>
+        </Columns>
+        <PagerContent>
+            <MudDataGridPager T="FlightDto" />
+        </PagerContent>
+    </MudDataGrid>
+}
 @code {
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationState { get; set; }
+    private int recentFlightCount = 0;
+    private bool loading = false;
+
+    private MudForm form;
+    private MudDataGrid<FlightDto> searchResultsGrid;
+
+    private bool isValid = false;
+
+    private IList<FlightModelDto> models = new List<FlightModelDto>();
+    private String accountId = "0";
+
+    private FlightSearchDto flightSearch = new FlightSearchDto();
+
+
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "from")]
+    public DateTime? FromDate { get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "to")]
+    public DateTime? ToDate { get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "modelId")]
+    public int? searchModelId { get; set; }
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            loading = true;
+
+            var user = (await authenticationState).User;
+            accountId = user.FindFirst("https://flightlog.co.nz/claims/account_id").Value;
+
+            var client = ClientFactory.CreateClient("FlightLogAPI");
+            models = await client.GetFromJsonAsync<List<FlightModelDto>>($"/api/{accountId}/models");
+        }
+        finally
+        {
+            loading = false;
+        }
+    }
+
+    protected Task HandleSubmit()
+    {
+        return searchResultsGrid.ReloadServerData();
+    }
+
+
+    protected async Task HandleClear()
+    {
+        flightSearch = new FlightSearchDto();
+    }
+
+    private async Task<GridData<FlightDto>> SearchFlightsLoad(GridState<FlightDto> state)
+    {
+        try
+        {
+
+            var user = (await authenticationState).User;
+            var accountId = user.FindFirst("https://flightlog.co.nz/claims/account_id").Value;
+
+            if (flightSearch.model != null)
+            {
+
+                if (!flightSearch.fromDate.HasValue && !flightSearch.toDate.HasValue)
+                {
+                    // flights = await GetFlightsByModel(searchModel.Id);
+
+
+                    //var results = await client.GetFromJsonAsync<List<MaintenanceLogDto>>($"/api/{accountId}/maintenancelogs/model/{model.Id}/skip/{state.Page * state.PageSize}/take/{state.PageSize}");
+                    var results = await GetFlightsByModel(accountId, flightSearch.model.Id, state.Page * state.PageSize, state.PageSize);
+                    var resultCount = await GetFlightCountByModel(accountId, flightSearch.model.Id);
+                    return new GridData<FlightDto>() { Items = results, TotalItems = resultCount };
+
+                }
+
+                if (FromDate.HasValue && ToDate.HasValue)
+                {
+                    // flights = await GetFlightsByModelAndDate(searchModel.Id, FromDate.Value, ToDate.Value);
+                    //return;
+                }
+
+                var startDate = FromDate.HasValue ? FromDate.Value : DateTime.Now.Date.AddYears(-1);
+                var endDate = ToDate.HasValue ? ToDate.Value : DateTime.Now.Date.AddDays(1).AddSeconds(-1);
+
+                //   flights = await GetFlightsByModelAndDate(searchModel.Id, startDate, endDate);
+                //return;
+
+            }
+
+            // Handle the case where searchModel is null or Id is not valid
+            var startDateFallback = FromDate.HasValue ? FromDate.Value : DateTime.Now.Date.AddYears(-1);
+            var endDateFallback = ToDate.HasValue ? ToDate.Value : DateTime.Now.Date.AddDays(1).AddSeconds(-1);
+
+            // flights = await GetFlightsByDate(startDateFallback, endDateFallback);
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+        return new GridData<FlightDto>();    // Just ensursing all paths return a value
+    }
+
+    private async Task<List<FlightDto>> GetFlightsByModel(string accountId, int modelId, int skip, int take)
+    {
+        var client = ClientFactory.CreateClient("FlightLogAPI");
+        return await client.GetFromJsonAsync<List<FlightDto>>($"/api/{accountId}/flights/model/{modelId}/skip/{skip}/take/{take}");
+    }
+
+    private async Task<int> GetFlightCountByModel(string accountId, int modelId)
+    {
+        var client = ClientFactory.CreateClient("FlightLogAPI");
+        return await client.GetFromJsonAsync<int>($"/api/{accountId}/flights/model/{modelId}/count");
+    }
+
+    private async Task<List<FlightDto>> GetFlightsByDate(DateTime startDate, DateTime endDate)
+    {
+        var client = ClientFactory.CreateClient("FlightLogAPI");
+        return await client.GetFromJsonAsync<List<FlightDto>>($"/api/{accountId}/flights/from/{startDate.ToString("yyyy-MM-dd")}/to/{endDate.ToString("yyyy-MM-dd")}");
+    }
+
+    private async Task<List<FlightDto>> GetFlightsByModelAndDate(int modelId, DateTime startDate, DateTime endDate)
+    {
+        var client = ClientFactory.CreateClient("FlightLogAPI");
+        return await client.GetFromJsonAsync<List<FlightDto>>($"/api/{accountId}/flights/model/{modelId}/from/{startDate.ToString("yyyy-MM-dd")}/to/{endDate.ToString("yyyy-MM-dd")}");
+    }
+
+
+
+    // Helper class for the search
+    private class FlightSearchDto
+    {
+        public FlightModelDto? model { get; set; }
+        public DateTime? fromDate { get; set; }
+        public DateTime? toDate { get; set; }
+    }
 
 }

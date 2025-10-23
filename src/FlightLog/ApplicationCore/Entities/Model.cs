@@ -21,6 +21,8 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Entities
         public string Notes { get; set; }
         public int SortOrder { get; set; }
         public int TotalFlights { get; set; }
+        public int LoggedFlights { get; set; }    // Flights that were logged in the app.
+        public int UnloggedFlights { get; set; }  // Flights that were not logged in the app. 
         public ICollection<Flight> Flights { get; }
         public ICollection<MaintenanceLog> MaintenanceLogs { get;  }
 

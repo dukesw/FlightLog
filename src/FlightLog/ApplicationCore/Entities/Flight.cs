@@ -41,7 +41,7 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Entities
                 this.BatteryId = flightDto.BatteryId;
                 if (flightDto.Pilot is not null) { this.PilotId = flightDto.Pilot.Id; }
                 this.Details = flightDto.Details;
-                this.FlightMinutes = flightDto.FlightMinutes;
+                this.FlightMinutes = (float)flightDto.FlightMinutes;
             }
         }
     }
