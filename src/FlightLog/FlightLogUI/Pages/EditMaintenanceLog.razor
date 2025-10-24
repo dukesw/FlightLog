@@ -1,0 +1,164 @@
+﻿@page "/edit-maintenancelog/model/{modelId:int}/{id:int?}"
+@attribute [Authorize]
+@inject IHttpClientFactory ClientFactory
+@inject ISnackbar SnackbarService
+
+@if (Id != null)
+{
+    <h3>Edit Maintenance Log</h3>
+}
+else
+{
+    <h3>Add Maintenance Log</h3>
+}
+@if (loading)
+{
+    <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+}
+else
+{
+    <MudGrid Spacing="6" Class="pt-8">
+        <MudForm @ref="form" Class="mud-width-full px-4" @bind-IsValid="@formValid">
+            <MudItem xs="12" sm="6">
+                <MudDatePicker @bind-Date="maintenanceLog.Date" Required="true" RequiredError="Type is required" Label="Date" Variant="Variant.Outlined" ShowToolbar=false OpenTo="OpenTo.Date" DateFormat="d-MMM-yyyy" Clearable="true" />
+            </MudItem>
+            
+            <MudItem xs="12" sm="6">
+                <MudSelect @bind-Value="maintenanceLog.Type" Label="Type" Variant="Variant.Outlined" Clearable=true Required="true" RequiredError="Type is required">
+                    @foreach (var logType in maintenanceLogTypes)
+                    {
+                        <MudSelectItem Value="logType">@logType.Name</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudItem>
+            <MudItem xs="12">
+                <MudTextField @bind-Value="maintenanceLog.Details" Label="Details" Variant="Variant.Outlined" AutoGrow Lines="3" Clearable=true Required="true" RequiredError="Details are required" />
+            </MudItem>
+        </MudForm>
+       
+        <MudItem xs="12">
+            <MudButton Variant="Variant.Filled" OnClick="@HandleClear">Clear</MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@HandleSubmit" Disabled="@(!formValid)">Save</MudButton>
+        </MudItem>
+
+    </MudGrid>
+}
+
+
+@code {
+
+    private String accountId = "0";
+
+    [SupplyParameterFromForm]
+    private MaintenanceLogDto maintenanceLog { get; set; } = new ();
+    private IList<MaintenanceLogTypeDto> maintenanceLogTypes = new List<MaintenanceLogTypeDto>();
+    private MudForm form = new();
+
+    private bool formValid = false;
+
+    [Parameter]
+    public int? Id { get; set; }
+    [Parameter]
+    public int modelId { get; set; }
+
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationState { get; set; }
+    public bool loading = false;
+    private int maintenanceLogCount = 0;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            loading = true;
+            maintenanceLog ??= new MaintenanceLogDto();
+            var user = (await authenticationState).User;
+            accountId = user.FindFirst("https://flightlog.co.nz/claims/account_id").Value;
+
+            maintenanceLog.AccountId = Int32.Parse(accountId);
+
+            var client = ClientFactory.CreateClient("FlightLogAPI");
+
+            maintenanceLogTypes = await client.GetFromJsonAsync<List<MaintenanceLogTypeDto>>($"/api/maintenancelogtypes");
+
+            if (Id.HasValue)
+            {
+                maintenanceLog = await client.GetFromJsonAsync<MaintenanceLogDto>($"/api/{accountId}/maintenancelogs/{Id.Value}");
+
+            }
+            else
+            {
+                form.IsValid = false;    // Will set IsValid to false on init for a new log
+                maintenanceLog.Model.Id = modelId;
+            }
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+        finally
+        {
+            loading = false;
+        }
+    }
+
+    protected async Task HandleSubmit()
+    {
+        await form.Validate();
+        if (form.IsValid)
+        {
+            HttpResponseMessage response;
+
+            // todo Wrap in a try/catch
+            var client = ClientFactory.CreateClient("FlightLogAPI");
+            if (Id.HasValue)
+            {
+                response = await client.PutAsJsonAsync($"/api/{accountId}/maintenanceLogs", maintenanceLog);
+            }
+            else
+            {
+                response = await client.PostAsJsonAsync($"/api/{accountId}/maintenanceLogs", maintenanceLog);
+            }
+
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                var savedMaintenanceLog = await response.Content.ReadFromJsonAsync<MaintenanceLogDto>();
+                SnackbarService.Add($"Log saved with Id {savedMaintenanceLog.Id}", Severity.Info);
+                clearFormData();
+            }
+            else
+            {
+                SnackbarService.Add($"Failed to save ({response.StatusCode.ToString()})", Severity.Error);
+            }
+        }
+    }
+
+    protected async Task HandleAddLog()
+    {
+        var client = ClientFactory.CreateClient("FlightLogAPI");
+        maintenanceLogCount = await client.GetFromJsonAsync<int>($"/api/{accountId}/maintenancelogs/model/{maintenanceLog.Id}/count");
+
+        // finish me :)
+    }
+
+    void HandleClear()
+    {
+        clearFormData();
+        //isValid = false;
+        form.ResetValidation();
+        form.ResetAsync();
+        form.IsValid = false;
+
+        //isValid = false;
+
+    }
+
+    void clearFormData()
+    {
+        maintenanceLog = new MaintenanceLogDto();
+        maintenanceLog.Model.Id = modelId;
+        maintenanceLog.AccountId = Int32.Parse(accountId);
+
+    }
+}

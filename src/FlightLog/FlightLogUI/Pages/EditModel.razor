@@ -2,6 +2,7 @@
 @attribute [Authorize]
 @inject IHttpClientFactory ClientFactory
 @inject ISnackbar SnackbarService
+@inject NavigationManager Navigation
 
 @if (Id != null)
 {
@@ -37,7 +38,7 @@ else
                 <MudNumericField @bind-Value="model.TotalFlights" Label="Total Flights" Variant="Variant.Outlined" ReadOnly="true" />
             </MudItem>
             <MudItem xs="6" sm="4" lg="2">
-                <MudNumericField @bind-Value="model.UnloggedFlights" Label="Unlogged Flights" Variant="Variant.Outlined" Required="true" RequiredError="Name is required" Validation="@(new Func<int, string>(UnloggedFlightsValid))" />
+                <MudNumericField @bind-Value="model.UnloggedFlights" Label="Unlogged" Variant="Variant.Outlined" Required="true" RequiredError="Name is required" Validation="@(new Func<int, string>(UnloggedFlightsValid))" />
             </MudItem>
             <MudItem xs="12" sm="6">
                 <MudDatePicker @bind-Date="model.PurchasedOn" Label="Purchase Date" Variant="Variant.Outlined" Required="true" RequiredError="Purchase date is required" ShowToolbar=false OpenTo="OpenTo.Date" DateFormat="d-MMM-yyyy" Clearable="true" />
@@ -58,31 +59,31 @@ else
                 <MudTextField @bind-Value="model.Notes" Label="Notes" Variant="Variant.Outlined" AutoGrow Lines="3" Clearable=true />
             </MudItem>
         </MudForm>
-       
+
         <MudItem xs="12">
             <MudButton Variant="Variant.Filled" OnClick="@HandleClear">Clear</MudButton>
             <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@HandleSubmit" Disabled="@(!form.IsValid)">Save</MudButton>
         </MudItem>
-
-        <MudDataGrid T="MaintenanceLogDto" ServerData="ServerReload" ColumnResizeMode="ResizeMode.Column" Filterable=false LoadingProgressColor="Color.Primary">
-            <Columns>
-                <PropertyColumn Property="x => x.Date" Title="Date" />
-                <PropertyColumn Property="x => x.Type.Name" Title="Type" />
-                <PropertyColumn Property="x => x.Details.Substring(0, int.Min(x.Details.Length, 100))" Title="Details" />
-
-
-                <MudBlazor.TemplateColumn Context="maintenanceLog">
-                    <CellTemplate>
-                        <MudLink Href="@($"/edit-maintenancelog/{maintenanceLog.Item.Id}")">Edit</MudLink>
-                    </CellTemplate>
-                </MudBlazor.TemplateColumn>
-            </Columns>
-            <PagerContent>
-                <MudDataGridPager T="MaintenanceLogDto" />
-            </PagerContent>
-        </MudDataGrid>
+        <MudItem xs="12"><h3>Maintenance Logs</h3></MudItem>
         <MudItem xs="12">
-            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@HandleAddLog" Disabled="@(!form.IsValid)">Add</MudButton>
+            <MudDataGrid T="MaintenanceLogDto" ServerData="ServerReload" ColumnResizeMode="ResizeMode.Column" Filterable=false LoadingProgressColor="Color.Primary">
+                <Columns>
+                    <PropertyColumn Property="x => x.Date" Title="Date" Format="d-MMM-yyyy" />
+                    <PropertyColumn Property="x => x.Type.Name" Title="Type" />
+                    <PropertyColumn Property="x => x.Details.Substring(0, int.Min(x.Details.Length, 100))" Title="Details" />
+                    <MudBlazor.TemplateColumn Context="maintenanceLog">
+                        <CellTemplate>
+                            <MudLink Href="@($"/edit-maintenancelog/model/{model.Id}/{maintenanceLog.Item.Id}")">Edit</MudLink>
+                        </CellTemplate>
+                    </MudBlazor.TemplateColumn>
+                </Columns>
+                <PagerContent>
+                    <MudDataGridPager T="MaintenanceLogDto" />
+                </PagerContent>
+            </MudDataGrid>
+        </MudItem>
+        <MudItem xs="12">
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@HandleAddLog" Disabled="@(model.Id == 0)" >Add</MudButton>
         </MudItem>
 
     </MudGrid>
@@ -178,10 +179,8 @@ else
 
     protected async Task HandleAddLog()
     {
-        var client = ClientFactory.CreateClient("FlightLogAPI");
-        maintenanceLogCount = await client.GetFromJsonAsync<int>($"/api/{accountId}/maintenancelogs/model/{model.Id}/count");
+        Navigation.NavigateTo($"/edit-maintenancelog/model/{model.Id}");
 
-        // finish me :)
     }
 
     private async Task<GridData<MaintenanceLogDto>> ServerReload(GridState<MaintenanceLogDto> state)
