@@ -16,7 +16,7 @@ else
             <PropertyColumn Property="x => x.Name" Title="Model" />
             <PropertyColumn Property="x => x.Status.Name" Title="Status" />
             <PropertyColumn Property="x => x.TotalFlights" Title="Flights" />
-            <PropertyColumn Property="x => x.UnloggedFlights" Title="Unlogged Flights" />
+            <PropertyColumn Property="x => x.SortOrder" Title="Sort Order" />
 
             <MudBlazor.TemplateColumn Context="model">
                 <CellTemplate>
@@ -74,13 +74,10 @@ else
             }
             else
             {
-                models = await client.GetFromJsonAsync<List<ModelDto>>($"/api/{accountId}/models/skip/{state.Page * state.PageSize}/take/{state.PageSize}");
-                Console.WriteLine("No sorting applied");
+                models = await client.GetFromJsonAsync<List<ModelDto>>($"/api/{accountId}/models/sortby/SortOrder/desc/false/skip/{state.Page * state.PageSize}/take/{state.PageSize}");
+                Console.WriteLine("No sorting applied - defaulting to 'SortOrder'");
             }
-            
-            
-           
-            
+                        
             return new GridData<ModelDto>() { Items = models, TotalItems = modelCount };
         }
         catch (AccessTokenNotAvailableException exception)

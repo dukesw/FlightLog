@@ -100,6 +100,20 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
             return _mapper.Map<IList<Flight>, IList<FlightDto>>(result);
         }
 
+        public async Task<IList<FlightDto>> GetFlightsPagedAsync(int accountId, int skip, int take)
+        {
+            var spec = new GetFlightsByAccountPaged(accountId, skip, take);
+            var result = await _flightRepository.GetBySpecAsync(spec);
+            return _mapper.Map<IList<Flight>, IList<FlightDto>>(result);
+        }
+
+        public async Task<int> GetFlightCountAsync(int accountId)
+        {
+            var spec = new GetFlightsByAccount(accountId);
+            var result = await _flightRepository.GetCountBySpecAsync(spec);
+            return result;
+        }
+
         public async Task<IList<FlightDto>> GetRecentFlightsAsync(int accountId)
         {
             // Defining recent flights as all of those within the last month, based on the date of the request
@@ -110,12 +124,12 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
             return _mapper.Map<IList<Flight>, IList<FlightDto>>(result);
         }
 
-        public async Task<IList<FlightDto>> GetRecentFlightsByPageAsync(int accountId, int skip, int take)
+        public async Task<IList<FlightDto>> GetRecentFlightsPagedAsync(int accountId, int skip, int take)
         {
             // Defining recent flights as all of those within the last month, based on the date of the request
             var dateFrom = DateTime.Now.Date.AddMonths(-1);
             // TODO update this to get flights SINCE a date. Will need a new spec. Hacked to get around timezones on server (as not passed from client)
-            var spec = new GetFlightsByAccountAndDateRangeByPage(accountId, dateFrom, DateTime.Now.Date.AddDays(2).AddSeconds(-1), skip, take);
+            var spec = new GetFlightsByAccountAndDateRangePaged(accountId, dateFrom, DateTime.Now.Date.AddDays(2).AddSeconds(-1), skip, take);
             var result = await _flightRepository.GetBySpecAsync(spec);
             return _mapper.Map<IList<Flight>, IList<FlightDto>>(result);
         }
@@ -151,21 +165,21 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
             return result;
         }
 
-        public async Task<IList<FlightsGroupedByTimeDto>> GetGroupedFlightsByWeekForDates(int accountId, DateTime startDate, DateTime endDate)
+        public async Task<IList<FlightsGroupedByTimeDto>> GetGroupedFlightsByWeekForDateRange(int accountId, DateTime fromDate, DateTime toDate)
         {
-            var result = await _flightRepository.GetGroupedFlightsByWeekForDates(accountId, startDate, endDate);
+            var result = await _flightRepository.GetGroupedFlightsByWeekForDates(accountId, fromDate, toDate);
             return result;
         }
 
-        public async Task<IList<FlightsGroupedByTimeDto>> GetGroupedFlightsByMonthForDates(int accountId, DateTime startDate, DateTime endDate)
+        public async Task<IList<FlightsGroupedByTimeDto>> GetGroupedFlightsByMonthForDateRange(int accountId, DateTime fromDate, DateTime toDate)
         {
-            var result = await _flightRepository.GetGroupedFlightsByMonthForDates(accountId, startDate, endDate);
+            var result = await _flightRepository.GetGroupedFlightsByMonthForDates(accountId, fromDate, toDate);
             return result;
         }
 
-        public async Task<IList<FlightsGroupedByModelAndTimeDto>> GetGroupedFlightsByMonthAndModelForDates(int accountId, DateTime startDate, DateTime endDate)
+        public async Task<IList<FlightsGroupedByModelAndTimeDto>> GetGroupedFlightsByMonthAndModelForDateRange(int accountId, DateTime fromDate, DateTime toDate)
         {
-            var result = await _flightRepository.GetGroupedFlightsByMonthAndModelForDates(accountId, startDate, endDate);
+            var result = await _flightRepository.GetGroupedFlightsByMonthAndModelForDates(accountId, fromDate, toDate);
             return result;
         }
         public async Task<FlightSummaryDto> GetFlightSummaryByModelAsync(int accountId, int modelId)
@@ -175,32 +189,60 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
             return result;
         }
 
-        public async Task<FlightSummaryDto> GetFlightSummaryByDateRange(int accountId, DateTime startDate, DateTime endDate)
+        public async Task<FlightSummaryDto> GetFlightSummaryByDateRange(int accountId, DateTime fromDate, DateTime toDate)
         {
-            var allFlights = await GetFlightsByDateAsync(accountId, startDate.Date, endDate.Date.AddDays(1).AddSeconds(-1));
+            var allFlights = await GetFlightsByDateRangeAsync(accountId, fromDate.Date, toDate.Date.AddDays(1).AddSeconds(-1));
             var result = CreateFlightSummary(allFlights, accountId);
             return result;
         }
 
-        public async Task<FlightSummaryDto> GetFlightSummaryByModelAndDateRange(int accountId, int modelId, DateTime startDate, DateTime endDate)
+        public async Task<FlightSummaryDto> GetFlightSummaryByModelAndDateRange(int accountId, int modelId, DateTime fromDate, DateTime toDate)
         {
-            var allFlights = await GetFlightsByDateAndModelAsync(accountId, startDate.Date, endDate.Date.AddDays(1).AddSeconds(-1), modelId);
+            var allFlights = await GetFlightsByDateRangeAndModelAsync(accountId, fromDate.Date, toDate.Date.AddDays(1).AddSeconds(-1), modelId);
             var result = CreateFlightSummary(allFlights, accountId);
             return result;
         }
         
-        public async Task<IList<FlightDto>> GetFlightsByDateAsync(int accountId, DateTime startDate, DateTime endDate)
+        public async Task<IList<FlightDto>> GetFlightsByDateRangeAsync(int accountId, DateTime fromDate, DateTime toDate)
         {
-            var spec = new GetFlightsByAccountAndDateRange(accountId, startDate.Date, endDate.Date.AddDays(1).AddSeconds(-1));
+            var spec = new GetFlightsByAccountAndDateRange(accountId, fromDate.Date, toDate.Date.AddDays(1).AddSeconds(-1));
             var result = await _flightRepository.GetBySpecAsync(spec);
             return _mapper.Map<IList<Flight>, IList<FlightDto>>(result);
         }
 
-        public async Task<IList<FlightDto>> GetFlightsByDateAndModelAsync(int accountId, DateTime startDate, DateTime endDate, int modelId)
+        public async Task<IList<FlightDto>> GetFlightsByDateRangePagedAsync(int accountId, DateTime fromDate, DateTime toDate, int skip, int take)
         {
-            var spec = new GetFlightsByAccountAndDateRangeAndModel(accountId, startDate.Date, endDate.Date.AddDays(1).AddSeconds(-1), modelId);
+            var spec = new GetFlightsByAccountAndDateRangePaged(accountId, fromDate.Date, toDate.Date.AddDays(1).AddSeconds(-1), skip, take);
             var result = await _flightRepository.GetBySpecAsync(spec);
             return _mapper.Map<IList<Flight>, IList<FlightDto>>(result);
+        }
+
+        public async Task<int> GetFlightCountByDateRangeAsync(int accountId, DateTime fromDate, DateTime toDate)
+        {
+            var spec = new GetFlightsByAccountAndDateRange(accountId, fromDate.Date, toDate.Date.AddDays(1).AddSeconds(-1));
+            var result = await _flightRepository.GetCountBySpecAsync(spec);
+            return result;
+        }
+
+        public async Task<IList<FlightDto>> GetFlightsByDateRangeAndModelAsync(int accountId, DateTime fromDate, DateTime toDate, int modelId)
+        {
+            var spec = new GetFlightsByAccountAndDateRangeAndModel(accountId, fromDate.Date, toDate.Date.AddDays(1).AddSeconds(-1), modelId);
+            var result = await _flightRepository.GetBySpecAsync(spec);
+            return _mapper.Map<IList<Flight>, IList<FlightDto>>(result);
+        }
+
+        public async Task<IList<FlightDto>> GetFlightsByDateRangeAndModelPagedAsync(int accountId, DateTime fromDate, DateTime toDate, int modelId, int skip, int take)
+        {
+            var spec = new GetFlightsByAccountAndDateRangeAndModelPaged(accountId, fromDate.Date, toDate.Date.AddDays(1).AddSeconds(-1), modelId, skip, take);
+            var result = await _flightRepository.GetBySpecAsync(spec);
+            return _mapper.Map<IList<Flight>, IList<FlightDto>>(result);
+        }
+
+        public async Task<int> GetFlightCountByDateRangeAndModelAsync(int accountId, DateTime fromDate, DateTime toDate, int modelId)
+        {
+            var spec = new GetFlightsByAccountAndDateRangeAndModel(accountId, fromDate.Date, toDate.Date.AddDays(1).AddSeconds(-1), modelId);
+            var result = await _flightRepository.GetCountBySpecAsync(spec);
+            return result;
         }
 
         public async Task<FlightDto> UpdateFlightAsync(int accountId, FlightDto flight)

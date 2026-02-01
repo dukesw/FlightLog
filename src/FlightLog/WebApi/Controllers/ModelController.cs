@@ -34,7 +34,7 @@ namespace WebApi.Controllers
             try
             {
                 Guard.AgainstAccountNumberMismatch(GetAccountIdClaim(), accountId.ToString(), "userClaim.accountId", "accountId");
-                var models = await _modelService.GetModelsAsync(accountId);
+                var models = await _modelService.GetModelsSortedBySortOrderAsync(accountId);
                 return Ok(models.ToArray());
             }
             catch (AccountConflictException)

@@ -3,6 +3,8 @@
 @attribute [Authorize]
 @inject IHttpClientFactory ClientFactory
 @inject ISnackbar SnackbarService
+@inject NavigationManager Navigation
+@inject IStateHelper StateHelper;
 
 <h3>Search Flights</h3>
 
@@ -15,13 +17,13 @@ else
     <MudGrid Spacing="6" Class="pt-8">
         <MudForm @ref="form" Class="mud-width-full px-4">
             <MudItem xs="12" sm="6">
-                <MudDatePicker @bind-Date="flightSearch.fromDate" Label="From Date" Variant="Variant.Outlined" ShowToolbar=false OpenTo="OpenTo.Date" DateFormat="d-MMM-yyyy" />
+                <MudDatePicker @bind-Date="flightSearch.FromDate" Label="From Date" Variant="Variant.Outlined" ShowToolbar=false OpenTo="OpenTo.Date" DateFormat="d-MMM-yyyy" />
             </MudItem>
             <MudItem xs="12" sm="6">
-                <MudDatePicker @bind-Date="flightSearch.toDate" Label="To Date" Variant="Variant.Outlined" ShowToolbar=false OpenTo="OpenTo.Date" DateFormat="d-MMM-yyyy" />
+                <MudDatePicker @bind-Date="flightSearch.ToDate" Label="To Date" Variant="Variant.Outlined" ShowToolbar=false OpenTo="OpenTo.Date" DateFormat="d-MMM-yyyy" />
             </MudItem>
             <MudItem xs="12" sm="6">
-                <MudSelect @bind-Value="flightSearch.model" Label="Model" Variant="Variant.Outlined" Clearable=true>
+                <MudSelect @bind-Value="flightSearch.Model" Label="Model" Variant="Variant.Outlined" Clearable=true>
                     @foreach (var model in models)
                     {
                         <MudSelectItem Value="model">@model.Name</MudSelectItem>
@@ -34,7 +36,8 @@ else
             <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@HandleSubmit">Search</MudButton>
         </MudItem>
     </MudGrid>
-    <MudDataGrid @ref="searchResultsGrid" T="FlightDto" ServerData="SearchFlightsLoad" ColumnResizeMode="ResizeMode.Column" Filterable=false LoadingProgressColor="Color.Primary">
+    <MudDataGrid @ref="searchResultsGrid" T="FlightDto" ServerData="SearchFlightsLoad" ColumnResizeMode="ResizeMode.Column" 
+                @bind-currentPage="currentPage" Filterable=false LoadingProgressColor="Color.Primary">
         <Columns>
             <PropertyColumn Property="x => x.Date" Format="d-MMM-yyyy" />
             <PropertyColumn Property="x => x.Model.Name" Title="Model" />
@@ -67,6 +70,7 @@ else
 
     private FlightSearchDto flightSearch = new FlightSearchDto();
 
+    private int currentPage = 0;
 
     [Parameter]
     [SupplyParameterFromQuery(Name = "from")]
@@ -82,6 +86,28 @@ else
 
 
 
+    protected override async Task OnParametersSetAsync()
+    {
+        flightSearch = StateHelper.SearchState;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && searchResultsGrid?.HasPager == true)
+        {
+            await searchResultsGrid.SetRowsPerPageAsync(flightSearch.PageSize);
+        }
+        if (searchResultsGrid is not null)
+        {
+            searchResultsGrid.PagerStateHasChangedEvent -= async () =>
+                await OnPageSizeChangedAsync(searchResultsGrid.RowsPerPage);
+            searchResultsGrid.PagerStateHasChangedEvent += async () =>
+                await OnPageSizeChangedAsync(searchResultsGrid.RowsPerPage);
+
+        }
+        ////await searchResultsGrid.SetRowsPerPageAsync(StateHelper.SearchState.rows);
+    }
+
     protected override async Task OnInitializedAsync()
     {
         try
@@ -93,6 +119,33 @@ else
 
             var client = ClientFactory.CreateClient("FlightLogAPI");
             models = await client.GetFromJsonAsync<List<FlightModelDto>>($"/api/{accountId}/models");
+
+            // // if (searchModelId.HasValue)
+            // // {
+            // //     flightSearch.model = models.FirstOrDefault(m => m.Id == searchModelId.Value);
+            // // }
+            // // if (FromDate.HasValue)
+            // // {
+            // //     flightSearch.fromDate = FromDate;
+            // // }
+            // // if (ToDate.HasValue)
+            // // {
+            // //     flightSearch.toDate = ToDate;
+            // // }
+            // // if (PageNumber.HasValue)
+            // // {
+            // //     // TODO Figure out how to show a specific page when loading... 
+            // //     //searchResultsGrid.CurrentPage = PageNumber.Value;
+            // // }
+            // Events for the page and page size property changes to store it in the state. 
+            if (searchResultsGrid is not null)
+            {
+                await searchResultsGrid.SetRowsPerPageAsync(StateHelper.SearchState.PageSize);
+            }
+            currentPage = StateHelper.SearchState.Page;
+
+            //
+            // TODO do a version for the page too... 
         }
         finally
         {
@@ -100,83 +153,168 @@ else
         }
     }
 
-    protected Task HandleSubmit()
+    // TODO tidy me up
+    private async Task OnPageSizeChangedAsync(int newPageSize)
     {
-        return searchResultsGrid.ReloadServerData();
+        Console.WriteLine($"New page size is {newPageSize}");
+        StateHelper.SearchState.PageSize = newPageSize;
+        flightSearch.PageSize = newPageSize;
+        // if (newPageSize == _pageSize)
+        //     return;
+
+        // _pageSize = newPageSize;
+        // await _localStorage.SetItemAsync(...);
+    }
+
+    // private async Task OnPageChangedAsync(int newPage)
+    // {
+    //     Console.WriteLine($"New page is {newPage}");
+    //     currentPage = newPage;
+    //     StateHelper.SearchState.Page = newPage;
+    //     // if (newPageSize == _pageSize)
+    //     //     return;
+
+    //     // _pageSize = newPageSize;
+    //     // await _localStorage.SetItemAsync(...);
+    // }
+
+    protected async Task HandleSubmit()
+    {
+        if (searchResultsGrid != null)
+        {
+            //// TODO How do we get the page?? nee
+            //var page = searchResultsGrid.CurrentPage;
+            //// TODO sort the mavigation out so that it returns correcfly. 
+            //Navigation.NavigateTo($"/search-flights?modelId={(flightSearch.model != null ? flightSearch.model.Id : string.Empty)}&from={(flightSearch.fromDate.HasValue ? flightSearch.fromDate.Value.ToString("yyyy-MM-dd") : string.Empty)}&to={(flightSearch.toDate.HasValue ? flightSearch.toDate.Value.ToString("yyyy-MM-dd") : string.Empty)}&page={1}");
+
+            await searchResultsGrid!.ReloadServerData();
+        }
+
     }
 
 
     protected async Task HandleClear()
     {
         flightSearch = new FlightSearchDto();
+        currentPage = 0;
+        await searchResultsGrid.ReloadServerData();
+        StateHelper.SearchState = flightSearch;
     }
+
+
 
     private async Task<GridData<FlightDto>> SearchFlightsLoad(GridState<FlightDto> state)
     {
         try
         {
-
             var user = (await authenticationState).User;
             var accountId = user.FindFirst("https://flightlog.co.nz/claims/account_id").Value;
+            List<FlightDto>? results = new List<FlightDto>();
+            int resultCount = 0;
 
-            if (flightSearch.model != null)
+            // if (PageNumber.HasValue)
+            // {
+            //     state.Page = PageNumber.Value - 1;
+            // }
+            flightSearch.Page = state.Page;
+            flightSearch.PageSize = state.PageSize;
+            //StateHelper.SearchState = flightSearch; // Added
+
+            // Try and use a switch statement for the search.... 
+            switch((model: flightSearch.Model, fromDate: flightSearch.FromDate, toDate: flightSearch.ToDate))
             {
-
-                if (!flightSearch.fromDate.HasValue && !flightSearch.toDate.HasValue)
-                {
-                    // flights = await GetFlightsByModel(searchModel.Id);
-
-
-                    //var results = await client.GetFromJsonAsync<List<MaintenanceLogDto>>($"/api/{accountId}/maintenancelogs/model/{model.Id}/skip/{state.Page * state.PageSize}/take/{state.PageSize}");
-                    var results = await GetFlightsByModel(accountId, flightSearch.model.Id, state.Page * state.PageSize, state.PageSize);
-                    var resultCount = await GetFlightCountByModel(accountId, flightSearch.model.Id);
-                    return new GridData<FlightDto>() { Items = results, TotalItems = resultCount };
-
-                }
-
-                if (FromDate.HasValue && ToDate.HasValue)
-                {
-                    // flights = await GetFlightsByModelAndDate(searchModel.Id, FromDate.Value, ToDate.Value);
-                    //return;
-                }
-
-                var startDate = FromDate.HasValue ? FromDate.Value : DateTime.Now.Date.AddYears(-1);
-                var endDate = ToDate.HasValue ? ToDate.Value : DateTime.Now.Date.AddDays(1).AddSeconds(-1);
-
-                //   flights = await GetFlightsByModelAndDate(searchModel.Id, startDate, endDate);
-                //return;
-
+                case (model: null, fromDate: null, toDate: null):
+                    results = await GetFlights(state.Page * state.PageSize, state.PageSize);
+                    resultCount = await GetFlightCount();
+                    break; 
+                case (model: not null, fromDate: null, toDate: null):
+                    results = await GetFlightsByModel(flightSearch.Model.Id, state.Page * state.PageSize, state.PageSize);
+                    resultCount = await GetFlightCountByModel(flightSearch.Model.Id);
+                    break;
+                case (model: null, fromDate: not null, toDate: null):
+                    results = await GetFlightsFromDate(flightSearch.FromDate.Value, state.Page * state.PageSize, state.PageSize);
+                    resultCount = await GetFlightCountFromDate(flightSearch.FromDate.Value);
+                    break;
+                case (model: not null, fromDate: not null, toDate: null):
+                    results = await GetFlightsByModelFromDate(flightSearch.Model.Id, flightSearch.FromDate.Value, state.Page * state.PageSize, state.PageSize);
+                    resultCount = await GetFlightCountByModelFromDate(flightSearch.Model.Id, flightSearch.FromDate.Value);
+                    break;
+                case (model: null, fromDate: null, toDate: not null):
+                    results = await GetFlightsToDate(flightSearch.ToDate.Value, state.Page * state.PageSize, state.PageSize);
+                    resultCount = await GetFlightCountToDate(flightSearch.ToDate.Value);
+                    break;
+                case (model: not null, fromDate: null, toDate: not null):
+                    results = await GetFlightsByModelToDate(flightSearch.Model.Id, flightSearch.ToDate.Value, state.Page * state.PageSize, state.PageSize);
+                    resultCount = await GetFlightCountByModelToDate(flightSearch.Model.Id, flightSearch.ToDate.Value);
+                    break;
+                case (model: null, fromDate: not null, toDate: not null):
+                    results = await GetFlightsByDateRange(flightSearch.FromDate.Value, flightSearch.ToDate.Value, state.Page * state.PageSize, state.PageSize);
+                    resultCount = await GetFlightCountByDateRange(flightSearch.FromDate.Value, flightSearch.ToDate.Value);
+                    break;
+                case (model: not null, fromDate: not null, toDate: not null):
+                    results = await GetFlightsByModelAndDate(flightSearch.Model.Id, flightSearch.FromDate.Value, flightSearch.ToDate.Value, state.Page * state.PageSize, state.PageSize);
+                    resultCount = await GetFlightCountByModelAndDateRange(flightSearch.Model.Id, flightSearch.FromDate.Value, flightSearch.ToDate.Value);
+                    break;
             }
 
-            // Handle the case where searchModel is null or Id is not valid
-            var startDateFallback = FromDate.HasValue ? FromDate.Value : DateTime.Now.Date.AddYears(-1);
-            var endDateFallback = ToDate.HasValue ? ToDate.Value : DateTime.Now.Date.AddDays(1).AddSeconds(-1);
+            return new GridData<FlightDto>() { Items = results, TotalItems = resultCount };
 
-            // flights = await GetFlightsByDate(startDateFallback, endDateFallback);
         }
         catch (AccessTokenNotAvailableException exception)
         {
             exception.Redirect();
         }
-        return new GridData<FlightDto>();    // Just ensursing all paths return a value
+        return new GridData<FlightDto>();
     }
 
-    private async Task<List<FlightDto>> GetFlightsByModel(string accountId, int modelId, int skip, int take)
+
+
+    private async Task<List<FlightDto>> GetFlights(int skip, int take)
+    {
+        var client = ClientFactory.CreateClient("FlightLogAPI");
+        return await client.GetFromJsonAsync<List<FlightDto>>($"/api/{accountId}/flights/skip/{skip}/take/{take}");
+    }
+
+    private async Task<int> GetFlightCount()
+    {
+        var client = ClientFactory.CreateClient("FlightLogAPI");
+        return await client.GetFromJsonAsync<int>($"/api/{accountId}/flights/count");
+    }
+
+    private async Task<List<FlightDto>> GetFlightsByModel(int modelId, int skip, int take)
     {
         var client = ClientFactory.CreateClient("FlightLogAPI");
         return await client.GetFromJsonAsync<List<FlightDto>>($"/api/{accountId}/flights/model/{modelId}/skip/{skip}/take/{take}");
     }
 
-    private async Task<int> GetFlightCountByModel(string accountId, int modelId)
+    private async Task<int> GetFlightCountByModel(int modelId)
     {
         var client = ClientFactory.CreateClient("FlightLogAPI");
         return await client.GetFromJsonAsync<int>($"/api/{accountId}/flights/model/{modelId}/count");
     }
 
-    private async Task<List<FlightDto>> GetFlightsByDate(DateTime startDate, DateTime endDate)
+    private async Task<List<FlightDto>> GetFlightsByDateRange(DateTime startDate, DateTime endDate, int skip, int take)
     {
         var client = ClientFactory.CreateClient("FlightLogAPI");
-        return await client.GetFromJsonAsync<List<FlightDto>>($"/api/{accountId}/flights/from/{startDate.ToString("yyyy-MM-dd")}/to/{endDate.ToString("yyyy-MM-dd")}");
+        return await client.GetFromJsonAsync<List<FlightDto>>($"/api/{accountId}/flights/from/{startDate.ToString("yyyy-MM-dd")}/to/{endDate.ToString("yyyy-MM-dd")}/skip/{skip}/take/{take}");
+    }
+
+    private async Task<List<FlightDto>> GetFlightsFromDate(DateTime fromDate, int skip, int take)
+    {
+        var toDate = DateTime.Now.AddDays(1).AddSeconds(-1);
+        return await GetFlightsByDateRange(fromDate, toDate, skip, take);
+    }
+
+    private async Task<int> GetFlightCountByDateRange(DateTime startDate, DateTime endDate)
+    {
+        var client = ClientFactory.CreateClient("FlightLogAPI");
+        return await client.GetFromJsonAsync<int>($"/api/{accountId}/flights/from/{startDate.ToString("yyyy-MM-dd")}/to/{endDate.ToString("yyyy-MM-dd")}/count");
+    }
+
+    private async Task<int> GetFlightCountFromDate(DateTime fromDate)
+    {
+        var toDate = DateTime.Now.AddDays(1).AddSeconds(-1);
+        return await GetFlightCountByDateRange(fromDate, toDate);
     }
 
     private async Task<List<FlightDto>> GetFlightsByModelAndDate(int modelId, DateTime startDate, DateTime endDate)
@@ -185,14 +323,51 @@ else
         return await client.GetFromJsonAsync<List<FlightDto>>($"/api/{accountId}/flights/model/{modelId}/from/{startDate.ToString("yyyy-MM-dd")}/to/{endDate.ToString("yyyy-MM-dd")}");
     }
 
-
-
-    // Helper class for the search
-    private class FlightSearchDto
+    private async Task<List<FlightDto>> GetFlightsByModelAndDate(int modelId, DateTime startDate, DateTime endDate, int skip, int take)
     {
-        public FlightModelDto? model { get; set; }
-        public DateTime? fromDate { get; set; }
-        public DateTime? toDate { get; set; }
+        var client = ClientFactory.CreateClient("FlightLogAPI");
+        return await client.GetFromJsonAsync<List<FlightDto>>($"/api/{accountId}/flights/model/{modelId}/from/{startDate.ToString("yyyy-MM-dd")}/to/{endDate.ToString("yyyy-MM-dd")}/skip/{skip}/take/{take}");
     }
 
+    private async Task<int> GetFlightCountByModelAndDateRange(int modelId, DateTime startDate, DateTime endDate)
+    {
+        var client = ClientFactory.CreateClient("FlightLogAPI");
+        return await client.GetFromJsonAsync<int>($"/api/{accountId}/flights/model/{modelId}/from/{startDate.ToString("yyyy-MM-dd")}/to/{endDate.ToString("yyyy-MM-dd")}/count");
+    }
+
+    private async Task<List<FlightDto>> GetFlightsByModelFromDate(int modelId, DateTime startDate, int skip, int take)
+    {
+        var endDate = DateTime.Now.AddDays(1).AddSeconds(-1);
+        return await GetFlightsByModelAndDate(modelId, startDate, endDate, skip, take);
+    }
+
+    private async Task<int> GetFlightCountByModelFromDate(int modelId, DateTime startDate)
+    {
+        var endDate = DateTime.Now.AddDays(1).AddSeconds(-1);
+        return await GetFlightCountByModelAndDateRange(modelId, startDate, endDate);
+    }
+
+    private async Task<List<FlightDto>> GetFlightsToDate(DateTime endDate, int skip, int take)
+    {
+        var startDate = DateTime.MinValue;
+        return await GetFlightsByDateRange(startDate, endDate, skip, take);
+    }
+
+    private async Task<int> GetFlightCountToDate(DateTime endDate)
+    {
+        var startDate = DateTime.MinValue;
+        return await GetFlightCountByDateRange(startDate, endDate);
+    }
+
+    private async Task<List<FlightDto>> GetFlightsByModelToDate(int modelId, DateTime endDate, int skip, int take)
+    {
+        var startDate = DateTime.MinValue;
+        return await GetFlightsByModelAndDate(modelId, startDate, endDate, skip, take);
+    }
+
+    private async Task<int> GetFlightCountByModelToDate(int modelId, DateTime endDate)
+    {
+        var startDate = DateTime.MinValue;
+        return await GetFlightCountByModelAndDateRange(modelId, startDate, endDate);
+    }
 }

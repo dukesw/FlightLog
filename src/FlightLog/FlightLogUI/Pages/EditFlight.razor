@@ -176,7 +176,7 @@ else
         clearFormData();
         isValid = false;
         form.ResetValidation();
-       
+
     }
 
     protected override void OnAfterRender(bool firstRender)
@@ -219,6 +219,8 @@ else
     {
         flight = new FlightDto();
         flight.Date = new DateTimeOffset(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0, new TimeSpan(0, 0, 0)).Date;
+        flight.AccountId = Int32.Parse(accountId);
+        Id = null;
         //selectedTags = new List<FlightTagDto>();
     }
 

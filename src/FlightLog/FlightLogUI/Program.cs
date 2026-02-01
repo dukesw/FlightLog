@@ -1,5 +1,6 @@
 using DukeSoftware.FlightLog.FlightLogUI;
 using DukeSoftware.FlightLog.FlightLogUI.Authorisation;
+using DukeSoftware.FlightLog.FlightLogUI.Pages;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using MudBlazor;
@@ -23,6 +24,8 @@ builder.Services.AddMudServices(config =>
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
 builder.Services.AddScoped<FlightLogAuthorisationMessageHandler>();
+
+builder.Services.AddScoped<IStateHelper, StateHelper>();
 
 builder.Services.AddHttpClient("FlightLogAPI",
     client => client.BaseAddress = new Uri(builder.Configuration["FlightLogApiUri"]))

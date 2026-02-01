@@ -129,6 +129,7 @@ else
             {
                 model = await client.GetFromJsonAsync<ModelDto>($"/api/{accountId}/models/{Id.Value}");
                 maintenanceLogCount = await client.GetFromJsonAsync<int>($"/api/{accountId}/maintenancelogs/model/{model.Id}/count");
+                form.IsValid = true;
             }
             else
             {

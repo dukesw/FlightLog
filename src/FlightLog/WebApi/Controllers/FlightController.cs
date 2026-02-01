@@ -72,6 +72,22 @@ namespace WebApi.Controllers
             }
         }
 
+        [HttpGet("count")]
+        [Authorize(Roles = "User, Admin")]
+        public async Task<ActionResult> GetCount(int accountId)
+        {
+            try
+            {
+                Guard.AgainstAccountNumberMismatch(GetAccountIdClaim(), accountId.ToString(), "userClaim.accountId", "accountId");
+                var count = await _flightService.GetFlightCountAsync(accountId);
+                return Ok(count);
+            }
+            catch (AccountConflictException)
+            {
+                return Forbid();
+            }
+        }
+
         [HttpGet("recent/skip/{skip}/take/{take}")]
         [Authorize(Roles = "User, Admin")]
         public async Task<ActionResult> GetRecentByPage(int accountId, int skip, int take)
@@ -79,7 +95,24 @@ namespace WebApi.Controllers
             try
             {
                 Guard.AgainstAccountNumberMismatch(GetAccountIdClaim(), accountId.ToString(), "userClaim.accountId", "accountId");
-                var flights = await _flightService.GetRecentFlightsByPageAsync(accountId, skip, take);
+                var flights = await _flightService.GetRecentFlightsPagedAsync(accountId, skip, take);
+                return Ok(flights);
+            }
+            catch (AccountConflictException)
+            {
+                return Forbid();
+            }
+        }
+
+
+        [HttpGet("skip/{skip}/take/{take}")]
+        [Authorize(Roles = "User, Admin")]
+        public async Task<ActionResult> GetByPage(int accountId, int skip, int take)
+        {
+            try
+            {
+                Guard.AgainstAccountNumberMismatch(GetAccountIdClaim(), accountId.ToString(), "userClaim.accountId", "accountId");
+                var flights = await _flightService.GetFlightsPagedAsync(accountId, skip, take);
                 return Ok(flights);
             }
             catch (AccountConflictException)
@@ -109,19 +142,59 @@ namespace WebApi.Controllers
             }
         }
 
-        [HttpGet("from/{startDate}/to/{endDate}")]
+        [HttpGet("from/{fromDate}/to/{toDate}")]
         [Authorize(Roles = "User, Admin")]
-        public async Task<ActionResult<List<FlightDto>>> GetByDateRange(int accountId, DateTime startDate, DateTime endDate)
+        public async Task<ActionResult<List<FlightDto>>> GetByDateRange(int accountId, DateTime fromDate, DateTime toDate)
         {
             try
             {
                 Guard.AgainstAccountNumberMismatch(GetAccountIdClaim(), accountId.ToString(), "userClaim.accountId", "accountId");
-                var flights = await _flightService.GetFlightsByDateAsync(accountId, startDate, endDate);
+                var flights = await _flightService.GetFlightsByDateRangeAsync(accountId, fromDate, toDate);
                 return Ok(flights);
             }
             catch (ArgumentNullException)
             {
-                return NotFound($"Error finding flights from {startDate} to {endDate}");
+                return NotFound($"Error finding flights from {fromDate} to {toDate}");
+            }
+            catch (AccountConflictException)
+            {
+                return Forbid();
+            }
+        }
+
+        [HttpGet("from/{fromDate}/to/{toDate}/count")]
+        [Authorize(Roles = "User, Admin")]
+        public async Task<ActionResult<List<FlightDto>>> GetFlightCountByDateRange(int accountId, DateTime fromDate, DateTime toDate)
+        {
+            try
+            {
+                Guard.AgainstAccountNumberMismatch(GetAccountIdClaim(), accountId.ToString(), "userClaim.accountId", "accountId");
+                var count = await _flightService.GetFlightCountByDateRangeAsync(accountId, fromDate, toDate);
+                return Ok(count);
+            }
+            catch (ArgumentNullException)
+            {
+                return NotFound($"Error finding flights from {fromDate} to {toDate}");
+            }
+            catch (AccountConflictException)
+            {
+                return Forbid();
+            }
+        }
+
+        [HttpGet("from/{fromDate}/to/{toDate}/skip/{skip}/take/{take}")]
+        [Authorize(Roles = "User, Admin")]
+        public async Task<ActionResult<List<FlightDto>>> GetByDateRangePaged(int accountId, DateTime fromDate, DateTime toDate, int skip, int take)
+        {
+            try
+            {
+                Guard.AgainstAccountNumberMismatch(GetAccountIdClaim(), accountId.ToString(), "userClaim.accountId", "accountId");
+                var flights = await _flightService.GetFlightsByDateRangePagedAsync(accountId, fromDate, toDate, skip, take);
+                return Ok(flights);
+            }
+            catch (ArgumentNullException)
+            {
+                return NotFound($"Error finding flights from {fromDate} to {toDate}");
             }
             catch (AccountConflictException)
             {
@@ -156,12 +229,12 @@ namespace WebApi.Controllers
             try
             {
                 Guard.AgainstAccountNumberMismatch(GetAccountIdClaim(), accountId.ToString(), "userClaim.accountId", "accountId");
-                var flights = await _flightService.GetFlightCountByModelAsync(accountId, modelId);
-                return Ok(flights);
+                var count = await _flightService.GetFlightCountByModelAsync(accountId, modelId);
+                return Ok(count);
             }
             catch (ArgumentNullException)
             {
-                return NotFound($"Error finding flights for model {modelId}");
+                return NotFound($"Error finding flight count for model {modelId}");
             }
             catch (AccountConflictException)
             {
@@ -190,14 +263,54 @@ namespace WebApi.Controllers
         }
 
 
-        [HttpGet("model/{modelId}/from/{startDate}/to/{endDate}")]
+        [HttpGet("model/{modelId}/from/{fromDate}/to/{toDate}")]
         [Authorize(Roles = "User, Admin")]
-        public async Task<ActionResult<List<FlightDto>>> GetByModelIdAndDateRange(int accountId, DateTime startDate, DateTime endDate, int modelId)
+        public async Task<ActionResult<List<FlightDto>>> GetByModelIdAndDateRange(int accountId, DateTime fromDate, DateTime toDate, int modelId)
         {
             try
             {
                 Guard.AgainstAccountNumberMismatch(GetAccountIdClaim(), accountId.ToString(), "userClaim.accountId", "accountId");
-                var flights = await _flightService.GetFlightsByDateAndModelAsync(accountId, startDate, endDate, modelId);
+                var flights = await _flightService.GetFlightsByDateRangeAndModelAsync(accountId, fromDate, toDate, modelId);
+                return Ok(flights);
+            }
+            catch (ArgumentNullException)
+            {
+                return NotFound($"Error finding flights for model {modelId}");
+            }
+            catch (AccountConflictException)
+            {
+                return Forbid();
+            }
+        }
+
+        [HttpGet("model/{modelId}/from/{fromDate}/to/{toDate}/count")]
+        [Authorize(Roles = "User, Admin")]
+        public async Task<ActionResult<List<FlightDto>>> GetCountByModelIdAndDateRange(int accountId, DateTime fromDate, DateTime toDate, int modelId)
+        {
+            try
+            {
+                Guard.AgainstAccountNumberMismatch(GetAccountIdClaim(), accountId.ToString(), "userClaim.accountId", "accountId");
+                var count = await _flightService.GetFlightCountByDateRangeAndModelAsync(accountId, fromDate, toDate, modelId);
+                return Ok(count);
+            }
+            catch (ArgumentNullException)
+            {
+                return NotFound($"Error finding flights for model {modelId}");
+            }
+            catch (AccountConflictException)
+            {
+                return Forbid();
+            }
+        }
+
+        [HttpGet("model/{modelId}/from/{fromDate}/to/{toDate}/skip/{skip}/take/{take}")]
+        [Authorize(Roles = "User, Admin")]
+        public async Task<ActionResult<List<FlightDto>>> GetByModelIdAndDateRangePaged(int accountId, DateTime fromDate, DateTime toDate, int modelId, int skip, int take)
+        {
+            try
+            {
+                Guard.AgainstAccountNumberMismatch(GetAccountIdClaim(), accountId.ToString(), "userClaim.accountId", "accountId");
+                var flights = await _flightService.GetFlightsByDateRangeAndModelPagedAsync(accountId, fromDate, toDate, modelId, skip, take);
                 return Ok(flights);
             }
             catch (ArgumentNullException)
@@ -230,18 +343,18 @@ namespace WebApi.Controllers
             }
         }
 
-        [HttpGet("group/week/from/{startDate}/to/{endDate}")]
+        [HttpGet("group/week/from/{fromDate}/to/{toDate}")]
         [Authorize(Roles = "User, Admin")]
-        public async Task<ActionResult<FlightSummaryDto>> GetGroupedFlightsByWeekForDateRange(int accountId, DateTime startDate, DateTime endDate)
+        public async Task<ActionResult<FlightSummaryDto>> GetGroupedFlightsByWeekForDateRange(int accountId, DateTime fromDate, DateTime toDate)
         {
             try
             {
                 Guard.AgainstAccountNumberMismatch(GetAccountIdClaim(), accountId.ToString(), "userClaim.accountId", "accountId");
                 // Date guards
-                Guard.AgainstNull(startDate, "startDate");
-                Guard.AgainstNull(endDate, "endDate");
+                Guard.AgainstNull(fromDate, "startDate");
+                Guard.AgainstNull(toDate, "endDate");
 
-                var flights = await _flightService.GetGroupedFlightsByWeekForDates(accountId, startDate, endDate);
+                var flights = await _flightService.GetGroupedFlightsByWeekForDateRange(accountId, fromDate, toDate);
                 return Ok(flights);
             }
             catch (ArgumentNullException)
@@ -254,18 +367,18 @@ namespace WebApi.Controllers
             }
         }
 
-        [HttpGet("group/month/from/{startDate}/to/{endDate}")]
+        [HttpGet("group/month/from/{fromDate}/to/{toDate}")]
         [Authorize(Roles = "User, Admin")]
-        public async Task<ActionResult<FlightSummaryDto>> GetGroupedFlightsByMonthForDateRange(int accountId, DateTime startDate, DateTime endDate)
+        public async Task<ActionResult<FlightSummaryDto>> GetGroupedFlightsByMonthForDateRange(int accountId, DateTime fromDate, DateTime toDate)
         {
             try
             {
                 Guard.AgainstAccountNumberMismatch(GetAccountIdClaim(), accountId.ToString(), "userClaim.accountId", "accountId");
                 // Date guards
-                Guard.AgainstNull(startDate, "startDate");
-                Guard.AgainstNull(endDate, "endDate");
+                Guard.AgainstNull(fromDate, "startDate");
+                Guard.AgainstNull(toDate, "endDate");
 
-                var flights = await _flightService.GetGroupedFlightsByMonthForDates(accountId, startDate, endDate);
+                var flights = await _flightService.GetGroupedFlightsByMonthForDateRange(accountId, fromDate, toDate);
                 return Ok(flights);
             }
             catch (ArgumentNullException)
@@ -278,18 +391,18 @@ namespace WebApi.Controllers
             }
         }
 
-        [HttpGet("group/monthandmodel/from/{startDate}/to/{endDate}")]
+        [HttpGet("group/monthandmodel/from/{fromDate}/to/{toDate}")]
         [Authorize(Roles = "User, Admin")]
-        public async Task<ActionResult<FlightSummaryDto>> GetGroupedFlightsByMonthAndModelForDateRange(int accountId, DateTime startDate, DateTime endDate)
+        public async Task<ActionResult<FlightSummaryDto>> GetGroupedFlightsByMonthAndModelForDateRange(int accountId, DateTime fromDate, DateTime toDate)
         {
             try
             {
                 Guard.AgainstAccountNumberMismatch(GetAccountIdClaim(), accountId.ToString(), "userClaim.accountId", "accountId");
                 // Date guards
-                Guard.AgainstNull(startDate, "startDate");
-                Guard.AgainstNull(endDate, "endDate");
+                Guard.AgainstNull(fromDate, "startDate");
+                Guard.AgainstNull(toDate, "endDate");
 
-                var flights = await _flightService.GetGroupedFlightsByMonthAndModelForDates(accountId, startDate, endDate);
+                var flights = await _flightService.GetGroupedFlightsByMonthAndModelForDateRange(accountId, fromDate, toDate);
                 return Ok(flights);
             }
             catch (ArgumentNullException)
@@ -303,18 +416,18 @@ namespace WebApi.Controllers
         }
 
 
-        [HttpGet("summary/from/{startDate}/to/{endDate}")]
+        [HttpGet("summary/from/{fromDate}/to/{toDate}")]
         [Authorize(Roles = "User, Admin")]
-        public async Task<ActionResult<FlightSummaryDto>> GetSummaryByDateRange(int accountId, DateTime startDate, DateTime endDate)
+        public async Task<ActionResult<FlightSummaryDto>> GetSummaryByDateRange(int accountId, DateTime fromDate, DateTime toDate)
         {
             try
             {
                 Guard.AgainstAccountNumberMismatch(GetAccountIdClaim(), accountId.ToString(), "userClaim.accountId", "accountId");
                 // Date guards
-                Guard.AgainstNull(startDate, "startDate");
-                Guard.AgainstNull(endDate, "endDate");
+                Guard.AgainstNull(fromDate, "startDate");
+                Guard.AgainstNull(toDate, "endDate");
 
-                var flights = await _flightService.GetFlightSummaryByDateRange(accountId, startDate, endDate);
+                var flights = await _flightService.GetFlightSummaryByDateRange(accountId, fromDate, toDate);
                 return Ok(flights);
             }
             catch (ArgumentNullException)
@@ -327,18 +440,18 @@ namespace WebApi.Controllers
             }
         }
 
-        [HttpGet("summary/{modelId}/from/{startDate}/to/{endDate}")]
+        [HttpGet("summary/{modelId}/from/{fromDate}/to/{toDate}")]
         [Authorize(Roles = "User, Admin")]
-        public async Task<ActionResult<FlightSummaryDto>> GetSummaryByModelAndDateRange(int accountId, int modelId, DateTime startDate, DateTime endDate)
+        public async Task<ActionResult<FlightSummaryDto>> GetSummaryByModelAndDateRange(int accountId, int modelId, DateTime fromDate, DateTime toDate)
         {
             try
             {
                 Guard.AgainstAccountNumberMismatch(GetAccountIdClaim(), accountId.ToString(), "userClaim.accountId", "accountId");
                 // Date guards
-                Guard.AgainstNull(startDate, "startDate");
-                Guard.AgainstNull(endDate, "endDate");
+                Guard.AgainstNull(fromDate, "startDate");
+                Guard.AgainstNull(toDate, "endDate");
 
-                var flights = await _flightService.GetFlightSummaryByModelAndDateRange(accountId, modelId, startDate, endDate);
+                var flights = await _flightService.GetFlightSummaryByModelAndDateRange(accountId, modelId, fromDate, toDate);
                 return Ok(flights);
             }
             catch (ArgumentNullException)

@@ -81,6 +81,13 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
             return _mapper.Map<IList<Model>, IList<ModelDto>>(result);
         }
 
+        public async Task<IList<ModelDto>> GetModelsSortedBySortOrderAsync(int accountId)
+        {
+            var spec = new GetModelsByAccountIdSortedBySortOrder(accountId);
+            var result = await _modelRepository.GetBySpecAsync(spec);
+            return _mapper.Map<IList<Model>, IList<ModelDto>>(result);
+        }
+
         public async Task<int> GetModelsCountsAsync(int accountId)
         {
             var spec = new GetModelsByAccountId(accountId);

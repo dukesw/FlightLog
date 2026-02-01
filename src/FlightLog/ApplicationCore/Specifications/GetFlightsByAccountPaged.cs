@@ -6,10 +6,9 @@ using System.Text;
 
 namespace DukeSoftware.FlightLog.ApplicationCore.Specifications
 {
-    public class GetFlightsByAccountAndDateRangeByPage : GetFlightsByAccountAndDateRange
+    public class GetFlightsByAccountPaged : GetFlightsByAccount
     {
-        public GetFlightsByAccountAndDateRangeByPage(int accountId, DateTime startDate, DateTime endDate, int skip, int take) 
-            : base(accountId, startDate, endDate)
+        public GetFlightsByAccountPaged(int accountId, int skip, int take) : base(accountId)
         {
             ApplyPaging(skip, take);
         }
