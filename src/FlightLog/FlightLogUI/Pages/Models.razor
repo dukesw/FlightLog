@@ -11,7 +11,7 @@
 }
 else
 {
-    <MudDataGrid T="ModelDto" ServerData="ServerReload" ColumnResizeMode="ResizeMode.Column" Filterable=false LoadingProgressColor="Color.Primary">
+    <MudDataGrid T="ModelDto" ServerData="ServerReload" ColumnResizeMode="ResizeMode.Column" Filterable=false LoadingProgressColor="Color.Primary" RowsPerPage="25">
         <Columns>
             <PropertyColumn Property="x => x.Name" Title="Model" />
             <PropertyColumn Property="x => x.Status.Name" Title="Status" />

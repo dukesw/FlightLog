@@ -36,13 +36,13 @@ else
             <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@HandleSubmit">Search</MudButton>
         </MudItem>
     </MudGrid>
-    <MudDataGrid @ref="searchResultsGrid" T="FlightDto" ServerData="SearchFlightsLoad" ColumnResizeMode="ResizeMode.Column" 
-                @bind-currentPage="currentPage" Filterable=false LoadingProgressColor="Color.Primary">
+    <MudDataGrid @ref="searchResultsGrid" T="FlightDto" ServerData="SearchFlightsLoad" ColumnResizeMode="ResizeMode.Column"
+                @bind-currentPage="currentPage" @bind-rowsPerPage="pageSize" Filterable=false LoadingProgressColor="Color.Primary">
         <Columns>
             <PropertyColumn Property="x => x.Date" Format="d-MMM-yyyy" />
             <PropertyColumn Property="x => x.Model.Name" Title="Model" />
             <PropertyColumn Property="x => x.FlightMinutes" Title="Minutes" />
-            <PropertyColumn Property="x => x.Field.Name" Title="Field" />
+            <PropertyColumn Property="x => x.Field.Name" Title="Field"  />
             <MudBlazor.TemplateColumn Context="flight">
                 <CellTemplate>
                     <MudLink Href="@($"/edit-flight/{flight.Item.Id}")">Edit</MudLink>
@@ -71,6 +71,7 @@ else
     private FlightSearchDto flightSearch = new FlightSearchDto();
 
     private int currentPage = 0;
+    private int pageSize = 25;
 
     [Parameter]
     [SupplyParameterFromQuery(Name = "from")]
@@ -113,7 +114,6 @@ else
         try
         {
             loading = true;
-
             var user = (await authenticationState).User;
             accountId = user.FindFirst("https://flightlog.co.nz/claims/account_id").Value;
 
@@ -143,6 +143,7 @@ else
                 await searchResultsGrid.SetRowsPerPageAsync(StateHelper.SearchState.PageSize);
             }
             currentPage = StateHelper.SearchState.Page;
+            pageSize = StateHelper.SearchState.PageSize;
 
             //
             // TODO do a version for the page too... 
@@ -159,6 +160,7 @@ else
         Console.WriteLine($"New page size is {newPageSize}");
         StateHelper.SearchState.PageSize = newPageSize;
         flightSearch.PageSize = newPageSize;
+        pageSize = newPageSize;
         // if (newPageSize == _pageSize)
         //     return;
 

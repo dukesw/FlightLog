@@ -15,7 +15,7 @@
 }
 else
 {
-    <MudDataGrid T="FlightDto" ServerData="ServerReload" ColumnResizeMode="ResizeMode.Column" Filterable=false LoadingProgressColor="Color.Primary">
+    <MudDataGrid T="FlightDto" ServerData="ServerReload" ColumnResizeMode="ResizeMode.Column" Filterable=false LoadingProgressColor="Color.Primary" RowsPerPage="25">
         <Columns>
             <PropertyColumn Property="x => x.Date" Format="d-MMM-yyyy"/>
             <PropertyColumn Property="x => x.Model.Name" Title="Model" />
