@@ -9,6 +9,7 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Interfaces
     public interface IPilotService
     {
         Task<List<Pilot>> GetPilotsAsync(int accountId);
+        Task<List<Pilot>> GetActivePilotsAsync(int accountId);
         Task<Pilot> GetPilotByIdAsync(int accountId, int id);
         Task<Pilot> AddPilotAsync(int accountId, Pilot pilot);
         Task<Pilot> UpdatePilotAsync(int accountId, Pilot pilot);

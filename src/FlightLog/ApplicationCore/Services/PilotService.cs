@@ -42,6 +42,12 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Services
             return await _pilotRepository.GetBySpecAsync(spec);
         }
 
+        public async Task<List<Pilot>> GetActivePilotsAsync(int accountId)
+        {
+            var spec = new GetPilotsByIsActiveAndAccount(accountId);
+            return await _pilotRepository.GetBySpecAsync(spec);
+        }
+
         public Task<Pilot> UpdatePilotAsync(int accountId, Pilot pilot)
         {
             throw new NotImplementedException();

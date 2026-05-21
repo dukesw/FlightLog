@@ -15,6 +15,9 @@ namespace DukeSoftware.FlightLog.ApplicationCore.Entities
         public string Registration { get; set;  }
 
         public string Club { get; set; }
+        public int SortOrder { get; set; }
+        public bool isStudent { get; set; }
+        public bool isActive { get; set; }
         public int? DefaultTransmitterId { get; set; }
         public Transmitter DefaultTransmitter { get; set; }
 

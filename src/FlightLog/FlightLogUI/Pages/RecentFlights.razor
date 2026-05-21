@@ -60,7 +60,7 @@ else
         }
     }
 
-    private async Task<GridData<FlightDto>> ServerReload(GridState<FlightDto> state)
+    private async Task<GridData<FlightDto>> ServerReload(GridState<FlightDto> state, CancellationToken token)
     {
         try
         {

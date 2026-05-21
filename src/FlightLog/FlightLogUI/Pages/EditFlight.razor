@@ -68,16 +68,7 @@ else
             <MudButton Variant="Variant.Filled" OnClick="@HandleClear">Clear</MudButton>
             <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@HandleSubmit" Disabled="@(!isValid)">Save</MudButton>
         </MudItem>
-    </MudGrid>
-
-    <div class="d-flex mud-width-full align-center mt-8">
-        <MudText Typo="Typo.subtitle1" Class="mr-2">Selected model: </MudText>
-        <MudChip T="string">@(flight.Model != null ? flight.Model.Name : "Select model")</MudChip>
-        <MudChip T="string">@(flight.Pilot != null ? flight.Pilot.Name : "Select pilot")</MudChip>
-        <MudChip T="string">@(flight.Field != null ? flight.Field.Name : "Select field")</MudChip>
-
-    </div>
-    
+    </MudGrid>    
 }
 @code {
     public bool loading = false;
@@ -118,7 +109,7 @@ else
             var client = ClientFactory.CreateClient("FlightLogAPI");
             models = await client.GetFromJsonAsync<List<FlightModelDto>>($"/api/{accountId}/models/active");
             locations = await client.GetFromJsonAsync<List<FlightLocationDto>>($"/api/{accountId}/locations");
-            pilots = await client.GetFromJsonAsync<List<FlightPilotDto>>($"/api/{accountId}/pilots");
+            pilots = await client.GetFromJsonAsync<List<FlightPilotDto>>($"/api/{accountId}/pilots/active");
             tagsMaster = await client.GetFromJsonAsync<FlightTagDto[]>("/api/flighttags");
 
             if (Id.HasValue)
@@ -175,7 +166,7 @@ else
     {
         clearFormData();
         isValid = false;
-        form.ResetValidation();
+        form.ResetValidationAsync();
 
     }
 

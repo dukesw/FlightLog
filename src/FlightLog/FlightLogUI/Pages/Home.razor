@@ -1,7 +1,178 @@
-﻿@page "/"
-@* @attribute [Authorize] *@
+﻿@using MudBlazor
+@using MudBlazor.Charts;
+
+@page "/"
+@attribute [Authorize]
+
+@inject IHttpClientFactory ClientFactory
+@inject IAccessTokenProvider AccessTokenProvider
+@inject AuthenticationStateProvider AuthStateProvider
 
 <h3>Flights</h3>
 <p>Welcome to Flight Log - the app to enter and manage your RC flights. </p>
 
+@if (loading)
+{
+    <MudProgressCircular Indeterminate="true" />
 
+}
+else 
+{
+    @if (recentFlightsGroupedByWeek == null)
+    {
+        <p>No flights recently.</p>
+    }
+    else
+    {
+        <MudChart ChartType="ChartType.Bar" ChartSeries="@graphSeries" ChartLabels=@graphAxisLabels ChartOptions="chartOptions" MatchBoundsToSize="true" >
+
+        </MudChart>
+        <MudToggleGroup T="int" Size="Size.Small" @bind-Value="graphType" @bind-Value:after="OnGraphTypeChanged" Style="width: 15rem">
+            <MudToggleItem Value=1 Text="Weekly" />
+            <MudToggleItem Value=2 Text="Monthly" />
+        </MudToggleGroup>
+
+
+        @* <ul>
+        @foreach (var flight in recentFlightsGroupedByWeek)
+        {
+            <li>Period: @flight.PeriodName, Flights: @flight.FlightCount</li>
+        }
+    </ul>
+    <p>Monthly</p>
+    <ul>
+        @foreach (var flight in recentFlightsGroupedByMonth)
+        {
+            <li>Period: @flight.PeriodName, Flights: @flight.FlightCount</li>
+        }
+     </ul> *@
+    }
+}
+@code {
+
+    private List<FlightsGroupedByModelAndTimeDto> recentFlightsGroupedByModel;
+    private List<FlightsGroupedByTimeDto> recentFlightsGroupedByWeek;
+    private List<FlightsGroupedByTimeDto> recentFlightsGroupedByMonth;
+
+    private List<string> modelSeries;
+
+    private List<List<FlightsGroupedByModelAndTimeDto>> flightGroupSerieses = new List<List<FlightsGroupedByModelAndTimeDto>>();
+    private List<List<FlightsGroupedByTimeDto>> flightsGroupedByWeekSeries = new List<List<FlightsGroupedByTimeDto>>();
+
+    public List<ChartSeries<int>> graphSeries;
+    public string[] graphAxisLabels;
+    // = new()
+    //        {
+    //              new() { Name = "United States", Data = new int[] { 40, 20, 25, 27, 46, 60, 48, 80, 15 } } };
+    //    //          new() { Name = "Germany", Data = new double[] { 19, 24, 35, 13, 28, 15, 13, 16, 31 } },
+    //    //        new() { Name = "Sweden", Data = new double[] { 8, 6, 11, 13, 4, 16, 10, 16, 18 } },
+    //    //}; *@
+    //    public string[] XAxisLabels = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep" };
+
+    private BarChartOptions chartOptions = new BarChartOptions()
+    {
+        XAxisLabelRotation = 90,
+        YAxisTitle = "Flights",
+        FixedBarWidth = 24, 
+        YAxisLines = true, 
+        YAxisTicks = 2, 
+        YAxisSuggestedMax = 10
+    };
+
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationState { get; set; }
+    private bool loading = false;
+
+    private int graphType = 1;  // Weekly TODO make enum
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            loading = true;
+            //var tokenResult = await AccessTokenProvider.RequestAccessToken();
+            //if (tokenResult.TryGetToken(out var token))
+            //{
+            //    token.ToString();
+            //}
+
+
+            // New try
+            var user = (await authenticationState).User;
+            var accountId = user.FindFirst("https://flightlog.co.nz/claims/account_id").Value;
+
+            var client = ClientFactory.CreateClient("FlightLogAPI");
+            var weekStartDate = DateTime.Now.AddDays(-70); // 10 weeks
+            var weekEndDate = DateTime.Now; //.AddDays(-DateTime.Now.Day).AddMonths(1).AddSeconds(-1);
+
+            //recentFlightsGroupedByModel = await client.GetFromJsonAsync<List<FlightsGroupedByModelAndTimeDto>>($"/api/{accountId}/flights/group/monthandmodel/from/{startDate.ToString("yyyy-MM-dd")}/to/{endDate.ToString("yyyy-MM-dd")}");
+
+            //var modelSeries = recentFlightsGroupedByModel.Select(x => x.Model.Name).Distinct().ToList();
+            //// Now split into separate serieses based on model
+            //foreach (string modelName in modelSeries)
+            //{
+            //    var series = recentFlightsGroupedByModel.Where(x => x.Model.Name == modelName);
+            //    flightGroupSerieses.Add(series.ToList());
+            //}
+
+            // Second graph :)
+            recentFlightsGroupedByWeek = await client.GetFromJsonAsync<List<FlightsGroupedByTimeDto>>($"/api/{accountId}/flights/group/week/from/{weekStartDate.ToString("yyyy-MM-dd")}/to/{weekEndDate.ToString("yyyy-MM-dd")}");
+            if (recentFlightsGroupedByWeek != null)
+            {
+                graphSeries = new List<ChartSeries<int>> { new ChartSeries<int>() { Name = "Flight Week", Data = recentFlightsGroupedByWeek.Select(x => x.FlightCount).ToArray() } };
+                graphAxisLabels = recentFlightsGroupedByWeek.Select(x => "&nbsp;" + x.PeriodName + "&nbsp;&nbsp;").ToArray();
+            }
+            // = new()
+            //        {
+            //              new() { Name = "United States", Data = new int[] { 40, 20, 25, 27, 46, 60, 48, 80, 15 } } };
+            //    //          new() { Name = "Germany", Data = new double[] { 19, 24, 35, 13, 28, 15, 13, 16, 31 } },
+            //    //        new() { Name = "Sweden", Data = new double[] { 8, 6, 11, 13, 4, 16, 10, 16, 18 } },
+            //    //}; *@
+            //    public string[] XAxisLabels = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep" };
+
+
+            // Month...
+            var monthStartDate = DateTime.Now.Date.AddDays(-(DateTime.Now.Day - 1)).AddMonths(-11);
+            var monthEndDate = DateTime.Now; //.AddDays(-DateTime.Now.Day).AddMonths(1).AddSeconds(-1);
+            recentFlightsGroupedByMonth = await client.GetFromJsonAsync<List<FlightsGroupedByTimeDto>>($"/api/{accountId}/flights/group/month/from/{monthStartDate.ToString("yyyy-MM-dd")}/to/{monthEndDate.ToString("yyyy-MM-dd")}");
+
+
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+        finally
+        {
+            loading = false;
+        }
+    }
+
+    private async Task OnGraphTypeChanged()
+    {
+        if (graphType == 1)
+        {
+            if (recentFlightsGroupedByWeek != null)
+            {
+                graphSeries = new List<ChartSeries<int>> { new ChartSeries<int>() { Name = "Flight Week", Data = recentFlightsGroupedByWeek.Select(x => x.FlightCount).ToArray() } };
+                graphAxisLabels = recentFlightsGroupedByWeek.Select(x => "&nbsp;" + x.PeriodName + "&nbsp;&nbsp;").ToArray();
+                //chartOptions.XAxisTitle = "Week";
+                chartOptions.YAxisTicks = 2;
+                //chartOptions.YAxisSuggestedMax = recentFlightsGroupedByWeek.Max(x => x.FlightCount) + 2;
+            }
+            return;
+        } 
+        if (graphType == 2)
+        {
+            if (recentFlightsGroupedByMonth != null)
+            {
+                graphSeries = new List<ChartSeries<int>> { new ChartSeries<int>() { Name = "Flight Month", Data = recentFlightsGroupedByMonth.Select(x => x.FlightCount).ToArray() } };
+                graphAxisLabels = recentFlightsGroupedByMonth.Select(x => x.PeriodName).ToArray();
+                //chartOptions.XAxisTitle = "Month";
+                chartOptions.YAxisTicks = 5;
+            }
+            return;
+        }
+    }
+
+}

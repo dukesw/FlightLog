@@ -29,14 +29,29 @@ namespace WebApi.Controllers
             this._mapper = mapper;
         }
 
-        [HttpGet]
+        [HttpGet("active")]
         [Authorize(Roles = "User, Admin")]
-        public async Task<ActionResult> List(int accountId)
+        public async Task<ActionResult> ListAll(int accountId)
         {
             try
             {
                 Guard.AgainstAccountNumberMismatch(GetAccountIdClaim(), accountId.ToString(), "userClaim.accountId", "accountId");
                 var pilots = await _pilotService.GetPilotsAsync(accountId);
+                var pilotDtos = _mapper.Map<IList<Pilot>, IList<PilotDto>>(pilots).ToArray();
+                return Ok(pilotDtos.ToArray());
+            }
+            catch (AccountConflictException)
+            {
+                return Forbid();
+            }
+        }
+
+        public async Task<ActionResult> ListActive(int accountId)
+        {
+            try
+            {
+                Guard.AgainstAccountNumberMismatch(GetAccountIdClaim(), accountId.ToString(), "userClaim.accountId", "accountId");
+                var pilots = await _pilotService.GetActivePilotsAsync(accountId);
                 var pilotDtos = _mapper.Map<IList<Pilot>, IList<PilotDto>>(pilots).ToArray();
                 return Ok(pilotDtos.ToArray());
             }

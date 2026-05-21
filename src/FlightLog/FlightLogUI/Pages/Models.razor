@@ -57,7 +57,7 @@ else
         }
     }
 
-    private async Task<GridData<ModelDto>> ServerReload(GridState<ModelDto> state)
+    private async Task<GridData<ModelDto>> ServerReload(GridState<ModelDto> state, CancellationToken token)
     {
         try
         {

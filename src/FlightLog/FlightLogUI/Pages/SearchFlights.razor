@@ -205,7 +205,7 @@ else
 
 
 
-    private async Task<GridData<FlightDto>> SearchFlightsLoad(GridState<FlightDto> state)
+    private async Task<GridData<FlightDto>> SearchFlightsLoad(GridState<FlightDto> state, CancellationToken token)
     {
         try
         {

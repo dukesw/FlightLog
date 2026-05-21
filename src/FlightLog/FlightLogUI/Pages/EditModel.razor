@@ -184,7 +184,7 @@ else
 
     }
 
-    private async Task<GridData<MaintenanceLogDto>> ServerReload(GridState<MaintenanceLogDto> state)
+    private async Task<GridData<MaintenanceLogDto>> ServerReload(GridState<MaintenanceLogDto> state, CancellationToken token)
     {
         try
         {
@@ -222,7 +222,7 @@ else
     {
         clearFormData();
         //isValid = false;
-        form.ResetValidation();
+        form.ResetValidationAsync();
         form.ResetAsync();
         form.IsValid = false;
 
